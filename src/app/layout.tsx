@@ -1,8 +1,9 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google"; // Already using the correct import
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppBar from "@/components/layout/AppBar";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,7 +17,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Em Moore • Lighting Design",
-  description: "Portfolio of Em Moore, Lighting Designer",
+  description: "Portfolio of Em Moore, Lighting Designer specializing in theater, dance, and live events",
+  keywords: ["lighting design", "theater", "dance", "performance", "UCLA", "MFA", "lighting designer"],
 };
 
 export default function RootLayout({
@@ -25,14 +27,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <div className="flex flex-col min-h-screen">
-          <AppBar />
-          <main className="flex-grow">{children}</main>
-        </div>
+        <AppBar />
+        <main className="flex-grow page-transition">{children}</main>
+        <Footer />
       </body>
     </html>
   );
