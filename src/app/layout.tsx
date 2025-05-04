@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google"; // Already using the correct import
 import "./globals.css";
 import AppBar from "@/components/layout/AppBar";
 
