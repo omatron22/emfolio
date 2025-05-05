@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ImageGallery from './ImageGallery';
 
 export interface ProjectMember {
   role: string;
@@ -26,15 +26,17 @@ export default function ProjectDetail({
   imageFolder,
   imageCount,
 }: ProjectProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [images, setImages] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % imageCount);
-  };
-  
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + imageCount) % imageCount);
-  };
+  useEffect(() => {
+    // Generate the image paths
+    const imageList = Array.from({ length: imageCount }, (_, i) => 
+      `${imageFolder}${i}.jpg`
+    );
+    setImages(imageList);
+    setIsLoading(false);
+  }, [imageFolder, imageCount]);
 
   // Group team members by role category
   const roleCategories = {
@@ -57,104 +59,77 @@ export default function ProjectDetail({
     <div className="container mx-auto px-4 py-8">
       <Link 
         href="/portfolio" 
-        className="inline-block mb-6 text-sm hover:underline"
+        className="inline-flex items-center mb-6 text-sm hover:underline gap-1"
       >
-        ← Back to Portfolio
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+          <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+        </svg>
+        Back to Portfolio
       </Link>
       
       <h1 className="text-3xl md:text-4xl font-bold mb-2">{title}</h1>
       <p className="text-xl mb-8">{producer}, {year}</p>
       
       {/* Image Gallery */}
-      <div className="relative w-full aspect-video mb-12 bg-black">
-        <Image
-          src={`/images/${imageFolder}/${imageFolder}${currentImageIndex}.jpg`}
-          alt={`${title} - Image ${currentImageIndex + 1}`}
-          fill
-          sizes="100vw"
-          className="object-contain"
-          priority
-        />
-        
-        {/* Navigation arrows */}
-        <button 
-          onClick={prevImage}
-          className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-          aria-label="Previous image"
-        >
-          ←
-        </button>
-        <button 
-          onClick={nextImage}
-          className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 flex items-center justify-center bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors"
-          aria-label="Next image"
-        >
-          →
-        </button>
-        
-        {/* Image counter */}
-        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-          {currentImageIndex + 1} / {imageCount}
+      {isLoading ? (
+        <div className="w-full aspect-video bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+          <div className="h-10 w-10 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
         </div>
-      </div>
+      ) : (
+        <ImageGallery images={images} folder={imageFolder} />
+      )}
       
       {/* Team credits */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div>
-          <h2 className="text-xl font-bold mb-4">Leadership</h2>
-          <ul className="space-y-2">
-            {teamByCategory.leadership.map((member, index) => (
-              <li key={index}>
-                <span className="font-medium">{member.role}:</span> {member.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <div>
-          <h2 className="text-xl font-bold mb-4">Design</h2>
-          <ul className="space-y-2">
-            {teamByCategory.design.map((member, index) => (
-              <li key={index}>
-                <span className="font-medium">{member.role}:</span> {member.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <div>
-          <h2 className="text-xl font-bold mb-4">Lighting Team</h2>
-          <ul className="space-y-2">
-            {teamByCategory.lighting.map((member, index) => (
-              <li key={index}>
-                <span className="font-medium">{member.role}:</span> {member.name}
-              </li>
-            ))}
-          </ul>
+      <div className="my-12">
+        <h2 className="text-2xl font-bold mb-6 border-b pb-2">Credits</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-xl font-bold mb-4">Leadership</h3>
+            <ul className="space-y-2">
+              {teamByCategory.leadership.map((member, index) => (
+                <li key={index} className="flex">
+                  <span className="font-medium min-w-36">{member.role}:</span> 
+                  <span>{member.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-bold mb-4">Design</h3>
+            <ul className="space-y-2">
+              {teamByCategory.design.map((member, index) => (
+                <li key={index} className="flex">
+                  <span className="font-medium min-w-36">{member.role}:</span> 
+                  <span>{member.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-bold mb-4">Lighting Team</h3>
+            <ul className="space-y-2">
+              {teamByCategory.lighting.map((member, index) => (
+                <li key={index} className="flex">
+                  <span className="font-medium min-w-36">{member.role}:</span> 
+                  <span>{member.name}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
       
-      {/* Thumbnail gallery */}
-      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 mt-8">
-        {Array.from({ length: imageCount }).map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentImageIndex(index)}
-            className={`aspect-square overflow-hidden relative ${
-              currentImageIndex === index 
-                ? 'ring-2 ring-black dark:ring-white' 
-                : 'opacity-70 hover:opacity-100'
-            }`}
-          >
-            <Image
-              src={`/images/${imageFolder}/${imageFolder}${index}.jpg`}
-              alt={`Thumbnail ${index + 1}`}
-              fill
-              sizes="(max-width: 768px) 25vw, 16vw"
-              className="object-cover"
-            />
-          </button>
-        ))}
+      {/* Design Notes/Statement (optional) */}
+      <div className="mt-12 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg max-w-3xl">
+        <h2 className="text-2xl font-bold mb-4">Design Approach</h2>
+        <p className="mb-4">
+          For {title}, the lighting design focused on creating dramatic contrasts between intimate moments and grand ensemble scenes. The color palette draws from the emotional journey of the characters, using saturated tones and stark transitions to highlight pivotal moments in the narrative.
+        </p>
+        <p>
+          Special attention was given to the way light shapes and defines the performance space, creating distinct environments while maintaining visual cohesion throughout the production.
+        </p>
       </div>
     </div>
   );
