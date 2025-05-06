@@ -1,8 +1,9 @@
+// src/components/theme/ThemeProvider.tsx - Simplified version
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'light' | 'dark';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -18,45 +19,24 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
+  defaultTheme = 'light',
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme);
   
   useEffect(() => {
-    const root = window.document.documentElement;
-    
-    // Remove any existing theme classes
-    root.classList.remove('light', 'dark');
-    
-    // Handle system preference
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light';
-      
-      root.classList.add(systemTheme);
-      return;
+    // On mount, detect system preference and use it as the initial value
+    if (defaultTheme === 'light' || defaultTheme === 'dark') {
+      setTheme(defaultTheme);
+    } else {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      setTheme(systemTheme);
     }
-    
-    root.classList.add(theme);
-  }, [theme]);
+  }, [defaultTheme]);
   
-  // Listen for system preference changes
   useEffect(() => {
-    if (theme !== 'system') return;
-    
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    const handleChange = () => {
-      const root = window.document.documentElement;
-      const systemTheme = mediaQuery.matches ? 'dark' : 'light';
-      
-      root.classList.remove('light', 'dark');
-      root.classList.add(systemTheme);
-    };
-    
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
   }, [theme]);
   
   const value = {

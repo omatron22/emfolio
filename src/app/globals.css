@@ -16,9 +16,8 @@
   --font-heading: Georgia, 'Times New Roman', serif;
   --font-accent: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-secondary: system-ui, -apple-system, sans-serif;
-}
 
-@theme inline {
+  /* Theme variables - keep these here and remove the @theme inline block */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);

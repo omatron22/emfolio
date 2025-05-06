@@ -34,6 +34,21 @@ export default function ContactForm() {
     setIsSubmitting(true);
     setError(null);
     
+    // Basic validation
+    if (!formState.name || !formState.email || !formState.message) {
+      setError('Please fill out all required fields');
+      setIsSubmitting(false);
+      return;
+    }
+  
+    // Email validation with regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formState.email)) {
+      setError('Please enter a valid email address');
+      setIsSubmitting(false);
+      return;
+    }
+    
     try {
       // This would normally be where you'd send the form data to your backend
       // For now, we'll just simulate a successful submission
@@ -48,7 +63,6 @@ export default function ContactForm() {
         setIsSuccess(false);
       }, 5000);
     } catch (error) {
-      // Using the error object or commenting why we're not using it
       console.error('Form submission error:', error);
       setError('There was a problem submitting your message. Please try again.');
     } finally {

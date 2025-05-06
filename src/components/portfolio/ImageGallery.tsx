@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 interface ImageGalleryProps {
@@ -17,6 +17,20 @@ export default function ImageGallery({
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+  
+  // Define navigateImage with useCallback to memoize it
+  const navigateImage = useCallback((direction: 'next' | 'prev') => {
+    if (images.length === 0) return;
+    
+    if (direction === 'next') {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    } else {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
+    }
+    setIsLoading(true);
+    setImageError(false);
+  }, [images.length]);
   
   // Handle keyboard navigation
   useEffect(() => {
@@ -32,22 +46,34 @@ export default function ImageGallery({
     
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentIndex, isFullscreen]);
-  
-  // Navigate between images
-  const navigateImage = (direction: 'next' | 'prev') => {
-    if (direction === 'next') {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    } else {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-    }
-    setIsLoading(true);
-  };
+  }, [currentIndex, isFullscreen, navigateImage]);
   
   // Toggle fullscreen mode
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
-  };
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen((prev) => !prev);
+  }, []);
+  
+  // Handle loading errors
+  const handleImageError = useCallback(() => {
+    setIsLoading(false);
+    setImageError(true);
+    console.warn(`Failed to load image: /images/${folder}/${images[currentIndex]}`);
+  }, [folder, images, currentIndex]);
+  
+  // Handle image load
+  const handleImageLoad = useCallback(() => {
+    setIsLoading(false);
+    setImageError(false);
+  }, []);
+  
+  // If there are no images, display a message
+  if (images.length === 0) {
+    return (
+      <div className="w-full aspect-video bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+        <p>No images available</p>
+      </div>
+    );
+  }
   
   return (
     <div className="image-gallery-container relative">
@@ -66,12 +92,21 @@ export default function ImageGallery({
           </div>
         )}
         
+        {/* Error message */}
+        {imageError && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 text-white">
+            <p>Failed to load image</p>
+          </div>
+        )}
+        
+        {/* Main image */}
         <Image
           src={`/images/${folder}/${images[currentIndex]}`}
           alt={`Image ${currentIndex + 1}`}
           fill
-          className={`object-contain transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-          onLoad={() => setIsLoading(false)}
+          className={`object-contain transition-opacity duration-300 ${isLoading || imageError ? 'opacity-0' : 'opacity-100'}`}
+          onLoad={handleImageLoad}
+          onError={handleImageError}
           priority={currentIndex === initialIndex}
         />
         
@@ -127,6 +162,7 @@ export default function ImageGallery({
             onClick={() => {
               setCurrentIndex(index);
               setIsLoading(true);
+              setImageError(false);
             }}
             className={`aspect-square overflow-hidden relative ${
               currentIndex === index 
@@ -140,6 +176,11 @@ export default function ImageGallery({
               fill
               sizes="(max-width: 768px) 20vw, 10vw"
               className="object-cover"
+              onError={(e) => {
+                // Hide broken thumbnail images
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
           </button>
         ))}
