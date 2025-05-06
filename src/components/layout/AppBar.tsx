@@ -16,6 +16,12 @@ export default function AppBar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  
+  // Handle client-side mounting
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Handle scrolling effects
   useEffect(() => {
@@ -83,6 +89,18 @@ export default function AppBar() {
       ? 'border-white/30 text-white' 
       : 'border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300'}
   `;
+
+  // Only render theme toggle when mounted (client-side)
+  const renderThemeToggle = () => {
+    if (!mounted) return null;
+    
+    try {
+      return <ThemeToggle />;
+    } catch (error) {
+      console.error('Theme toggle error:', error);
+      return null;
+    }
+  };
   
   return (
     <header className={navbarClasses}>
@@ -109,7 +127,7 @@ export default function AppBar() {
             ))}
           </nav>
           
-          <ThemeToggle />
+          {mounted && renderThemeToggle()}
         </div>
         
         {/* Mobile menu button */}
@@ -168,10 +186,12 @@ export default function AppBar() {
                 {item.name}
               </Link>
             ))}
-            <div className="px-3 py-2 flex items-center justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Theme</span>
-              <ThemeToggle />
-            </div>
+            {mounted && (
+              <div className="px-3 py-2 flex items-center justify-between">
+                <span className="text-gray-600 dark:text-gray-400">Theme</span>
+                {renderThemeToggle()}
+              </div>
+            )}
           </nav>
         </div>
       )}

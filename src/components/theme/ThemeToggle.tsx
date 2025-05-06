@@ -1,4 +1,3 @@
-// src/components/theme/ThemeToggle.tsx - Fixed version
 'use client';
 
 import { useTheme } from './ThemeProvider';
@@ -13,22 +12,39 @@ export default function ThemeToggle() {
     setMounted(true);
   }, []);
   
+  // Toggle between light and dark
+  const toggleTheme = () => {
+    if (theme === 'dark') {
+      setTheme('light');
+    } else {
+      setTheme('dark');
+    }
+  };
+  
+  // Get the actual theme to display the correct icon
+  // This is important when theme is set to 'system'
+  const getDisplayedTheme = () => {
+    if (theme === 'system') {
+      // Check system preference
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    return theme;
+  };
+  
+  // If not mounted yet, render a placeholder of the same size to prevent layout shift
   if (!mounted) {
-    return null;
+    return <div className="w-5 h-5" />;
   }
   
-  // Toggle between light and dark only
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
+  const displayTheme = getDisplayedTheme();
   
   return (
     <button
       onClick={toggleTheme}
       className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
-      aria-label={`Current theme: ${theme}. Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      aria-label={`Current theme: ${displayTheme}. Switch to ${displayTheme === 'light' ? 'dark' : 'light'} mode`}
     >
-      {theme === 'dark' ? (
+      {displayTheme === 'dark' ? (
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 24 24" 

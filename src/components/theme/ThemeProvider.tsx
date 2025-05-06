@@ -1,9 +1,9 @@
-// src/components/theme/ThemeProvider.tsx - Simplified version
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+// Update the Theme type to include 'system' as a valid option
+type Theme = 'light' | 'dark' | 'system';
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -21,28 +21,51 @@ export function ThemeProvider({
   children,
   defaultTheme = 'light',
 }: ThemeProviderProps) {
+  // We'll use the defaultTheme as the initial state
   const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [mounted, setMounted] = useState(false);
   
+  // Once mounted on client, now we can show the UI
   useEffect(() => {
-    // On mount, detect system preference and use it as the initial value
-    if (defaultTheme === 'light' || defaultTheme === 'dark') {
-      setTheme(defaultTheme);
-    } else {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      setTheme(systemTheme);
-    }
-  }, [defaultTheme]);
+    setMounted(true);
+  }, []);
   
   useEffect(() => {
     const root = window.document.documentElement;
+    
+    // For applying the theme class, we only want to use 'light' or 'dark'
+    // not 'system', so we need to calculate the actual theme to apply
+    const resolvedTheme = theme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      : theme;
+    
+    // Remove the old theme classes and add the new theme class
     root.classList.remove('light', 'dark');
-    root.classList.add(theme);
+    root.classList.add(resolvedTheme);
+    
+    // Store the user's preference
+    localStorage.setItem('theme', theme);
   }, [theme]);
+  
+  // When the component is mounted on the client
+  useEffect(() => {
+    // Check for the saved theme preference
+    const savedTheme = localStorage.getItem('theme') as Theme | null;
+    
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
   
   const value = {
     theme,
     setTheme,
   };
+  
+  // Prevent hydration mismatch by rendering only after mounted on client
+  if (!mounted) {
+    return <>{children}</>;
+  }
   
   return (
     <ThemeContext.Provider value={value}>
