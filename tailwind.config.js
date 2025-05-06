@@ -55,6 +55,9 @@ module.exports = {
         fontFamily: {
           sans: ["var(--font-geist-sans)"],
           mono: ["var(--font-geist-mono)"],
+          playfair: ["var(--font-playfair)"],
+          oswald: ["var(--font-oswald)"],
+          poppins: ["var(--font-poppins)"],
         },
         keyframes: {
           "fade-in": {

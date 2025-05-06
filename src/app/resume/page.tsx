@@ -1,4 +1,3 @@
-// src/app/resume/page.tsx
 import Link from 'next/link';
 
 // Component for section headers
@@ -42,7 +41,7 @@ export default function Resume() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <h1 className="text-3xl md:text-4xl font-bold">Resume</h1>
         <Link 
-          href="/Em_Moore_Resume.pdf" 
+          href="/resume/EmMoore_Resume.pdf" 
           target="_blank"
           rel="noopener noreferrer" 
           className="mt-4 md:mt-0 px-4 py-2 border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"

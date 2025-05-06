@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import ThemeToggle from '@/components/theme/ThemeToggle';
 
 const navigation = [
   { name: 'Portfolio', href: '/portfolio' },
@@ -91,21 +92,25 @@ export default function AppBar() {
         </Link>
         
         {/* Desktop navigation */}
-        <nav className="hidden md:flex space-x-8">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`${linkBaseClasses} ${
-                pathname === item.href
-                  ? linkActiveClasses
-                  : linkInactiveClasses
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-        </nav>
+        <div className="hidden md:flex items-center space-x-8">
+          <nav className="flex space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`${linkBaseClasses} ${
+                  pathname === item.href
+                    ? linkActiveClasses
+                    : linkInactiveClasses
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+          
+          <ThemeToggle />
+        </div>
         
         {/* Mobile menu button */}
         <button 
@@ -163,6 +168,10 @@ export default function AppBar() {
                 {item.name}
               </Link>
             ))}
+            <div className="px-3 py-2 flex items-center justify-between">
+              <span className="text-gray-600 dark:text-gray-400">Theme</span>
+              <ThemeToggle />
+            </div>
           </nav>
         </div>
       )}

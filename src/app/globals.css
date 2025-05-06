@@ -7,6 +7,12 @@
   --accent-foreground: #ffffff;
   --muted: #f3f3f3;
   --muted-foreground: #737373;
+  
+  /* Font configuration using Google Fonts */
+  --heading-font: var(--font-playfair);
+  --body-font: var(--font-geist-sans);
+  --accent-font: var(--font-oswald);
+  --secondary-font: var(--font-poppins);
 }
 
 @theme inline {
@@ -16,8 +22,11 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--body-font);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--heading-font);
+  --font-accent: var(--accent-font);
+  --font-secondary: var(--secondary-font);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,8 +43,42 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, sans-serif;
+  font-family: var(--body-font), Arial, sans-serif;
   min-height: 100vh;
+}
+
+/* Heading styles with custom fonts */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font), serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Custom styles for specific sections */
+.portfolio-title {
+  font-family: var(--accent-font), sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+}
+
+.project-card-title {
+  font-family: var(--accent-font), sans-serif;
+  font-weight: 600;
 }
 
 /* Custom transition effects */

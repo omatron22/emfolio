@@ -1,5 +1,6 @@
-// src/app/upcoming/page.tsx
-import Link from 'next/link';
+'use client';
+
+import ContactForm from '@/components/forms/ContactForm';
 
 const upcomingProjects = [
   {
@@ -55,18 +56,15 @@ export default function Upcoming() {
           ))}
         </div>
         
-        <div className="mt-16 p-8 bg-gray-100 dark:bg-gray-800">
+        <div className="mt-16 p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
           <h2 className="text-2xl font-bold mb-4">Interested in Collaboration?</h2>
-          <p className="mb-4">
+          <p className="mb-8">
             I&apos;m always open to discussing new projects and collaborations. If you&apos;re looking for a 
-            lighting designer for your upcoming production, please reach out!
+            lighting designer for your upcoming production, please reach out using the form below or 
+            email me directly at <a href="mailto:efmoore0610@g.ucla.edu" className="text-accent hover:underline">efmoore0610@g.ucla.edu</a>.
           </p>
-          <Link 
-            href="mailto:efmoore0610@g.ucla.edu" 
-            className="inline-block px-6 py-3 bg-black text-white dark:bg-white dark:text-black hover:bg-opacity-80 dark:hover:bg-opacity-80 transition-colors"
-          >
-            Contact Me
-          </Link>
+          
+          <ContactForm />
         </div>
       </div>
     </div>

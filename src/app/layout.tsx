@@ -1,16 +1,16 @@
-// src/app/layout.tsx
 'use client';
 
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppBar from "@/components/layout/AppBar";
 import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { 
+  geistSans, 
+  geistMono, 
+  playfairDisplay, 
+  oswald,
+  poppins
+} from "./fonts";
 
 export default function RootLayout({
   children,
@@ -24,7 +24,7 @@ export default function RootLayout({
           <meta name="keywords" content="lighting design, theater, dance, performance, UCLA, MFA, lighting designer" />
         </head>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+          className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${oswald.variable} ${poppins.variable} antialiased min-h-screen flex flex-col`}
         >
           <AppBar />
           <main className="flex-grow page-transition">{children}</main>
@@ -34,8 +34,3 @@ export default function RootLayout({
     </ThemeProvider>
   );
 }
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
