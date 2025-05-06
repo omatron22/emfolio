@@ -106,7 +106,7 @@ export default function AppBar() {
     <header className={navbarClasses}>
       <div className="flex items-center justify-between">
         <Link href="/" className={logoTextClasses}>
-          Em Moore • Lighting Design
+          Home
         </Link>
         
         {/* Desktop navigation */}
