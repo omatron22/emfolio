@@ -39,10 +39,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-public/renderings/render.mp4
-public/portfolio/hero-2.1.jpg
-public/portfolio/hero-2.8.jpg
-public/portfolio/hero-2.9.jpg
-public/portfolio/
-public/renderings/
-public/about/
+
