@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Star } from "lucide-react";
+
 
 export default function RenderingsPage() {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -286,7 +288,7 @@ export default function RenderingsPage() {
                             </button>
                         </div>
 
-<div className="text-left md:text-right">
+<div className="w-full text-left md:text-right md:ml-auto">
   <p
     className="text-xs mb-1"
     style={{ color: "#D4C5A9" }}
@@ -295,25 +297,26 @@ export default function RenderingsPage() {
   </p>
 
   <p
-    className="text-xs mb-1 flex items-center gap-1 md:justify-end"
-    style={{ color: "#E0CD67" }} // soft gold accent
+    className="text-[11px] md:text-xs mb-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 md:justify-end"
+    style={{ color: "#E0CD67" }}
   >
-    <svg
-      width="11"
-      height="11"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className="inline-block flex-shrink-0"
-      style={{ fill: "#E0CD67" }}
-    >
-      <path d="M7 4v3a5 5 0 0 0 10 0V4h-2V2H9v2H7zm2 0h6v3a3 3 0 0 1-6 0V4zm-4 1v2a4 4 0 0 0 4 4v-2a2 2 0 0 1-2-2V5H5zm14 0h-2v2a2 2 0 0 1-2 2v2a4 4 0 0 0 4-4V5zm-9 9v2.5L8 18v2h8v-2l-2-1.5V14h-4z" />
-    </svg>
-    <span className="font-semibold tracking-wide">
-      Winner, 2025 ACT Entertainment grandMA3 Programming Contest
+    <Star
+      size={14}
+      strokeWidth={1.5}
+      className="flex-shrink-0"
+      color="#E0CD67"
+    />
+    <span className="font-semibold">
+      Winner, 2025 ACT Entertainment
+    </span>
+    <span className="font-semibold">
+      grandMA3 Programming Contest
     </span>
   </p>
-
 </div>
+
+
+
 
 
                     </div>
