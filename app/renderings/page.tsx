@@ -11,6 +11,9 @@ export default function RenderingsPage() {
     const [duration, setDuration] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
+    // For single vs double tap on mobile / desktop
+    const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowControls(true);
@@ -42,32 +45,75 @@ export default function RenderingsPage() {
 
     useEffect(() => {
         const handleFullscreenChange = () => {
-            setIsFullscreen(!!document.fullscreenElement);
+            if (document.fullscreenElement) {
+                setIsFullscreen(true);
+                return;
+            }
+
+            const video = videoRef.current as any;
+            if (video && typeof video.webkitDisplayingFullscreen !== "undefined") {
+                setIsFullscreen(!!video.webkitDisplayingFullscreen);
+            } else {
+                setIsFullscreen(false);
+            }
         };
 
         document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+        const video = videoRef.current as any;
+        if (video) {
+            video.addEventListener("webkitbeginfullscreen", handleFullscreenChange);
+            video.addEventListener("webkitendfullscreen", handleFullscreenChange);
+        }
+
         return () => {
             document.removeEventListener("fullscreenchange", handleFullscreenChange);
+            if (video) {
+                video.removeEventListener("webkitbeginfullscreen", handleFullscreenChange);
+                video.removeEventListener("webkitendfullscreen", handleFullscreenChange);
+            }
         };
     }, []);
 
     const togglePlayPause = () => {
-        if (videoRef.current) {
-            if (isPlaying) {
-                videoRef.current.pause();
-            } else {
-                videoRef.current.play();
-            }
-            setIsPlaying(!isPlaying);
+        if (!videoRef.current) return;
+        if (isPlaying) {
+            videoRef.current.pause();
+        } else {
+            videoRef.current.play();
         }
+        setIsPlaying((prev) => !prev);
     };
 
     const toggleFullscreen = async () => {
-        if (!containerRef.current) return;
+        const container = containerRef.current;
+        const video = videoRef.current;
+        if (!container || !video) return;
 
         try {
+            const isMobile =
+                typeof window !== "undefined" && window.innerWidth < 768;
+
+            const videoAny = video as any;
+
+            // iOS / mobile Safari: prefer native video fullscreen
+            if (
+                isMobile &&
+                typeof videoAny.webkitEnterFullscreen === "function"
+            ) {
+                if (videoAny.webkitDisplayingFullscreen) {
+                    if (typeof videoAny.webkitExitFullscreen === "function") {
+                        videoAny.webkitExitFullscreen();
+                    }
+                } else {
+                    videoAny.webkitEnterFullscreen();
+                }
+                return;
+            }
+
+            // Desktop / other browsers: container fullscreen
             if (!document.fullscreenElement) {
-                await containerRef.current.requestFullscreen();
+                await container.requestFullscreen();
             } else {
                 await document.exitFullscreen();
             }
@@ -76,12 +122,29 @@ export default function RenderingsPage() {
         }
     };
 
+    // Click handler that distinguishes single vs double click on all devices
+    const handleVideoClick = () => {
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+            clickTimeoutRef.current = null;
+            // Double tap/click → fullscreen
+            toggleFullscreen();
+        } else {
+            clickTimeoutRef.current = setTimeout(() => {
+                // Single tap/click → play/pause
+                togglePlayPause();
+                clickTimeoutRef.current = null;
+            }, 250);
+        }
+    };
+
     const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!videoRef.current) return;
         const bounds = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - bounds.left;
         const percentage = x / bounds.width;
-        videoRef.current.currentTime = percentage * videoRef.current.duration;
+        videoRef.current.currentTime =
+            percentage * videoRef.current.duration;
     };
 
     return (
@@ -101,7 +164,7 @@ export default function RenderingsPage() {
                         muted
                         playsInline
                         preload="auto"
-                        onClick={togglePlayPause}
+                        onClick={handleVideoClick}
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
                     >
@@ -113,8 +176,9 @@ export default function RenderingsPage() {
 
             {/* Controls bar */}
             <div
-                className={`fixed bottom-0 left-0 right-0 bg-black pb-12 px-8 transition-opacity duration-500 ${showControls ? "opacity-100" : "opacity-0"
-                    }`}
+                className={`fixed bottom-0 left-0 right-0 bg-black pb-12 px-8 transition-opacity duration-500 ${
+                    showControls ? "opacity-100" : "opacity-0"
+                }`}
             >
                 <div className="max-w-6xl mx-auto">
                     {/* Progress bar */}
@@ -157,19 +221,20 @@ export default function RenderingsPage() {
                                     fill="currentColor"
                                 >
                                     {isPlaying ? (
-                                        // Pause icon
                                         <>
                                             <rect x="6" y="4" width="4" height="16" />
                                             <rect x="14" y="4" width="4" height="16" />
                                         </>
                                     ) : (
-                                        // Play icon
                                         <path d="M8 5v14l11-7z" />
                                     )}
                                 </svg>
                             </button>
 
-                            <div className="flex items-center gap-2" style={{ color: "#E8DCC4" }}>
+                            <div
+                                className="flex items-center gap-2"
+                                style={{ color: "#E8DCC4" }}
+                            >
                                 <div
                                     className="w-2 h-2 rounded-full"
                                     style={{
@@ -188,7 +253,11 @@ export default function RenderingsPage() {
                                 onClick={toggleFullscreen}
                                 className="hover:opacity-70 transition-opacity"
                                 style={{ color: "#E8DCC4" }}
-                                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                                aria-label={
+                                    isFullscreen
+                                        ? "Exit fullscreen"
+                                        : "Enter fullscreen"
+                                }
                             >
                                 <svg
                                     width="16"
@@ -199,7 +268,6 @@ export default function RenderingsPage() {
                                     strokeWidth="1.5"
                                 >
                                     {isFullscreen ? (
-                                        // Exit fullscreen icon
                                         <>
                                             <path d="M6 2 L6 6 L2 6" />
                                             <path d="M10 2 L10 6 L14 6" />
@@ -207,7 +275,6 @@ export default function RenderingsPage() {
                                             <path d="M10 14 L10 10 L14 10" />
                                         </>
                                     ) : (
-                                        // Enter fullscreen icon
                                         <>
                                             <path d="M2 6 L2 2 L6 2" />
                                             <path d="M14 6 L14 2 L10 2" />
@@ -219,14 +286,36 @@ export default function RenderingsPage() {
                             </button>
                         </div>
 
-                        <div className="text-right">
-                            <p className="text-xs mb-1" style={{ color: "#D4C5A9" }}>
-                                2025 ACT MA3 Programming Contest - ODESZA Behind The Sun
-                            </p>
-                            <p className="text-xs opacity-60" style={{ color: "#D4C5A9" }}>
-                                Programming & Rendering
-                            </p>
-                        </div>
+<div className="text-right">
+  <p
+    className="text-xs mb-1"
+    style={{ color: "#D4C5A9" }}
+  >
+    2025 ACT MA3 Programming Contest – ODESZA “Behind The Sun”
+  </p>
+
+  <p
+    className="text-xs mb-1 flex items-center justify-end gap-1"
+    style={{ color: "#E0CD67" }} // soft gold accent
+  >
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      className="inline-block"
+      style={{ fill: "#E0CD67" }}
+    >
+      <path d="M7 4v3a5 5 0 0 0 10 0V4h-2V2H9v2H7zm2 0h6v3a3 3 0 0 1-6 0V4zm-4 1v2a4 4 0 0 0 4 4v-2a2 2 0 0 1-2-2V5H5zm14 0h-2v2a2 2 0 0 1-2 2v2a4 4 0 0 0 4-4V5zm-9 9v2.5L8 18v2h8v-2l-2-1.5V14h-4z" />
+    </svg>
+    <span className="font-semibold tracking-wide">
+      Winner, ACT Entertainment grandMA3 Programming Contest
+    </span>
+  </p>
+
+
+</div>
+
                     </div>
                 </div>
             </div>

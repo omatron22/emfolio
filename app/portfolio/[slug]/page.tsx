@@ -21,7 +21,7 @@ const shows: Show[] = [
         slug: "great-comet",
         title: "Natasha, Pierre & The Great Comet of 1812",
         production: "UCLA School of Theater, Film and Television",
-        year: "2024",
+        year: "2025",
         director: "J. Ed Araiza",
         heroImage: "/portfolio/hero-1.12.jpg",
         images: [
@@ -88,7 +88,6 @@ const shows: Show[] = [
             "/portfolio/hero-3.5.jpg",
             "/portfolio/hero-3.7.jpg",
             "/portfolio/hero-3.8.jpg",
-            "/portfolio/hero-3.9.jpg",
             "/portfolio/hero-3.10.jpg",
             "/portfolio/hero-3.11.jpg",
             "/portfolio/hero-3.12.jpg",
