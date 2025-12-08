@@ -291,7 +291,7 @@ export default function RenderingsPage() {
     className="text-xs mb-1"
     style={{ color: "#D4C5A9" }}
   >
-    2025 ACT MA3 Programming Contest – ODESZA “Behind The Sun”
+    ODESZA “Behind The Sun”
   </p>
 
   <p
@@ -309,7 +309,7 @@ export default function RenderingsPage() {
       <path d="M7 4v3a5 5 0 0 0 10 0V4h-2V2H9v2H7zm2 0h6v3a3 3 0 0 1-6 0V4zm-4 1v2a4 4 0 0 0 4 4v-2a2 2 0 0 1-2-2V5H5zm14 0h-2v2a2 2 0 0 1-2 2v2a4 4 0 0 0 4-4V5zm-9 9v2.5L8 18v2h8v-2l-2-1.5V14h-4z" />
     </svg>
     <span className="font-semibold tracking-wide">
-      Winner, ACT Entertainment grandMA3 Programming Contest
+      Winner, 2025 ACT Entertainment grandMA3 Programming Contest
     </span>
   </p>
 
