@@ -205,7 +205,7 @@ export default function RenderingsPage() {
                     </div>
 
                     {/* Status and description with controls */}
-                    <div className="flex items-center justify-between text-xs">
+<div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs">
                         <div className="flex items-center gap-4">
                             {/* Play/Pause button */}
                             <button
@@ -286,7 +286,7 @@ export default function RenderingsPage() {
                             </button>
                         </div>
 
-<div className="text-right">
+<div className="text-left md:text-right">
   <p
     className="text-xs mb-1"
     style={{ color: "#D4C5A9" }}
@@ -295,7 +295,7 @@ export default function RenderingsPage() {
   </p>
 
   <p
-    className="text-xs mb-1 flex items-center justify-end gap-1"
+    className="text-xs mb-1 flex items-center gap-1 md:justify-end"
     style={{ color: "#E0CD67" }} // soft gold accent
   >
     <svg
@@ -303,7 +303,7 @@ export default function RenderingsPage() {
       height="11"
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className="inline-block"
+      className="inline-block flex-shrink-0"
       style={{ fill: "#E0CD67" }}
     >
       <path d="M7 4v3a5 5 0 0 0 10 0V4h-2V2H9v2H7zm2 0h6v3a3 3 0 0 1-6 0V4zm-4 1v2a4 4 0 0 0 4 4v-2a2 2 0 0 1-2-2V5H5zm14 0h-2v2a2 2 0 0 1-2 2v2a4 4 0 0 0 4-4V5zm-9 9v2.5L8 18v2h8v-2l-2-1.5V14h-4z" />
@@ -313,8 +313,8 @@ export default function RenderingsPage() {
     </span>
   </p>
 
-
 </div>
+
 
                     </div>
                 </div>
