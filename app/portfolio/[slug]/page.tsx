@@ -13,7 +13,6 @@ type Show = {
     conductor?: string;
     heroImage: string;
     images: string[];
-    description: string;
 };
 
 const shows: Show[] = [
@@ -45,8 +44,7 @@ const shows: Show[] = [
             "/portfolio/hero-1.17.jpg",
             "/portfolio/hero-1.18.jpg",
         ],
-        description:
-            "An intimate, immersive production exploring themes of love, war, and redemption through innovative lighting techniques.",
+
     },
     {
         slug: "courage-to-right",
@@ -69,7 +67,7 @@ const shows: Show[] = [
             "/portfolio/hero-2.10.jpg",
             "/portfolio/hero-2.11.jpg",
         ],
-        description: "Your description...",
+
     },
     {
         slug: "fairview",
@@ -94,7 +92,7 @@ const shows: Show[] = [
             "/portfolio/hero-3.13.jpg",
             "/portfolio/hero-3.14.jpg",
         ],
-        description: "Your description...",
+
     },
     {
         slug: "keffiyeh-made-in-china",
@@ -110,7 +108,7 @@ const shows: Show[] = [
             "/portfolio/hero-4.3.jpg",
             "/portfolio/hero-4.4.jpg",
         ],
-        description: "Your description...",
+
     },
     {
         slug: "boxes",
@@ -126,7 +124,7 @@ const shows: Show[] = [
             "/portfolio/hero-5.3.jpg",
             "/portfolio/hero-5.0.jpg",
         ],
-        description: "Your description...",
+
     },
     {
         slug: "acquaprofonda",
@@ -141,7 +139,7 @@ const shows: Show[] = [
             "/portfolio/hero-6.1.jpg",
             "/portfolio/hero-6.2.jpg",
         ],
-        description: "Your description...",
+
     },
 ];
 
@@ -361,13 +359,7 @@ export default function ProjectPage({
                         </div>
                     </div>
 
-                    {/* Description */}
-                    <div
-                        className="text-lg md:text-xl leading-relaxed mb-16"
-                        style={{ color: "#D4C5A9" }}
-                    >
-                        <p>{show.description}</p>
-                    </div>
+
 
                     {/* Production Credits */}
                     <div className="mb-16">
