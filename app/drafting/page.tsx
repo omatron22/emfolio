@@ -33,17 +33,74 @@ export default function DraftingPage() {
                     </h1>
                 </div>
 
-                {/* Top Row - 4 items centered using grid column span */}
-                <div className="mb-12">
+                {/* Mobile: Single column layout */}
+                <div className="block md:hidden">
+                    <div className="grid grid-cols-2 gap-6">
+                        {drafts.map((draft) => (
+                            <Link
+                                key={draft.slug}
+                                href={`/drafting/${draft.slug}`}
+                                className="group"
+                            >
+                                <div className="relative aspect-[4/3] overflow-hidden mb-2">
+                                    <Image
+                                        src={draft.preview}
+                                        alt={draft.name}
+                                        fill
+                                        className="object-cover group-hover:opacity-70 transition-opacity duration-300"
+                                        sizes="50vw"
+                                    />
+                                </div>
+                                <div className="text-center">
+                                    <h3 className="text-[10px] font-bold" style={{ color: "#E8DCC4" }}>
+                                        {draft.name}
+                                    </h3>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Desktop: 4 on top, 5 on bottom */}
+                <div className="hidden md:block">
+                    {/* Top Row - 4 items centered */}
+                    <div className="mb-12">
+                        <div className="grid grid-cols-10 gap-12">
+                            <div className="col-span-1"></div>
+                            {drafts.slice(0, 4).map((draft) => (
+                                <Link
+                                    key={draft.slug}
+                                    href={`/drafting/${draft.slug}`}
+                                    className="group col-span-2"
+                                >
+                                    <div className="relative aspect-[4/3] overflow-hidden mb-3">
+                                        <Image
+                                            src={draft.preview}
+                                            alt={draft.name}
+                                            fill
+                                            className="object-cover group-hover:opacity-70 transition-opacity duration-300"
+                                            sizes="20vw"
+                                        />
+                                    </div>
+                                    <div className="text-center">
+                                        <h3 className="text-xs font-bold" style={{ color: "#E8DCC4" }}>
+                                            {draft.name}
+                                        </h3>
+                                    </div>
+                                </Link>
+                            ))}
+                            <div className="col-span-1"></div>
+                        </div>
+                    </div>
+
+                    {/* Bottom Row - 5 items */}
                     <div className="grid grid-cols-10 gap-12">
-                        <div className="col-span-1"></div>
-                        {drafts.slice(0, 4).map((draft) => (
+                        {drafts.slice(4, 9).map((draft) => (
                             <Link
                                 key={draft.slug}
                                 href={`/drafting/${draft.slug}`}
                                 className="group col-span-2"
                             >
-                                {/* Image */}
                                 <div className="relative aspect-[4/3] overflow-hidden mb-3">
                                     <Image
                                         src={draft.preview}
@@ -53,8 +110,6 @@ export default function DraftingPage() {
                                         sizes="20vw"
                                     />
                                 </div>
-                                
-                                {/* Title below */}
                                 <div className="text-center">
                                     <h3 className="text-xs font-bold" style={{ color: "#E8DCC4" }}>
                                         {draft.name}
@@ -62,37 +117,7 @@ export default function DraftingPage() {
                                 </div>
                             </Link>
                         ))}
-                        <div className="col-span-1"></div>
                     </div>
-                </div>
-
-                {/* Bottom Row - 5 items */}
-                <div className="grid grid-cols-10 gap-12">
-                    {drafts.slice(4, 9).map((draft) => (
-                        <Link
-                            key={draft.slug}
-                            href={`/drafting/${draft.slug}`}
-                            className="group col-span-2"
-                        >
-                            {/* Image */}
-                            <div className="relative aspect-[4/3] overflow-hidden mb-3">
-                                <Image
-                                    src={draft.preview}
-                                    alt={draft.name}
-                                    fill
-                                    className="object-cover group-hover:opacity-70 transition-opacity duration-300"
-                                    sizes="20vw"
-                                />
-                            </div>
-                            
-                            {/* Title below */}
-                            <div className="text-center">
-                                <h3 className="text-xs font-bold" style={{ color: "#E8DCC4" }}>
-                                    {draft.name}
-                                </h3>
-                            </div>
-                        </Link>
-                    ))}
                 </div>
             </div>
         </div>

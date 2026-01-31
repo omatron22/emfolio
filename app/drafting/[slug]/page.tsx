@@ -84,42 +84,42 @@ export default function DraftDetailPage({
     }
 
     return (
-        <div className="bg-black min-h-screen pt-28 px-3 pb-4" style={{ color: "#E8DCC4" }}>
-            <div className="max-w-7xl mx-auto">
+        <div className="bg-black min-h-screen flex flex-col items-center justify-center py-16 md:py-20 px-2 md:px-3" style={{ color: "#E8DCC4" }}>
+            <div className="w-full max-w-xl md:max-w-3xl mx-auto">
                 {/* Header - Title centered only */}
-                <div className="text-center mb-2">
-                    <h1 className="text-xl font-bold" style={{ color: "#E8DCC4" }}>
+                <div className="text-center mb-6">
+                    <h1 className="text-base md:text-2xl font-bold" style={{ color: "#E8DCC4" }}>
                         {draft.name}
                     </h1>
                 </div>
 
-                {/* PDF Viewer - Fit to page view, taller */}
-                <div className="bg-neutral-900 rounded-lg overflow-hidden mb-2">
+                {/* PDF Viewer - Fit to width to eliminate grey bars */}
+                <div className="bg-black rounded overflow-hidden mb-6">
                     <iframe
-                        src={`${draft.pdf}#view=FitV&toolbar=1&navpanes=0`}
-                        className="w-full h-[calc(100vh-180px)]"
+                        src={`${draft.pdf}#view=FitH&toolbar=1&navpanes=0`}
+                        className="w-full h-[40vh] md:h-[55vh]"
                         title={`${draft.name} - EMMA: NO ONE BUT HERSELF`}
                     />
                 </div>
 
-                {/* Navigation - All on same level, no cards */}
-                <div className="flex justify-between items-center gap-4">
+                {/* Navigation - Aligned with PDF width */}
+                <div className="flex justify-between items-center gap-2 md:gap-4">
                     {currentIndex > 0 ? (
                         <Link
                             href={`/drafting/${drafts[currentIndex - 1].slug}`}
-                            className="hover:opacity-70 transition-opacity text-sm font-semibold"
+                            className="hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
                             style={{ color: "#E8DCC4" }}
                         >
                             ← Previous
                         </Link>
                     ) : (
-                        <div className="w-[90px]"></div>
+                        <div className="w-[80px] md:w-[100px]"></div>
                     )}
 
                     <a
                         href={draft.pdf}
                         download
-                        className="hover:opacity-70 transition-opacity text-sm font-semibold"
+                        className="hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
                         style={{ color: "#E8DCC4" }}
                     >
                         Download PDF
@@ -128,13 +128,13 @@ export default function DraftDetailPage({
                     {currentIndex < drafts.length - 1 ? (
                         <Link
                             href={`/drafting/${drafts[currentIndex + 1].slug}`}
-                            className="hover:opacity-70 transition-opacity text-sm font-semibold"
+                            className="hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
                             style={{ color: "#E8DCC4" }}
                         >
                             Next →
                         </Link>
                     ) : (
-                        <div className="w-[90px]"></div>
+                        <div className="w-[80px] md:w-[100px]"></div>
                     )}
                 </div>
             </div>
