@@ -84,23 +84,20 @@ export default function DraftDetailPage({
     }
 
     return (
-        <div className="bg-black min-h-screen pt-24 px-6 pb-8" style={{ color: "#E8DCC4" }}>
-            <div className="max-w-6xl mx-auto">
-                {/* Header - Title centered, counter on right */}
-                <div className="relative flex justify-center items-center mb-4">
-                    <h1 className="text-2xl font-bold" style={{ color: "#E8DCC4" }}>
+        <div className="bg-black min-h-screen pt-28 px-3 pb-4" style={{ color: "#E8DCC4" }}>
+            <div className="max-w-7xl mx-auto">
+                {/* Header - Title centered only */}
+                <div className="text-center mb-2">
+                    <h1 className="text-xl font-bold" style={{ color: "#E8DCC4" }}>
                         {draft.name}
                     </h1>
-                    <p className="absolute right-0 text-sm" style={{ color: "#D4C5A9", opacity: 0.7 }}>
-                        {currentIndex + 1}/{drafts.length}
-                    </p>
                 </div>
 
-                {/* PDF Viewer */}
-                <div className="bg-neutral-900 rounded-lg overflow-hidden mb-4">
+                {/* PDF Viewer - Fit to page view, taller */}
+                <div className="bg-neutral-900 rounded-lg overflow-hidden mb-2">
                     <iframe
-                        src={`${draft.pdf}#view=FitH&toolbar=1&navpanes=0`}
-                        className="w-full h-[calc(100vh-220px)]"
+                        src={`${draft.pdf}#view=FitV&toolbar=1&navpanes=0`}
+                        className="w-full h-[calc(100vh-180px)]"
                         title={`${draft.name} - EMMA: NO ONE BUT HERSELF`}
                     />
                 </div>
@@ -116,7 +113,7 @@ export default function DraftDetailPage({
                             ← Previous
                         </Link>
                     ) : (
-                        <div className="w-[100px]"></div>
+                        <div className="w-[90px]"></div>
                     )}
 
                     <a
@@ -137,7 +134,7 @@ export default function DraftDetailPage({
                             Next →
                         </Link>
                     ) : (
-                        <div className="w-[100px]"></div>
+                        <div className="w-[90px]"></div>
                     )}
                 </div>
             </div>
