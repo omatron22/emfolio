@@ -102,20 +102,20 @@ export default function DraftDetailPage({
                     />
                 </div>
 
-                {/* Navigation - Aligned with PDF width */}
-                <div className="flex justify-between items-center gap-2 md:gap-4">
+                {/* Navigation - All three on same level with absolute positioning */}
+                <div className="relative flex justify-center items-center">
+                    {/* Previous on left */}
                     {currentIndex > 0 ? (
                         <Link
                             href={`/drafting/${drafts[currentIndex - 1].slug}`}
-                            className="hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
+                            className="absolute left-0 hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
                             style={{ color: "#E8DCC4" }}
                         >
                             ← Previous
                         </Link>
-                    ) : (
-                        <div className="w-[80px] md:w-[100px]"></div>
-                    )}
+                    ) : null}
 
+                    {/* Download centered */}
                     <a
                         href={draft.pdf}
                         download
@@ -125,17 +125,16 @@ export default function DraftDetailPage({
                         Download PDF
                     </a>
 
+                    {/* Next on right */}
                     {currentIndex < drafts.length - 1 ? (
                         <Link
                             href={`/drafting/${drafts[currentIndex + 1].slug}`}
-                            className="hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
+                            className="absolute right-0 hover:opacity-70 transition-opacity text-sm md:text-base font-semibold"
                             style={{ color: "#E8DCC4" }}
                         >
                             Next →
                         </Link>
-                    ) : (
-                        <div className="w-[80px] md:w-[100px]"></div>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </div>
