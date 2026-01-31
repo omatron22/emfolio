@@ -11,11 +11,11 @@ type HeroImg = {
 
 // Curated hero images - NOW USING /portfolio FOLDER
 const heroImages: HeroImg[] = [
+    { src: "/portfolio/fairview/fairview1.jpg", alt: "Fairview production", play: "Fairview" },
   { src: "/portfolio/boxes/box9.jpg", alt: "BOXES production", play: "BOXES" },
   { src: "/portfolio/comet/comet11.jpg", alt: "Great Comet production", play: "Great Comet" },
   { src: "/portfolio/kmic/kmic2.jpg", alt: "Keffiyeh production", play: "Keffiyeh / Made in China" },
   { src: "/portfolio/comet/comet18.jpg", alt: "Great Comet production", play: "Great Comet" },
-  { src: "/portfolio/fairview/fairview1.jpg", alt: "Fairview production", play: "Fairview" },
   { src: "/portfolio/comet/comet19.jpg", alt: "Great Comet production", play: "Great Comet" },
 ];
 
