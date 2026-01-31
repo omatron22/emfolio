@@ -56,12 +56,12 @@ export default function DraftingPage() {
     const currentDraft = drafts.find(d => d.number === selectedDraft);
 
     return (
-        <div className="bg-black pt-32 px-8 pb-8" style={{ color: "#E8DCC4" }}>
+        <div className="bg-black lg:pt-32 pt-24 lg:px-8 px-4 lg:pb-8 pb-4" style={{ color: "#E8DCC4" }}>
             <div className="max-w-7xl mx-auto">
                 {/* Two Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-8">
-                    {/* Left Sidebar - Draft List */}
-                    <div className="lg:col-span-3">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:pb-8 pb-2">
+                    {/* Desktop: Left Sidebar - Draft List */}
+                    <div className="lg:col-span-3 hidden lg:block">
                         <div className="space-y-2 lg:sticky lg:top-32">
                             {drafts.map((draft) => (
                                 <button
@@ -100,21 +100,43 @@ export default function DraftingPage() {
                         {currentDraft && (
                             <div>
                                 {/* Header Row */}
-                                <div className="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                    {/* Project Title on Left */}
-                                    <div>
-                                        <h1 className="text-2xl md:text-3xl font-bold" style={{ color: "#E8DCC4" }}>
+                                <div className="mb-4 lg:mb-6">
+                                    {/* Project Title */}
+                                    <div className="mb-3 lg:mb-4">
+                                        <h1 className="text-xl lg:text-3xl font-bold" style={{ color: "#E8DCC4" }}>
                                             EMMA: NO ONE BUT HERSELF
                                         </h1>
                                     </div>
                                     
-                                    {/* Drawing Info + Download Button on Right */}
-                                    <div className="flex items-center gap-4">
-                                        <div className="text-right">
-                                            <h2 className="text-lg md:text-xl font-bold" style={{ color: "#E8DCC4" }}>
+                                    {/* Mobile: Dropdown Selector */}
+                                    <div className="lg:hidden mb-4 relative">
+                                        <select
+                                            value={selectedDraft}
+                                            onChange={(e) => setSelectedDraft(Number(e.target.value))}
+                                            className="w-full px-4 py-3 pr-10 rounded-lg bg-neutral-800 border border-neutral-700 text-sm font-semibold appearance-none"
+                                            style={{ 
+                                                color: "#E8DCC4",
+                                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23E8DCC4'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E")`,
+                                                backgroundRepeat: 'no-repeat',
+                                                backgroundPosition: 'right 0.75rem center',
+                                                backgroundSize: '1.5em 1.5em'
+                                            }}
+                                        >
+                                            {drafts.map((draft) => (
+                                                <option key={draft.number} value={draft.number}>
+                                                    {String(draft.number).padStart(2, '0')} - {draft.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    {/* Desktop: Drawing Info + Download Button */}
+                                    <div className="hidden lg:flex items-center justify-between">
+                                        <div>
+                                            <h2 className="text-xl font-bold" style={{ color: "#E8DCC4" }}>
                                                 {currentDraft.name}
                                             </h2>
-                                            <p className="text-xs md:text-sm" style={{ color: "#D4C5A9", opacity: 0.7 }}>
+                                            <p className="text-sm" style={{ color: "#D4C5A9", opacity: 0.7 }}>
                                                 Drawing {currentDraft.number} of {drafts.length}
                                             </p>
                                         </div>
@@ -127,23 +149,38 @@ export default function DraftingPage() {
                                             Download PDF
                                         </a>
                                     </div>
+
+                                    {/* Mobile: Simplified Info + Download */}
+                                    <div className="lg:hidden flex items-center justify-between">
+                                        <p className="text-xs" style={{ color: "#D4C5A9", opacity: 0.7 }}>
+                                            Drawing {currentDraft.number} of {drafts.length}
+                                        </p>
+                                        <a
+                                            href={currentDraft.file}
+                                            download
+                                            className="px-3 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-lg text-xs font-semibold transition-colors border border-neutral-700"
+                                            style={{ color: "#E8DCC4" }}
+                                        >
+                                            Download
+                                        </a>
+                                    </div>
                                 </div>
 
-                                {/* PDF Viewer */}
-                                <div className="w-full bg-neutral-900 rounded-lg overflow-hidden border border-neutral-800 mb-6">
+                                {/* PDF Viewer - No grey space */}
+                                <div className="w-full bg-black rounded-lg overflow-hidden border border-neutral-800 mb-3 lg:mb-6">
                                     <iframe
                                         src={`${currentDraft.file}#view=FitH&toolbar=1&navpanes=0`}
-                                        className="w-full h-[70vh]"
+                                        className="w-full h-[65vh] lg:h-[70vh]"
                                         title={`${currentDraft.name} - EMMA: NO ONE BUT HERSELF`}
                                     />
                                 </div>
 
                                 {/* Navigation Arrows */}
-                                <div className="flex justify-between">
+                                <div className="flex justify-between gap-4">
                                     <button
                                         onClick={() => setSelectedDraft(Math.max(1, selectedDraft - 1))}
                                         disabled={selectedDraft === 1}
-                                        className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                                        className={`px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold transition-all ${
                                             selectedDraft === 1
                                                 ? 'bg-neutral-900 opacity-50 cursor-not-allowed'
                                                 : 'bg-neutral-800 hover:bg-neutral-700 border border-neutral-700'
@@ -155,7 +192,7 @@ export default function DraftingPage() {
                                     <button
                                         onClick={() => setSelectedDraft(Math.min(drafts.length, selectedDraft + 1))}
                                         disabled={selectedDraft === drafts.length}
-                                        className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                                        className={`px-4 lg:px-6 py-2 lg:py-3 rounded-lg text-sm lg:text-base font-semibold transition-all ${
                                             selectedDraft === drafts.length
                                                 ? 'bg-neutral-900 opacity-50 cursor-not-allowed'
                                                 : 'bg-neutral-800 hover:bg-neutral-700 border border-neutral-700'
