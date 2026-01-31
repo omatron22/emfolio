@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "git lfs pull && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
     "@types/three": "^0.181.0",
+    "@vercel/blob": "^2.0.1",
     "cloudinary": "^2.8.0",
     "d3-force": "^3.0.0",
     "lucide-react": "^0.555.0",

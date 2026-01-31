@@ -184,7 +184,7 @@ export default function RenderingsPage() {
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
                     >
-                        <source src="/programming/program.mp4" type="video/mp4" />
+<source src="https://zqp0elledhhfswkn.public.blob.vercel-storage.com/program.mp4" type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
                 </div>

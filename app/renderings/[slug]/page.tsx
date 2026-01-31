@@ -55,9 +55,10 @@ const projects: RenderProject[] = [
             "/renderings/Twin/Twin9.jpg",
             "/renderings/Twin/Twin10.jpg",
         ],
-        videos: [
-            "/renderings/Twin/Twin11.MP4",
-        ],
+videos: [
+    "https://zqp0elledhhfswkn.public.blob.vercel-storage.com/Twin11.MP4",
+],
+
     },
 ];
 
