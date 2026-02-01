@@ -132,7 +132,7 @@ export default function HomePage() {
       <div
         className="absolute inset-0 z-10 pointer-events-none mix-blend-overlay hidden md:block"
         style={{
-          background: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,1.00) 0%, transparent 60%)`,
+          background: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,1.00) 0%, transparent 40%)`,
         }}
       />
 
