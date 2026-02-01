@@ -132,7 +132,7 @@ export default function PortfolioPage() {
                                 width={800}
                                 height={1200}
                                 className="masonry-image"
-                                priority={index < 3} // First 3 images above the fold
+                                priority={index < 3}
                                 quality={90}
                                 sizes="(max-width: 900px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
@@ -197,30 +197,33 @@ export default function PortfolioPage() {
                     }
                 }
 
-                .portfolio-wrapper {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 100vh;
-                    padding: 220px 60px 60px 60px;
-                }
+.portfolio-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 200px 60px 100px 60px;  /* Reduced top padding, increased bottom */
+}
 
-                .portfolio-masonry {
-                    max-width: 1400px;
-                    width: 100%;
-                    column-count: 3;
-                    column-gap: 20px;
-                }
 
-                .masonry-tile {
-                    position: relative;
-                    cursor: pointer;
-                    overflow: hidden;
-                    opacity: 0;
-                    animation: fadeIn 0.8s ease-out forwards;
-                    break-inside: avoid;
-                    margin-bottom: 20px;
-                }
+.portfolio-masonry {
+    max-width: 1400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+
+.masonry-tile {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+    /* Removed: margin-bottom: 20px; */
+}
+
 
                 .masonry-tile:hover {
                     z-index: 10;

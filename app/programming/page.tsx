@@ -347,7 +347,7 @@ export default function RenderingsPage() {
                                     color="#E0CD67"
                                 />
                                 <span className="font-semibold">
-                                    Winner, 2025 ACT Entertainment
+                                    Runner Up, 2025 ACT Entertainment
                                 </span>
                                 <span className="font-semibold">
                                     grandMA3 Programming Contest

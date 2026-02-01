@@ -14,13 +14,6 @@ type RenderProject = {
 
 const projects: RenderProject[] = [
     {
-        slug: "maya",
-        title: "MAYA",
-        instructor: "Nathan Schroeder",
-        year: "2023",
-        heroImage: "/renderings/Maya/Maya1.jpg",
-    },
-    {
         slug: "cinema",
         title: "CINEMA 4D",
         instructor: "Jeff Behm",
@@ -71,19 +64,21 @@ export default function RenderingsPage() {
         <div className="renderings-page-container" style={{ color: "#E8DCC4" }}>
             <div className={`renderings-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
                 <div className="renderings-grid">
-                    {projects.map((project, index) => (
-                        <div
-                            key={project.slug}
-                            className="grid-tile"
-                            style={{ 
-                                animationDelay: `${index * 100}ms`,
-                                // Stagger vertically: left up, middle center, right down
-                                marginTop: index === 0 ? '-200px' : index === 2 ? '200px' : '0'
-                            }}
-                            onClick={(e) => handleClick(project, e)}
-                            onMouseEnter={() => setHoveredProject(project)}
-                            onMouseLeave={() => setHoveredProject(null)}
-                        >
+{projects.map((project, index) => (
+    <div
+        key={project.slug}
+        className="grid-tile"
+        style={{ 
+            animationDelay: `${index * 100}ms`,
+            marginLeft: index === 1 ? '40px' : '0',  // Keep right tile shifted right
+        }}
+        onClick={(e) => handleClick(project, e)}
+        onMouseEnter={() => setHoveredProject(project)}
+        onMouseLeave={() => setHoveredProject(null)}
+    >
+
+
+
                             <Image
                                 src={project.heroImage}
                                 alt={project.title}
@@ -92,7 +87,7 @@ export default function RenderingsPage() {
                                 className="grid-image"
                                 priority={index < 3}
                                 quality={90}
-                                sizes="(max-width: 900px) 100vw, 33vw"
+                                sizes="(max-width: 900px) 100vw, 50vw"
                             />
                             {/* Always visible title overlay */}
                             <div className="title-overlay">
@@ -155,22 +150,28 @@ export default function RenderingsPage() {
                     }
                 }
 
-                .renderings-wrapper {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 100vh;
-                    padding: 180px 40px 60px 40px;
-                }
+.renderings-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 200px 40px 80px 40px;  /* Increased top padding */
+}
 
-                .renderings-grid {
-                    max-width: 1400px;
-                    width: 100%;
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 30px;
-                    align-items: center;
-                }
+
+.renderings-grid {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+    align-items: center;  /* Re-add this for vertical alignment */
+    justify-items: stretch;
+}
+
+
+
 
                 .grid-tile {
                     position: relative;
@@ -260,33 +261,22 @@ export default function RenderingsPage() {
                     }
                 }
 
-                @media (max-width: 1200px) {
-                    .renderings-grid {
-                        grid-template-columns: repeat(2, 1fr);
-                    }
-                    
-                    /* Remove staggering on tablet */
-                    .grid-tile {
-                        margin-top: 0 !important;
-                    }
-                }
+@media (max-width: 900px) {
+    .renderings-wrapper {
+        padding: 140px 20px 40px 20px;
+    }
 
-                @media (max-width: 900px) {
-                    .renderings-wrapper {
-                        padding: 140px 20px 40px 20px;
-                    }
+    .renderings-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .grid-tile {
+        margin-top: 0 !important;  /* Remove stagger on mobile */
+    }
+}
 
-                    .renderings-grid {
-                        grid-template-columns: 1fr;
-                        max-width: 500px;
-                        margin: 0 auto;
-                    }
-                    
-                    /* Remove staggering on mobile */
-                    .grid-tile {
-                        margin-top: 0 !important;
-                    }
-                }
             `}</style>
         </div>
     );

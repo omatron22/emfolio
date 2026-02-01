@@ -9,14 +9,14 @@ type HeroImg = {
   play: string;
 };
 
-// Curated hero images - NOW USING /portfolio FOLDER
+// Curated hero images
 const heroImages: HeroImg[] = [
-    { src: "/portfolio/fairview/fairview1.jpg", alt: "Fairview production", play: "Fairview" },
-  { src: "/portfolio/boxes/box9.jpg", alt: "BOXES production", play: "BOXES" },
-  { src: "/portfolio/comet/comet11.jpg", alt: "Great Comet production", play: "Great Comet" },
-  { src: "/portfolio/kmic/kmic2.jpg", alt: "Keffiyeh production", play: "Keffiyeh / Made in China" },
-  { src: "/portfolio/comet/comet18.jpg", alt: "Great Comet production", play: "Great Comet" },
-  { src: "/portfolio/comet/comet19.jpg", alt: "Great Comet production", play: "Great Comet" },
+  { src: "/portfolio/comet/comet1.jpg", alt: "Great Comet production", play: "Great Comet" },
+  { src: "/portfolio/comet/comet10.jpg", alt: "Great Comet production", play: "Great Comet" },
+  { src: "/portfolio/courage/courage1.jpg", alt: "The Courage to Right a Woman's Wrongs", play: "Courage" },
+  { src: "/portfolio/kmic/kmic4.jpg", alt: "Keffiyeh / Made in China production", play: "Keffiyeh / Made in China" },
+  { src: "/portfolio/fairview/fairview6.jpg", alt: "Fairview production", play: "Fairview" },
+  { src: "/portfolio/kmic/kmic7.jpg", alt: "Keffiyeh / Made in China production", play: "Keffiyeh / Made in China" },
 ];
 
 export default function HomePage() {

@@ -16,18 +16,6 @@ type RenderProject = {
 
 const projects: RenderProject[] = [
     {
-        slug: "maya",
-        title: "MAYA",
-        instructor: "Nathan Schroeder",
-        year: "2023",
-        heroImage: "/renderings/Maya/Maya1.jpg",
-        images: [
-            "/renderings/Maya/Maya1.jpg",
-            "/renderings/Maya/Maya2.jpg",
-            "/renderings/Maya/Maya3.jpg",
-        ],
-    },
-    {
         slug: "cinema",
         title: "CINEMA 4D",
         instructor: "Jeff Behm",
@@ -55,10 +43,9 @@ const projects: RenderProject[] = [
             "/renderings/Twin/Twin9.jpg",
             "/renderings/Twin/Twin10.jpg",
         ],
-videos: [
-    "https://zqp0elledhhfswkn.public.blob.vercel-storage.com/Twin11.MP4",
-],
-
+        videos: [
+            "https://zqp0elledhhfswkn.public.blob.vercel-storage.com/Twin11.MP4",
+        ],
     },
 ];
 

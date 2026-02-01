@@ -13,6 +13,7 @@ type Show = {
     conductor?: string;
     heroImage: string;
     images: string[];
+    credits: { role: string; name: string }[];
 };
 
 const shows: Show[] = [
@@ -45,9 +46,22 @@ const shows: Show[] = [
             "/portfolio/comet/comet19.jpg",
             "/portfolio/comet/comet20.jpg",
             "/portfolio/comet/comet21.jpg",
-            "/portfolio/comet/comet22.jpg",
             "/portfolio/comet/comet23.jpg",
             "/portfolio/comet/comet24.jpg",
+        ],
+        credits: [
+            { role: "Director", name: "J. Ed Araiza" },
+            { role: "Assistant Director, Dramaturg", name: "Michaela Duarte" },
+            { role: "Choreographer", name: "Danielle Kay" },
+            { role: "Music Director", name: "Dan Belzer" },
+            { role: "Vocal Director", name: "Jeremy Mann" },
+            { role: "Scenic Designer", name: "You Chen Zhang" },
+            { role: "Lighting Designer", name: "Em Moore" },
+            { role: "Assistant Lighting Designer", name: "Gus Cohen" },
+            { role: "Assistant Lighting Designer, Programmer", name: "Hope Kozielski" },
+            { role: "Costume Designer", name: "Elena Gim" },
+            { role: "Sound Designer", name: "Jonathan Burke" },
+            { role: "Intimacy Coordinator", name: "Carly DW Bones" },
         ],
     },
     {
@@ -65,9 +79,22 @@ const shows: Show[] = [
             "/portfolio/courage/courage5.jpg",
             "/portfolio/courage/courage6.jpg",
             "/portfolio/courage/courage7.jpg",
-            "/portfolio/courage/courage8.jpg",
             "/portfolio/courage/courage9.jpg",
             "/portfolio/courage/courage10.jpg",
+        ],
+        credits: [
+            { role: "Director", name: "Michael Hackett" },
+            { role: "Assistant Director", name: "Brandon Adam" },
+            { role: "Stage Manager", name: "Antonia Yang" },
+            { role: "Assistant Stage Manager", name: "Heath Grossman" },
+            { role: "Assistant Stage Manager", name: "Michaela Duarte" },
+            { role: "Intimacy Coordinator", name: "Carly DW Bones" },
+            { role: "Scenic Designer", name: "Cayla Baughns" },
+            { role: "Lighting Designer", name: "Em Moore" },
+            { role: "Assistant Lighting Designer", name: "Hope Kozielski" },
+            { role: "Costume Designer", name: "Taylor Aragon" },
+            { role: "Sound Designer", name: "Jonathan Snipes" },
+            { role: "Lighting Advisor", name: "Lap Chi Chu" },
         ],
     },
     {
@@ -88,6 +115,23 @@ const shows: Show[] = [
             "/portfolio/fairview/fairview8.jpg",
             "/portfolio/fairview/fairview9.jpg",
             "/portfolio/fairview/fairview10.jpg",
+            "/portfolio/fairview/fairview11.jpg",
+            "/portfolio/fairview/fairview12.jpg",
+        ],
+        credits: [
+            { role: "Director", name: "David H. Parker" },
+            { role: "Choreographer", name: "Alexandria Hamilton" },
+            { role: "Intimacy Coordinator", name: "Carly DW Bones" },
+            { role: "Stage Manager", name: "Sophi Joan Boylan" },
+            { role: "Dramaturg", name: "Maci Dismuke" },
+            { role: "Hair & Makeup Consultant", name: "Hasanu Young" },
+            { role: "Assistant Director", name: "Walker Stephenson" },
+            { role: "Scenic Designer", name: "Rye Mandel" },
+            { role: "Lighting Designer", name: "Em Moore" },
+            { role: "Costume Designer", name: "Elena Gim" },
+            { role: "Sound Designer", name: "Malick Ceesay" },
+            { role: "Video Designer", name: "Lucas Guazelli" },
+            { role: "Assistant Lighting Designer", name: "Antonia Yang" },
         ],
     },
     {
@@ -104,6 +148,20 @@ const shows: Show[] = [
             "/portfolio/kmic/kmic4.jpg",
             "/portfolio/kmic/kmic5.jpg",
             "/portfolio/kmic/kmic6.jpg",
+            "/portfolio/kmic/kmic7.jpg",
+            "/portfolio/kmic/kmic8.jpg",
+        ],
+        credits: [
+            { role: "Director", name: "Yuval Zehavi" },
+            { role: "Stage Manager", name: "Anoushka Hem" },
+            { role: "Assistant Director", name: "Lilah Peck" },
+            { role: "Dramaturg", name: "Sarah Schecter" },
+            { role: "Scenic Designer", name: "You Chen Zhang" },
+            { role: "Lighting Designer", name: "Em Moore" },
+            { role: "Assistant Lighting Designer", name: "Sydney Smith" },
+            { role: "Costume Designer", name: "Shoshi Brustin" },
+            { role: "Sound Designer", name: "Ben Susskind" },
+            { role: "Lighting Advisor", name: "Lap Chi Chu" },
         ],
     },
     {
@@ -124,6 +182,10 @@ const shows: Show[] = [
             "/portfolio/boxes/box8.jpg",
             "/portfolio/boxes/box9.jpg",
         ],
+        credits: [
+            { role: "Director", name: "Michelle Stroffolino" },
+            { role: "Lighting Designer", name: "Em Moore" },
+        ],
     },
     {
         slug: "acquaprofonda",
@@ -137,6 +199,11 @@ const shows: Show[] = [
             "/portfolio/aqua/aqua1.jpg",
             "/portfolio/aqua/aqua2.jpg",
             "/portfolio/aqua/aqua3.jpg",
+        ],
+        credits: [
+            { role: "Director", name: "Yekaterina Lynch" },
+            { role: "Conductor", name: "Oliver Chan" },
+            { role: "Lighting Designer", name: "Em Moore" },
         ],
     },
 ];
@@ -178,7 +245,6 @@ export default function ProjectPage({
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [show]);
 
-    // Swipe handlers
     const handleTouchStart = (e: React.TouchEvent) => {
         setTouchStart(e.targetTouches[0].clientX);
     };
@@ -214,7 +280,6 @@ export default function ProjectPage({
         return null;
     }
 
-    // Helper to determine which carousel images to render (current + adjacent for preloading)
     const shouldRenderCarouselImage = (index: number) => {
         const total = show.images.length;
         const prev = (currentImageIndex - 1 + total) % total;
@@ -232,9 +297,18 @@ export default function ProjectPage({
                 onTouchEnd={handleTouchEnd}
             >
                 <div className="absolute inset-0">
-                    {/* Only render current + adjacent images for performance */}
                     {show.images.map((image, index) => {
                         if (!shouldRenderCarouselImage(index)) return null;
+
+                        const isBox4 =
+                            show.slug === "boxes" &&
+                            image.includes("/portfolio/boxes/box4.jpg");
+
+                        const isAqua2 =
+                            show.slug === "acquaprofonda" &&
+                            image.includes("/portfolio/aqua/aqua2.jpg");
+
+                        const useContain = isBox4 || isAqua2;
 
                         return (
                             <div
@@ -243,21 +317,23 @@ export default function ProjectPage({
                                 style={{
                                     opacity: index === currentImageIndex ? 1 : 0,
                                     zIndex: index === currentImageIndex ? 1 : 0,
-                                    pointerEvents: index === currentImageIndex ? 'auto' : 'none',
+                                    pointerEvents: index === currentImageIndex ? "auto" : "none",
                                 }}
                             >
-                                {/* Desktop: object-cover with Next.js Image */}
-                                <Image
-                                    src={image}
-                                    alt={`${show.title} - Image ${index + 1}`}
-                                    fill
-                                    className="object-cover hidden md:block"
-                                    priority={index === 0}
-                                    quality={90}
-                                    sizes="100vw"
-                                />
+                                {/* Desktop */}
+                                <div className="hidden md:block w-full h-full relative">
+                                    <Image
+                                        src={image}
+                                        alt={`${show.title} - Image ${index + 1}`}
+                                        fill
+                                        className={useContain ? "object-contain" : "object-cover"}
+                                        priority={index === 0}
+                                        quality={90}
+                                        sizes="100vw"
+                                    />
+                                </div>
 
-                                {/* Mobile: native img with fade effect */}
+                                {/* Mobile */}
                                 <div className="md:hidden w-full h-full flex items-center justify-center">
                                     <img
                                         src={image}
@@ -273,27 +349,37 @@ export default function ProjectPage({
                 {/* Side arrows - desktop only */}
                 {show.images.length > 1 && (
                     <div
-                        className={`hidden md:block transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"
-                            }`}
+                        className={`hidden md:block transition-opacity duration-300 ${
+                            showControls ? "opacity-100" : "opacity-0"
+                        }`}
                     >
                         <button
                             onClick={() =>
                                 setCurrentImageIndex(
-                                    (prev) => (prev - 1 + show.images.length) % show.images.length
+                                    (prev) =>
+                                        (prev - 1 + show.images.length) % show.images.length
                                 )
                             }
                             className="absolute left-8 top-1/2 -translate-y-1/2 z-20 text-4xl hover:scale-110 transition-transform"
-                            style={{ color: "#E8DCC4", textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+                            style={{
+                                color: "#E8DCC4",
+                                textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+                            }}
                             aria-label="Previous image"
                         >
                             ‹
                         </button>
                         <button
                             onClick={() =>
-                                setCurrentImageIndex((prev) => (prev + 1) % show.images.length)
+                                setCurrentImageIndex(
+                                    (prev) => (prev + 1) % show.images.length
+                                )
                             }
                             className="absolute right-8 top-1/2 -translate-y-1/2 z-20 text-4xl hover:scale-110 transition-transform"
-                            style={{ color: "#E8DCC4", textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+                            style={{
+                                color: "#E8DCC4",
+                                textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+                            }}
                             aria-label="Next image"
                         >
                             ›
@@ -301,11 +387,12 @@ export default function ProjectPage({
                     </div>
                 )}
 
-                {/* Dot indicators - moved higher on mobile */}
+                {/* Dot indicators */}
                 {show.images.length > 1 && (
                     <div
-                        className={`absolute left-1/2 -translate-x-1/2 z-20 flex gap-2 transition-opacity duration-300 bottom-40 md:bottom-8 ${showControls ? "opacity-100" : "opacity-0"
-                            }`}
+                        className={`absolute left-1/2 -translate-x-1/2 z-20 flex gap-2 transition-opacity duration-300 bottom-40 md:bottom-8 ${
+                            showControls ? "opacity-100" : "opacity-0"
+                        }`}
                     >
                         {show.images.map((_, index) => (
                             <button
@@ -327,20 +414,23 @@ export default function ProjectPage({
                     </div>
                 )}
 
-                {/* Desktop scroll indicator - increased z-index */}
+                {/* Desktop scroll indicator */}
                 <div
-                    className={`hidden md:block absolute bottom-8 right-8 text-sm animate-bounce transition-opacity duration-300 z-20 ${showControls ? "opacity-100" : "opacity-0"
-                        }`}
-                    style={{ color: "#E8DCC4", textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+                    className={`hidden md:block absolute bottom-8 right-8 text-sm animate-bounce transition-opacity duration-300 z-20 ${
+                        showControls ? "opacity-100" : "opacity-0"
+                    }`}
+                    style={{
+                        color: "#E8DCC4",
+                        textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+                    }}
                 >
                     Scroll for details ↓
                 </div>
             </div>
 
-            {/* Project details below - use negative margin on mobile to pull it up */}
+            {/* Project details */}
             <div className="relative bg-black px-8 py-8 -mt-35 md:mt-0 md:py-24">
                 <div className="max-w-4xl mx-auto text-center">
-                    {/* Title and info */}
                     <div className="mb-16">
                         <h1
                             className="text-5xl md:text-6xl font-bold mb-6"
@@ -348,36 +438,31 @@ export default function ProjectPage({
                         >
                             {show.title}
                         </h1>
-                        <div className="text-xl md:text-2xl mb-6" style={{ color: "#D4C5A9" }}>
-                            <p className="mb-2">{show.production}</p>
-                            <p>
-                                {show.year} • Director: {show.director}
-                                {show.conductor && ` • Conductor: ${show.conductor}`}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Production Credits */}
-                    <div className="mb-16">
                         <div
-                            className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-base"
+                            className="text-xl md:text-2xl mb-6"
                             style={{ color: "#D4C5A9" }}
                         >
-                            <div>
-                                <span className="font-semibold">Director:</span> {show.director}
-                            </div>
-                            {show.conductor && (
-                                <div>
-                                    <span className="font-semibold">Conductor:</span> {show.conductor}
-                                </div>
-                            )}
-                            <div>
-                                <span className="font-semibold">Lighting Designer:</span> Em Moore
-                            </div>
+                            <p className="mb-2">{show.production}</p>
+                            <p>{show.year}</p>
                         </div>
                     </div>
 
-                    {/* Gallery - lazy loaded masonry with Next.js Image */}
+{/* Credits Section */}
+<div className="mb-16">
+    <div
+        className="grid grid-cols-1 md:grid-cols-2 gap-x-32 gap-y-3 text-left max-w-7xl mx-auto text-base"
+        style={{ color: "#D4C5A9" }}
+    >
+        {show.credits.map((credit, index) => (
+            <div key={index} className="whitespace-nowrap">
+                <span className="font-semibold">{credit.role}:</span>{" "}
+                <span>{credit.name}</span>
+            </div>
+        ))}
+    </div>
+</div>
+
+
                     {show.images.length > 1 && (
                         <div className="masonry-container">
                             {show.images.map((image, index) => (
