@@ -197,33 +197,29 @@ export default function PortfolioPage() {
                     }
                 }
 
-.portfolio-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 200px 60px 100px 60px;  /* Reduced top padding, increased bottom */
-}
+                .portfolio-wrapper {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    padding: 200px 60px 100px 60px;
+                }
 
+                .portfolio-masonry {
+                    max-width: 1400px;
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 20px;
+                }
 
-.portfolio-masonry {
-    max-width: 1400px;
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-
-.masonry-tile {
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-    opacity: 0;
-    animation: fadeIn 0.8s ease-out forwards;
-    /* Removed: margin-bottom: 20px; */
-}
-
+                .masonry-tile {
+                    position: relative;
+                    cursor: pointer;
+                    overflow: hidden;
+                    opacity: 0;
+                    animation: fadeIn 0.8s ease-out forwards;
+                }
 
                 .masonry-tile:hover {
                     z-index: 10;
@@ -299,19 +295,22 @@ export default function PortfolioPage() {
 
                 @media (max-width: 1200px) {
                     .portfolio-masonry {
-                        column-count: 2;
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 16px;
                     }
                 }
 
                 @media (max-width: 900px) {
                     .portfolio-wrapper {
-                        padding: 140px 20px 40px 20px;
+                        padding: 120px 16px 60px 16px;
+                        align-items: flex-start;
                     }
 
                     .portfolio-masonry {
-                        column-count: 1;
+                        grid-template-columns: 1fr;
                         max-width: 500px;
                         margin: 0 auto;
+                        gap: 24px;
                     }
 
                     /* Show title overlay on mobile */
