@@ -1,125 +1,60 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import { drafts } from "@/data/drafts";
 
-type Draft = {
-    slug: string;
-    number: number;
-    name: string;
-    preview: string;
+export const metadata: Metadata = {
+  title: "Drafting",
+  description:
+    "Technical drafting portfolio for EMMA: NO ONE BUT HERSELF by lighting designer Em Moore.",
 };
 
-const drafts: Draft[] = [
-    { slug: "1", number: 1, name: "Groundplan", preview: "/drafting/1.png" },
-    { slug: "2", number: 2, name: "Electric Groundplan", preview: "/drafting/2.png" },
-    { slug: "3", number: 3, name: "FOH Groundplan", preview: "/drafting/3.png" },
-    { slug: "4", number: 4, name: "Deck Groundplan", preview: "/drafting/4.png" },
-    { slug: "5", number: 5, name: "Added Positions", preview: "/drafting/5.png" },
-    { slug: "6", number: 6, name: "Set Electrics", preview: "/drafting/6.png" },
-    { slug: "7", number: 7, name: "Set Electrics (Alt)", preview: "/drafting/7.png" },
-    { slug: "8", number: 8, name: "SR Section", preview: "/drafting/8.png" },
-    { slug: "9", number: 9, name: "SR Section Detailed", preview: "/drafting/9.png" },
-];
-
 export default function DraftingPage() {
-    return (
-        <div className="bg-black min-h-screen pt-32 px-6 pb-16" style={{ color: "#E8DCC4" }}>
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="text-center mb-16">
-                    <h1 className="text-4xl md:text-5xl font-bold" style={{ color: "#E8DCC4" }}>
-                        EMMA: NO ONE BUT HERSELF
-                    </h1>
-                </div>
-
-                {/* Mobile: Single column layout */}
-                <div className="block md:hidden">
-                    <div className="grid grid-cols-2 gap-6">
-                        {drafts.map((draft) => (
-                            <Link
-                                key={draft.slug}
-                                href={`/drafting/${draft.slug}`}
-                                className="group"
-                            >
-                                <div className="relative aspect-[4/3] overflow-hidden mb-2">
-                                    <Image
-                                        src={draft.preview}
-                                        alt={draft.name}
-                                        fill
-                                        className="object-cover group-hover:opacity-70 transition-opacity duration-300"
-                                        sizes="50vw"
-                                    />
-                                </div>
-                                <div className="text-center">
-                                    <h3 className="text-[10px] font-bold" style={{ color: "#E8DCC4" }}>
-                                        {draft.name}
-                                    </h3>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Desktop: 4 on top, 5 on bottom */}
-                <div className="hidden md:block">
-                    {/* Top Row - 4 items centered */}
-                    <div className="mb-12">
-                        <div className="grid grid-cols-10 gap-12">
-                            <div className="col-span-1"></div>
-                            {drafts.slice(0, 4).map((draft) => (
-                                <Link
-                                    key={draft.slug}
-                                    href={`/drafting/${draft.slug}`}
-                                    className="group col-span-2"
-                                >
-                                    <div className="relative aspect-[4/3] overflow-hidden mb-3">
-                                        <Image
-                                            src={draft.preview}
-                                            alt={draft.name}
-                                            fill
-                                            className="object-cover group-hover:opacity-70 transition-opacity duration-300"
-                                            sizes="20vw"
-                                        />
-                                    </div>
-                                    <div className="text-center">
-                                        <h3 className="text-xs font-bold" style={{ color: "#E8DCC4" }}>
-                                            {draft.name}
-                                        </h3>
-                                    </div>
-                                </Link>
-                            ))}
-                            <div className="col-span-1"></div>
-                        </div>
-                    </div>
-
-                    {/* Bottom Row - 5 items */}
-                    <div className="grid grid-cols-10 gap-12">
-                        {drafts.slice(4, 9).map((draft) => (
-                            <Link
-                                key={draft.slug}
-                                href={`/drafting/${draft.slug}`}
-                                className="group col-span-2"
-                            >
-                                <div className="relative aspect-[4/3] overflow-hidden mb-3">
-                                    <Image
-                                        src={draft.preview}
-                                        alt={draft.name}
-                                        fill
-                                        className="object-cover group-hover:opacity-70 transition-opacity duration-300"
-                                        sizes="20vw"
-                                    />
-                                </div>
-                                <div className="text-center">
-                                    <h3 className="text-xs font-bold" style={{ color: "#E8DCC4" }}>
-                                        {draft.name}
-                                    </h3>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="bg-black min-h-screen pt-28 md:pt-36 px-6 pb-16 text-cream">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12 md:mb-16">
+          <h1 className="text-3xl md:text-5xl font-bold mb-3">
+            EMMA: NO ONE BUT HERSELF
+          </h1>
+          <p className="text-sm md:text-base text-cream-muted tracking-[0.2em] uppercase">
+            Technical Drawings
+          </p>
         </div>
-    );
+
+        {/* Unified grid - 3 columns on desktop, 2 on mobile */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-4xl mx-auto">
+          {drafts.map((draft, index) => (
+            <Link
+              key={draft.slug}
+              href={`/drafting/${draft.slug}`}
+              className="group block"
+              style={{
+                opacity: 0,
+                animation: `fadeIn 0.6s ease-out ${index * 80}ms forwards`,
+              }}
+            >
+              <div className="relative aspect-[4/3] overflow-hidden bg-neutral-950 border border-neutral-800/50 transition-all duration-300 group-hover:border-cream/20">
+                <Image
+                  src={draft.preview}
+                  alt={draft.name}
+                  fill
+                  className="object-cover transition-all duration-300 group-hover:opacity-80 group-hover:scale-[1.02]"
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                />
+                {/* Subtle gradient at bottom for readability */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="text-center mt-3">
+                <h3 className="text-[11px] md:text-sm font-semibold tracking-wide text-cream-muted group-hover:text-cream transition-colors duration-300">
+                  {draft.name}
+                </h3>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
