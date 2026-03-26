@@ -37,6 +37,24 @@ export default function RenderingsPage() {
 
   return (
     <div className="renderings-page-container text-cream">
+      {/* Hover info strip - like portfolio */}
+      {!isZooming && (
+        <div className="pointer-events-none fixed left-0 right-0 top-[140px] z-10 justify-center px-8 hidden md:flex">
+          <div className="text-center max-w-2xl min-h-[50px] flex flex-col justify-center">
+            {hoveredProject && (
+              <>
+                <h2 className="text-xl md:text-2xl font-bold mb-1">
+                  {hoveredProject.title}
+                </h2>
+                <p className="text-sm text-cream-muted">
+                  {hoveredProject.year} &bull; {hoveredProject.instructor}
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className={`renderings-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
         <div className="renderings-grid">
           {projects.map((project, index) => (
@@ -45,7 +63,6 @@ export default function RenderingsPage() {
               className="grid-tile"
               style={{
                 animationDelay: `${index * 100}ms`,
-                marginLeft: index === 1 ? "40px" : "0",
               }}
               onClick={(e) => handleClick(project, e)}
               onMouseEnter={() => setHoveredProject(project)}
@@ -61,9 +78,10 @@ export default function RenderingsPage() {
                 quality={90}
                 sizes="(max-width: 900px) 100vw, 50vw"
               />
-              <div className="title-overlay">
-                <h3 className="text-lg md:text-xl font-bold mb-1">{project.title}</h3>
-                <p className="text-xs md:text-sm opacity-90">
+              {/* Mobile-only title overlay */}
+              <div className="title-overlay md:hidden">
+                <h3 className="text-lg font-bold mb-1">{project.title}</h3>
+                <p className="text-xs opacity-90">
                   {project.year} &bull; {project.instructor}
                 </p>
               </div>
@@ -114,7 +132,7 @@ export default function RenderingsPage() {
           .renderings-page-container {
             position: fixed;
             inset: 0;
-            overflow: hidden;
+            overflow: auto;
           }
         }
 
@@ -123,18 +141,22 @@ export default function RenderingsPage() {
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 200px 40px 80px 40px;
+          padding: 140px 40px 60px 40px;
+          box-sizing: border-box;
         }
 
         .renderings-grid {
-          max-width: 1400px;
+          max-width: 1300px;
           width: 100%;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 30px;
-          align-items: center;
-          justify-items: stretch;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          align-items: stretch;
+        }
+
+        .grid-tile:first-child {
+          grid-row: auto;
         }
 
         .grid-tile {
@@ -143,7 +165,6 @@ export default function RenderingsPage() {
           overflow: hidden;
           opacity: 0;
           animation: fadeIn 0.8s ease-out forwards;
-          aspect-ratio: 16 / 9;
         }
 
         .grid-tile:hover {
@@ -198,13 +219,13 @@ export default function RenderingsPage() {
 
           .renderings-grid {
             grid-template-columns: 1fr;
+            grid-template-rows: auto;
             max-width: 500px;
             margin: 0 auto;
           }
 
-          .grid-tile {
-            margin-top: 0 !important;
-            margin-left: 0 !important;
+          .grid-tile:first-child {
+            grid-row: auto;
           }
         }
       `}</style>

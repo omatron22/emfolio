@@ -10,12 +10,29 @@ export type RenderProject = {
 
 export const projects: RenderProject[] = [
   {
+    slug: "depence",
+    title: "DEPENCE R4",
+    instructor: "Emma: No One But Herself",
+    year: "2026",
+    heroImage: "/renderings/emma/emma1.jpg",
+    images: [
+      "/renderings/emma/emma1.jpg",
+      "/renderings/emma/emma2.jpg",
+      "/renderings/emma/emma3.jpg",
+      "/renderings/emma/emma4.jpg",
+      "/renderings/emma/emma5.jpg",
+      "/renderings/emma/emma6.jpg",
+      "/renderings/emma/emma7.jpg",
+      "/renderings/emma/emma8.jpg",
+    ],
+  },
+  {
     slug: "cinema",
     title: "CINEMA 4D",
     instructor: "Jeff Behm",
     year: "2024",
-    heroImage: "/renderings/Cinema/Cinema1.png",
-    images: ["/renderings/Cinema/Cinema1.png"],
+    heroImage: "/renderings/Cinema/Cinema1.jpg",
+    images: ["/renderings/Cinema/Cinema1.jpg"],
   },
   {
     slug: "twin",

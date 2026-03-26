@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { DesktopNav, MobileMenu } from "@/components/NavLinks";
+import { PageTransition } from "@/components/PageTransition";
+import { CursorGlow } from "@/components/CursorGlow";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -66,8 +68,10 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${geistMono.variable} antialiased bg-black text-cream`}
       >
-        <header className="fixed top-0 left-0 right-0 z-50">
-          <div className="flex items-center justify-between px-4 md:px-8 py-6">
+        <CursorGlow />
+
+        <header className="fixed top-0 left-0 right-0 z-50 overflow-visible">
+          <div className="flex items-center justify-between px-4 md:px-8 py-6 overflow-visible">
             <Link
               href="/"
               className="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-[0.32em] uppercase transition-opacity hover:opacity-80 text-cream"
@@ -99,7 +103,9 @@ export default function RootLayout({
           </div>
         </header>
 
-        <main className="bg-black">{children}</main>
+        <main className="bg-black">
+          <PageTransition>{children}</PageTransition>
+        </main>
       </body>
     </html>
   );

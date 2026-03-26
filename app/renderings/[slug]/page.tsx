@@ -215,9 +215,8 @@ export default function RenderingProjectPage({
           <div className="mb-16">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">{project.title}</h1>
             <div className="text-xl md:text-2xl mb-6 text-cream-muted">
-              <p className="mb-2">Rendering Class</p>
               <p>
-                {project.year} &bull; Instructor: {project.instructor}
+                {project.year} &bull; {project.instructor}
               </p>
             </div>
           </div>

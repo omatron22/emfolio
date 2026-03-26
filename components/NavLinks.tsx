@@ -23,10 +23,12 @@ export function DesktopNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`transition-opacity ${isActive ? "opacity-100" : "opacity-60 hover:opacity-90"}`}
+            data-nav-active={isActive ? "true" : "false"}
+            className="relative py-1 transition-opacity duration-300"
             style={{
               color: "#E8DCC4",
               textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+              opacity: isActive ? 1 : 0.45,
             }}
           >
             {item.label}
@@ -37,10 +39,11 @@ export function DesktopNav() {
         href="/resume/Em_Moore_Resume.pdf"
         target="_blank"
         rel="noopener noreferrer"
-        className="transition-opacity opacity-60 hover:opacity-90"
+        className="relative py-1 transition-opacity duration-300"
         style={{
           color: "#E8DCC4",
           textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
+          opacity: 0.45,
         }}
       >
         Resume
@@ -53,7 +56,6 @@ export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close menu on route change
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -66,72 +68,30 @@ export function MobileMenu() {
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >
-        <span
-          className="block w-6 h-0.5 bg-cream transition-all duration-300"
-          style={{
-            transform: isOpen ? "rotate(45deg) translateY(8px)" : "none",
-          }}
-        />
-        <span
-          className="block w-6 h-0.5 bg-cream transition-all duration-300"
-          style={{ opacity: isOpen ? 0 : 1 }}
-        />
-        <span
-          className="block w-6 h-0.5 bg-cream transition-all duration-300"
-          style={{
-            transform: isOpen ? "rotate(-45deg) translateY(-8px)" : "none",
-          }}
-        />
+        <span className="block w-6 h-0.5 bg-cream transition-all duration-300" style={{ transform: isOpen ? "rotate(45deg) translateY(8px)" : "none" }} />
+        <span className="block w-6 h-0.5 bg-cream transition-all duration-300" style={{ opacity: isOpen ? 0 : 1 }} />
+        <span className="block w-6 h-0.5 bg-cream transition-all duration-300" style={{ transform: isOpen ? "rotate(-45deg) translateY(-8px)" : "none" }} />
       </button>
 
-      <div
-        className={`md:hidden absolute top-full right-4 transition-opacity duration-300 ${
-          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      >
+      <div className={`md:hidden absolute top-full right-4 transition-all duration-300 ${isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-2"}`}>
         <nav className="flex flex-col gap-3 py-2">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`text-sm font-semibold uppercase tracking-[0.3em] transition-opacity ${
-                  isActive ? "opacity-100" : "opacity-60 hover:opacity-90"
-                }`}
-                style={{
-                  color: "#E8DCC4",
-                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
-                }}
-              >
-                {item.label}
-              </Link>
+              <Link key={item.href} href={item.href} onClick={() => setIsOpen(false)}
+                className={`text-sm font-semibold uppercase tracking-[0.3em] transition-opacity ${isActive ? "opacity-100" : "opacity-60 hover:opacity-90"}`}
+                style={{ color: "#E8DCC4", textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+              >{item.label}</Link>
             );
           })}
-          <a
-            href="/resume/Em_Moore_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setIsOpen(false)}
+          <a href="/resume/Em_Moore_Resume.pdf" target="_blank" rel="noopener noreferrer" onClick={() => setIsOpen(false)}
             className="text-sm font-semibold uppercase tracking-[0.3em] transition-opacity opacity-60 hover:opacity-90"
-            style={{
-              color: "#E8DCC4",
-              textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
-            }}
-          >
-            Resume
-          </a>
+            style={{ color: "#E8DCC4", textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+          >Resume</a>
         </nav>
       </div>
 
-      {/* Backdrop to close menu */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-[-1] md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 z-[-1] md:hidden" onClick={() => setIsOpen(false)} />}
     </>
   );
 }

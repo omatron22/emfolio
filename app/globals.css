@@ -32,6 +32,7 @@ h6 {
   font-family: var(--font-heading), system-ui, sans-serif;
 }
 
+
 /* Shared mobile fade mask for image carousels */
 .mobile-faded-image {
   width: 100%;
@@ -106,3 +107,35 @@ h6 {
     height: 100vh;
   }
 }
+
+
+/* Subtle pulse for interactive elements */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Selection styling */
+::selection {
+  background: rgba(232, 220, 196, 0.25);
+  color: #E8DCC4;
+}
+
+/* Smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(232, 220, 196, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 220, 196, 0.3);
+}
+

@@ -10,7 +10,9 @@ type HeroImg = {
 };
 
 const heroImages: HeroImg[] = [
+  { src: "/portfolio/emma/emma1.jpg", alt: "Emma: No One But Herself", play: "Emma" },
   { src: "/portfolio/comet/comet1.jpg", alt: "Great Comet production", play: "Great Comet" },
+  { src: "/portfolio/emma/emma6.jpg", alt: "Emma: No One But Herself", play: "Emma" },
   { src: "/portfolio/comet/comet10.jpg", alt: "Great Comet production", play: "Great Comet" },
   { src: "/portfolio/courage/courage1.jpg", alt: "The Courage to Right a Woman's Wrongs", play: "Courage" },
   { src: "/portfolio/kmic/kmic4.jpg", alt: "Keffiyeh / Made in China production", play: "Keffiyeh / Made in China" },

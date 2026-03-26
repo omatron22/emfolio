@@ -1,8 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { drafts } from "@/data/drafts";
 
 export default function DraftDetailPage({
@@ -11,9 +12,121 @@ export default function DraftDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const router = useRouter();
 
   const currentIndex = drafts.findIndex((d) => d.slug === slug);
   const draft = drafts[currentIndex];
+
+  const prevDraft = drafts[(currentIndex - 1 + drafts.length) % drafts.length];
+  const nextDraft = drafts[(currentIndex + 1) % drafts.length];
+
+  // Zoom/pan state
+  const [zoomed, setZoomed] = useState(false);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const panStart = useRef({ x: 0, y: 0 });
+  const panStartOffset = useRef({ x: 0, y: 0 });
+  const imageContainerRef = useRef<HTMLDivElement>(null);
+
+  const resetZoom = useCallback(() => {
+    setZoomed(false);
+    setPanOffset({ x: 0, y: 0 });
+  }, []);
+
+  const toggleZoom = useCallback(() => {
+    if (zoomed) {
+      resetZoom();
+    } else {
+      setZoomed(true);
+      setPanOffset({ x: 0, y: 0 });
+    }
+  }, [zoomed, resetZoom]);
+
+  // Mouse panning when zoomed
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      if (!zoomed) return;
+      e.preventDefault();
+      setIsPanning(true);
+      panStart.current = { x: e.clientX, y: e.clientY };
+      panStartOffset.current = { ...panOffset };
+    },
+    [zoomed, panOffset]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isPanning || !zoomed) return;
+      const dx = e.clientX - panStart.current.x;
+      const dy = e.clientY - panStart.current.y;
+      setPanOffset({
+        x: panStartOffset.current.x + dx,
+        y: panStartOffset.current.y + dy,
+      });
+    },
+    [isPanning, zoomed]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
+  // Touch panning when zoomed
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      if (!zoomed || e.touches.length !== 1) return;
+      setIsPanning(true);
+      panStart.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+      panStartOffset.current = { ...panOffset };
+    },
+    [zoomed, panOffset]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      if (!isPanning || !zoomed || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - panStart.current.x;
+      const dy = e.touches[0].clientY - panStart.current.y;
+      setPanOffset({
+        x: panStartOffset.current.x + dx,
+        y: panStartOffset.current.y + dy,
+      });
+    },
+    [isPanning, zoomed]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        resetZoom();
+        router.push(`/drafting/${prevDraft.slug}`);
+      } else if (e.key === "ArrowRight") {
+        resetZoom();
+        router.push(`/drafting/${nextDraft.slug}`);
+      } else if (e.key === "Escape") {
+        if (zoomed) {
+          resetZoom();
+        } else {
+          router.push("/drafting");
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [prevDraft, nextDraft, router, zoomed, resetZoom]);
+
+  // Reset zoom on slug change
+  useEffect(() => {
+    resetZoom();
+  }, [slug, resetZoom]);
 
   if (!draft) {
     return (
@@ -22,7 +135,7 @@ export default function DraftDetailPage({
           <h1 className="text-4xl font-bold mb-4">Drawing Not Found</h1>
           <Link
             href="/drafting"
-            className="text-cream-muted hover:opacity-70 transition-opacity underline"
+            className="text-cream-muted hover:text-cream transition-colors underline"
           >
             Back to Drafting
           </Link>
@@ -31,116 +144,162 @@ export default function DraftDetailPage({
     );
   }
 
-  const prevDraft = currentIndex > 0 ? drafts[currentIndex - 1] : null;
-  const nextDraft = currentIndex < drafts.length - 1 ? drafts[currentIndex + 1] : null;
-
   return (
     <div className="bg-black min-h-screen flex flex-col text-cream">
-      {/* Top bar: back link + title */}
-      <div className="pt-28 md:pt-32 px-4 md:px-8 pb-4">
-        <div className="max-w-6xl mx-auto">
+      {/* Top bar */}
+      <div
+        className="pt-24 md:pt-28 px-4 md:px-8 pb-2"
+        style={{ opacity: 0, animation: "fadeIn 0.5s ease-out forwards" }}
+      >
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          {/* Back link */}
           <Link
             href="/drafting"
-            className="inline-block text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100 mb-4"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
           >
-            &larr; All Drawings
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M10 12L6 8l4-4" />
+            </svg>
+            All Drawings
           </Link>
-          <div className="text-center">
-            <h1 className="text-2xl md:text-3xl font-bold mb-1">{draft.name}</h1>
-            <p className="text-xs md:text-sm text-cream-muted tracking-wider">
-              EMMA: NO ONE BUT HERSELF &bull; Drawing {draft.number} of {drafts.length}
-            </p>
+
+          {/* Center title */}
+          <div className="text-center flex-1 mx-4">
+            <h1 className="text-base md:text-xl font-bold tracking-wide">
+              {draft.name}
+            </h1>
           </div>
+
+          {/* Download button */}
+          <a
+            href={draft.pdf}
+            download
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+          >
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M8 2v9M4 8l4 4 4-4M2 14h12" />
+            </svg>
+            <span className="hidden md:inline">Download PDF</span>
+            <span className="md:hidden">PDF</span>
+          </a>
         </div>
       </div>
 
-      {/* PDF Viewer - much larger */}
-      <div className="flex-1 px-2 md:px-8 pb-4">
-        <div className="max-w-6xl mx-auto h-full">
-          <div className="bg-neutral-950 rounded-lg overflow-hidden border border-neutral-800/50">
-            <iframe
-              src={`${draft.pdf}#view=FitH&toolbar=1&navpanes=0`}
-              className="w-full h-[55vh] md:h-[65vh]"
-              title={`${draft.name} - EMMA: NO ONE BUT HERSELF`}
+      {/* Main image viewer - lightbox style */}
+      <div
+        className="flex-1 flex items-center justify-center px-4 md:px-12 py-2 md:py-3 min-h-0"
+        style={{ opacity: 0, animation: "fadeIn 0.6s ease-out 100ms forwards" }}
+      >
+        <div
+          ref={imageContainerRef}
+          className="relative w-full max-w-6xl overflow-hidden rounded-sm select-none"
+          style={{
+            height: "clamp(40vh, 55vh, 60vh)",
+            cursor: zoomed ? (isPanning ? "grabbing" : "grab") : "zoom-in",
+          }}
+          onClick={(e) => {
+            // Only toggle zoom if not panning (mouse didn't move significantly)
+            if (!isPanning) toggleZoom();
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            className="relative w-full h-full transition-transform ease-out"
+            style={{
+              transitionDuration: isPanning ? "0ms" : "300ms",
+              transform: zoomed
+                ? `scale(2.5) translate(${panOffset.x / 2.5}px, ${panOffset.y / 2.5}px)`
+                : "scale(1)",
+            }}
+          >
+            <Image
+              src={draft.preview}
+              alt={draft.name}
+              fill
+              className="object-contain"
+              sizes="100vw"
+              priority
+              draggable={false}
             />
           </div>
+
+          {/* Zoom hint */}
+          {!zoomed && (
+            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 text-[10px] text-cream/30 pointer-events-none">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="7" cy="7" r="5" />
+                <path d="M11 11l3 3M7 5v4M5 7h4" />
+              </svg>
+              Click to zoom
+            </div>
+          )}
+
+          {/* Zoomed state hint */}
+          {zoomed && (
+            <div className="absolute top-3 right-3 flex items-center gap-1.5 text-[10px] text-cream/30 pointer-events-none">
+              Drag to pan &middot; Click to exit
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Bottom navigation */}
-      <div className="px-4 md:px-8 py-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-between">
-            {/* Previous */}
-            <div className="w-1/3">
-              {prevDraft ? (
-                <Link
-                  href={`/drafting/${prevDraft.slug}`}
-                  className="group inline-flex items-center gap-2 transition-opacity opacity-60 hover:opacity-100"
-                >
-                  <span className="text-sm md:text-base font-semibold">&larr;</span>
-                  <span className="hidden md:inline text-sm text-cream-muted group-hover:text-cream transition-colors">
-                    {prevDraft.name}
-                  </span>
-                  <span className="md:hidden text-sm">Prev</span>
-                </Link>
-              ) : (
-                <div />
-              )}
-            </div>
-
-            {/* Download */}
-            <div className="w-1/3 text-center">
-              <a
-                href={draft.pdf}
-                download
-                className="inline-flex items-center gap-2 text-sm md:text-base font-semibold transition-opacity opacity-70 hover:opacity-100"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M8 2v9M4 8l4 4 4-4M2 14h12" />
-                </svg>
-                Download PDF
-              </a>
-            </div>
-
-            {/* Next */}
-            <div className="w-1/3 text-right">
-              {nextDraft ? (
-                <Link
-                  href={`/drafting/${nextDraft.slug}`}
-                  className="group inline-flex items-center gap-2 transition-opacity opacity-60 hover:opacity-100"
-                >
-                  <span className="hidden md:inline text-sm text-cream-muted group-hover:text-cream transition-colors">
-                    {nextDraft.name}
-                  </span>
-                  <span className="md:hidden text-sm">Next</span>
-                  <span className="text-sm md:text-base font-semibold">&rarr;</span>
-                </Link>
-              ) : (
-                <div />
-              )}
-            </div>
-          </div>
+      {/* Bottom navigation - prev name, thumbnails, next name all in one row */}
+      <div
+        className="px-4 md:px-8 pt-2 pb-4"
+        style={{ opacity: 0, animation: "fadeIn 0.5s ease-out 200ms forwards" }}
+      >
+        <div className="max-w-6xl mx-auto flex items-center gap-3">
+          {/* Prev name */}
+          <Link
+            href={`/drafting/${prevDraft.slug}`}
+            className="flex-shrink-0 text-[10px] md:text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M10 12L6 8l4-4" /></svg> {prevDraft.name}
+          </Link>
 
           {/* Thumbnail strip */}
-          <div className="mt-6 flex gap-2 justify-center overflow-x-auto pb-2">
+          <div className="flex-1 flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
             {drafts.map((d, i) => (
               <Link
                 key={d.slug}
                 href={`/drafting/${d.slug}`}
-                className={`flex-shrink-0 relative w-16 h-12 md:w-20 md:h-14 overflow-hidden border transition-all duration-200 ${
+                className={`flex-shrink-0 relative w-12 h-8 md:w-16 md:h-11 overflow-hidden rounded-sm transition-all duration-300 ${
                   i === currentIndex
-                    ? "border-cream/60 opacity-100"
-                    : "border-neutral-800/50 opacity-40 hover:opacity-70"
+                    ? "opacity-100 ring-1 ring-cream/40"
+                    : "opacity-30 hover:opacity-60"
                 }`}
               >
                 <Image
@@ -148,11 +307,19 @@ export default function DraftDetailPage({
                   alt={d.name}
                   fill
                   className="object-cover"
-                  sizes="80px"
+                  sizes="64px"
                 />
               </Link>
             ))}
           </div>
+
+          {/* Next name */}
+          <Link
+            href={`/drafting/${nextDraft.slug}`}
+            className="flex-shrink-0 text-[10px] md:text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
+          >
+            {nextDraft.name} <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M6 4l4 4-4 4" /></svg>
+          </Link>
         </div>
       </div>
     </div>

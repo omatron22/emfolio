@@ -130,7 +130,7 @@ export default function PortfolioPage() {
           .portfolio-page-container {
             position: fixed;
             inset: 0;
-            overflow: hidden;
+            overflow: auto;
           }
         }
 
@@ -139,15 +139,24 @@ export default function PortfolioPage() {
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 200px 60px 100px 60px;
+          padding: 140px 60px 60px 60px;
         }
 
         .portfolio-masonry {
           max-width: 1400px;
           width: 100%;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
           gap: 20px;
+        }
+
+        .portfolio-masonry .masonry-tile:nth-child(-n+3) {
+          width: calc(33.333% - 14px);
+        }
+
+        .portfolio-masonry .masonry-tile:nth-child(n+4) {
+          width: calc(25% - 15px);
         }
 
         .masonry-tile {
@@ -197,22 +206,39 @@ export default function PortfolioPage() {
 
         @media (max-width: 1200px) {
           .portfolio-masonry {
-            grid-template-columns: repeat(2, 1fr);
             gap: 16px;
+          }
+
+          .portfolio-masonry .masonry-tile:nth-child(-n+3),
+          .portfolio-masonry .masonry-tile:nth-child(n+4) {
+            width: calc(50% - 8px);
           }
         }
 
         @media (max-width: 900px) {
+          .portfolio-page-container {
+            position: relative;
+            overflow: visible;
+          }
+
           .portfolio-wrapper {
             padding: 120px 16px 60px 16px;
             align-items: flex-start;
+            min-height: auto;
           }
 
           .portfolio-masonry {
-            grid-template-columns: 1fr;
             max-width: 500px;
             margin: 0 auto;
             gap: 24px;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            align-items: center;
+          }
+
+          .portfolio-masonry .masonry-tile:nth-child(-n+3),
+          .portfolio-masonry .masonry-tile:nth-child(n+4) {
+            width: 100%;
           }
 
           .mobile-title-overlay {
