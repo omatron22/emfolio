@@ -12,12 +12,14 @@ export default function ProgrammingPage() {
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState(0);
 
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(true), 500);
+    // Set initial volume to 0
+    if (videoRef.current) videoRef.current.volume = 0;
     return () => clearTimeout(timer);
   }, []);
 
@@ -86,9 +88,26 @@ export default function ProgrammingPage() {
 
   const toggleMute = () => {
     if (!videoRef.current) return;
-    const newMutedState = !isMuted;
-    videoRef.current.muted = newMutedState;
-    setIsMuted(newMutedState);
+    const video = videoRef.current;
+    if (isMuted) {
+      // Unmute and smoothly ramp volume to 1
+      video.muted = false;
+      setIsMuted(false);
+      let vol = video.volume;
+      const ramp = () => {
+        vol = Math.min(vol + 0.05, 1);
+        video.volume = vol;
+        setVolume(vol);
+        if (vol < 1) requestAnimationFrame(ramp);
+      };
+      requestAnimationFrame(ramp);
+    } else {
+      // Mute and set volume to 0
+      video.muted = true;
+      video.volume = 0;
+      setIsMuted(true);
+      setVolume(0);
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {

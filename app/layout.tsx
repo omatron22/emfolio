@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { DesktopNav, MobileMenu } from "@/components/NavLinks";
+import { LogoLink } from "@/components/LogoLink";
 import { PageTransition } from "@/components/PageTransition";
 import { CursorGlow } from "@/components/CursorGlow";
 import "./globals.css";
@@ -72,31 +73,7 @@ export default function RootLayout({
 
         <header className="fixed top-0 left-0 right-0 z-50 overflow-visible">
           <div className="flex items-center justify-between px-4 md:px-8 py-6 overflow-visible">
-            <Link
-              href="/"
-              className="text-2xl md:text-4xl lg:text-5xl font-extrabold tracking-[0.32em] uppercase transition-opacity hover:opacity-80 text-cream"
-              style={{
-                textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
-              }}
-              aria-label="Em Moore - Home"
-            >
-              Em M
-              <span className="inline-block relative">
-                oo
-                <span
-                  className="absolute left-1/2"
-                  style={{
-                    top: "1.7em",
-                    fontSize: "0.6em",
-                    transform: "translateX(-75%) rotate(90deg)",
-                  }}
-                  aria-hidden="true"
-                >
-                  )
-                </span>
-              </span>
-              re
-            </Link>
+            <LogoLink />
 
             <DesktopNav />
             <MobileMenu />

@@ -30,6 +30,8 @@ export function DesktopNav() {
               textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
               opacity: isActive ? 1 : 0.45,
             }}
+            onMouseEnter={() => window.dispatchEvent(new Event("nav-hover"))}
+            onMouseLeave={() => window.dispatchEvent(new Event("nav-leave"))}
           >
             {item.label}
           </Link>
