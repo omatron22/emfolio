@@ -16,7 +16,7 @@ export function DesktopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="hidden md:flex items-center gap-8 text-xs md:text-sm font-semibold uppercase tracking-[0.3em]">
+    <nav className="hidden md:flex items-center gap-4 lg:gap-8 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] lg:tracking-[0.3em]">
       {navItems.map((item) => {
         const isActive = pathname.startsWith(item.href);
         return (

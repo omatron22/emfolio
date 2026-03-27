@@ -39,7 +39,7 @@ export default function PortfolioPage() {
     <div className="portfolio-page-container text-cream">
       {/* Info strip - desktop only */}
       {!isZooming && (
-        <div className="pointer-events-none fixed left-0 right-0 top-28 z-10 justify-center px-8 hidden md:flex">
+        <div className="pointer-events-none fixed left-0 right-0 top-20 lg:top-28 z-10 justify-center px-8 hidden md:flex">
           <div className="text-center max-w-2xl min-h-[60px] flex flex-col justify-center">
             {hoveredShow && (
               <>
@@ -126,7 +126,7 @@ export default function PortfolioPage() {
           background-color: black;
         }
 
-        @media (min-width: 901px) {
+        @media (min-width: 768px) {
           .portfolio-page-container {
             position: fixed;
             inset: 0;
@@ -139,7 +139,13 @@ export default function PortfolioPage() {
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 140px 60px 60px 60px;
+          padding: 120px 40px 60px 40px;
+        }
+
+        @media (min-width: 1024px) {
+          .portfolio-wrapper {
+            padding: 140px 60px 60px 60px;
+          }
         }
 
         .portfolio-masonry {
@@ -204,7 +210,7 @@ export default function PortfolioPage() {
           object-fit: contain;
         }
 
-        @media (max-width: 1200px) {
+        @media (max-width: 1023px) {
           .portfolio-masonry {
             gap: 16px;
           }
@@ -215,7 +221,7 @@ export default function PortfolioPage() {
           }
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 767px) {
           .portfolio-page-container {
             position: relative;
             overflow: visible;

@@ -39,7 +39,7 @@ export default function RenderingsPage() {
     <div className="renderings-page-container text-cream">
       {/* Hover info strip - like portfolio */}
       {!isZooming && (
-        <div className="pointer-events-none fixed left-0 right-0 top-[140px] z-10 justify-center px-8 hidden md:flex">
+        <div className="pointer-events-none fixed left-0 right-0 top-[100px] lg:top-[140px] z-10 justify-center px-8 hidden md:flex">
           <div className="text-center max-w-2xl min-h-[50px] flex flex-col justify-center">
             {hoveredProject && (
               <>
@@ -128,7 +128,7 @@ export default function RenderingsPage() {
           background-color: black;
         }
 
-        @media (min-width: 901px) {
+        @media (min-width: 768px) {
           .renderings-page-container {
             position: fixed;
             inset: 0;
@@ -141,8 +141,14 @@ export default function RenderingsPage() {
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 140px 40px 60px 40px;
+          padding: 120px 30px 60px 30px;
           box-sizing: border-box;
+        }
+
+        @media (min-width: 1024px) {
+          .renderings-wrapper {
+            padding: 140px 40px 60px 40px;
+          }
         }
 
         .renderings-grid {
@@ -150,9 +156,15 @@ export default function RenderingsPage() {
           width: 100%;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
           gap: 16px;
           align-items: stretch;
+        }
+
+        @media (min-width: 1024px) {
+          .renderings-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
         }
 
         .grid-tile:first-child {
@@ -212,9 +224,9 @@ export default function RenderingsPage() {
           object-fit: contain;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 767px) {
           .renderings-wrapper {
-            padding: 140px 20px 40px 20px;
+            padding: 120px 20px 40px 20px;
           }
 
           .renderings-grid {

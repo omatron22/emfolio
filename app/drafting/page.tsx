@@ -11,7 +11,7 @@ export default function DraftingPage() {
   return (
     <div className="bg-black min-h-screen pt-24 md:pt-28 px-4 md:px-10 pb-6 text-cream">
       {/* Hover info strip */}
-      <div className="pointer-events-none fixed left-0 right-0 top-[88px] z-10 justify-center px-8 hidden md:flex">
+      <div className="pointer-events-none fixed left-0 right-0 top-[72px] lg:top-[88px] z-10 justify-center px-8 hidden md:flex">
         <div className="text-center max-w-2xl min-h-[50px] flex flex-col justify-center">
           {hoveredDraft && (
             <h2 className="text-lg md:text-xl font-bold">
