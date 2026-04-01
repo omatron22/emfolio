@@ -181,32 +181,30 @@ export default function ProgrammingPage() {
     >
       <div className="absolute inset-0 flex items-center justify-center" style={{ top: "80px", bottom: "110px" }}>
         {/* Blurred background copy for real-time bleed */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            maskImage: "radial-gradient(ellipse 70% 60% at center, transparent 40%, black 70%)",
-            WebkitMaskImage: "radial-gradient(ellipse 70% 60% at center, transparent 40%, black 70%)",
-          }}
+        <video
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          style={{ filter: "blur(50px) brightness(0.5)", transform: "scale(1.3)" }}
+          aria-hidden="true"
         >
-          <video
-            className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            style={{ filter: "blur(60px) brightness(0.6)", transform: "scale(1.2)" }}
-            aria-hidden="true"
-          >
-            <source src="/program.mp4" type="video/mp4" />
-          </video>
-        </div>
+          <source src="/program.mp4" type="video/mp4" />
+        </video>
 
         {/* Main video */}
         <video
           ref={videoRef}
           className="relative max-w-full max-h-full cursor-pointer z-[1]"
-          style={{ display: "block" }}
+          style={{
+            display: "block",
+            maskImage: "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
+            maskComposite: "intersect",
+            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
+            WebkitMaskComposite: "source-in",
+          }}
           autoPlay
           loop
           muted={isMuted}
