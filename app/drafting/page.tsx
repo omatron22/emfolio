@@ -39,7 +39,7 @@ export default function DraftingPage() {
               alt={draft.name}
               width={1200}
               height={800}
-              className="w-full h-auto block transition-all duration-500 ease-out group-hover:scale-[1.03]"
+              className="w-full h-auto block transition-transform duration-250 ease-out group-hover:scale-[1.03]"
               sizes="(max-width: 768px) 50vw, 33vw"
             />
             <div className="absolute inset-0 bg-black/35 transition-all duration-500 group-hover:bg-black/10" />

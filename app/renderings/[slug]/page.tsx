@@ -21,7 +21,7 @@ export default function RenderingProjectPage({
   const project = projects.find((p) => p.slug === slug);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowControls(true), 200);
+    const timer = setTimeout(() => setShowControls(true), 50);
     return () => clearTimeout(timer);
   }, []);
 

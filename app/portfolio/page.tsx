@@ -32,7 +32,7 @@ export default function PortfolioPage() {
 
     setTimeout(() => {
       router.push(`/portfolio/${show.slug}`);
-    }, 1000);
+    }, 600);
   };
 
   return (
@@ -58,7 +58,7 @@ export default function PortfolioPage() {
             <div
               key={show.slug}
               className="masonry-tile"
-              style={{ animationDelay: `${index * 100}ms` }}
+              style={{ animationDelay: `${index * 60}ms` }}
               onClick={(e) => handleClick(show, e)}
               onMouseEnter={() => setHoveredShow(show)}
               onMouseLeave={() => setHoveredShow(null)}
@@ -193,7 +193,7 @@ export default function PortfolioPage() {
         .zoom-overlay {
           position: fixed;
           z-index: 50;
-          animation: smoothZoom 1000ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          animation: smoothZoom 650ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .mobile-zoom-container {

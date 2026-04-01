@@ -145,7 +145,7 @@ export default function EdgeBleed({ children, bleedHeight = 80, className = "" }
       let lastSample = 0;
       const videoLoop = () => {
         const now = Date.now();
-        if (now - lastSample > 800 && !video.paused) {
+        if (now - lastSample > 400 && !video.paused) {
           paint(video);
           lastSample = now;
         }

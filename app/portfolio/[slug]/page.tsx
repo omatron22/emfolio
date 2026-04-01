@@ -23,7 +23,7 @@ export default function ProjectPage({
   const show = shows.find((s) => s.slug === slug);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowControls(true), 200);
+    const timer = setTimeout(() => setShowControls(true), 50);
     return () => clearTimeout(timer);
   }, []);
 

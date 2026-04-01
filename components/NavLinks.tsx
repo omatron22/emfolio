@@ -24,7 +24,7 @@ export function DesktopNav() {
             key={item.href}
             href={item.href}
             data-nav-active={isActive ? "true" : "false"}
-            className="relative py-1 transition-opacity duration-300"
+            className="relative py-1 transition-opacity duration-150"
             style={{
               color: "#E8DCC4",
               textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
@@ -41,7 +41,7 @@ export function DesktopNav() {
         href="/resume/Em_Moore_Resume.pdf"
         target="_blank"
         rel="noopener noreferrer"
-        className="relative py-1 transition-opacity duration-300"
+        className="relative py-1 transition-opacity duration-150"
         style={{
           color: "#E8DCC4",
           textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",

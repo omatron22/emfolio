@@ -18,7 +18,7 @@ export default function ProgrammingPage() {
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowControls(true), 500);
+    const timer = setTimeout(() => setShowControls(true), 150);
     // Set initial volume to 0
     if (videoRef.current) videoRef.current.volume = 0;
     return () => clearTimeout(timer);

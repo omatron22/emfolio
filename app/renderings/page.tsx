@@ -32,7 +32,7 @@ export default function RenderingsPage() {
 
     setTimeout(() => {
       router.push(`/renderings/${project.slug}`);
-    }, 1000);
+    }, 600);
   };
 
   return (
@@ -59,7 +59,7 @@ export default function RenderingsPage() {
               key={project.slug}
               className="grid-tile"
               style={{
-                animationDelay: `${index * 100}ms`,
+                animationDelay: `${index * 60}ms`,
               }}
               onClick={(e) => handleClick(project, e)}
               onMouseEnter={() => setHoveredProject(project)}
@@ -207,7 +207,7 @@ export default function RenderingsPage() {
         .zoom-overlay {
           position: fixed;
           z-index: 50;
-          animation: smoothZoom 1000ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+          animation: smoothZoom 650ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
         .mobile-zoom-container {

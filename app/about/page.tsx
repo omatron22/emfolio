@@ -15,6 +15,7 @@ export default function AboutPage() {
     const scaleY = (window.innerHeight - 60) / 1271;
     const scale = Math.min(scaleX, scaleY, 1);
     frame.style.transform = `scale(${scale})`;
+    frame.style.visibility = "visible";
   }, []);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function AboutPage() {
 
   return (
     <div className="about-page-container text-cream" style={{ position: "relative" }}>
-      <div className="about-frame" ref={frameRef}>
+      <div className="about-frame" ref={frameRef} style={{ visibility: "hidden" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/about/drawing.png"

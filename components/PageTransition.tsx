@@ -17,7 +17,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
         setDisplayChildren(children);
         setIsVisible(true);
         previousPathname.current = pathname;
-      }, 200);
+      }, 120);
       return () => clearTimeout(timer);
     } else {
       setDisplayChildren(children);
@@ -29,7 +29,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       className="page-transition-wrapper"
       style={{
         opacity: isVisible ? 1 : 0,
-        transition: "opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
     >
       {displayChildren}
