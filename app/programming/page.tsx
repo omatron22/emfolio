@@ -313,9 +313,10 @@ export default function ProgrammingPage() {
       </div>
 
       <div
-        className={`fixed bottom-0 left-0 right-0 bg-black pb-12 px-8 transition-opacity duration-500 ${
+        className={`fixed bottom-0 left-0 right-0 pb-12 px-8 transition-opacity duration-500 z-10 ${
           showControls ? "opacity-100" : "opacity-0"
         }`}
+        style={{ background: "linear-gradient(to top, black 0%, rgba(0,0,0,0.8) 40%, transparent 100%)" }}
       >
         <div className="max-w-6xl mx-auto">
           {/* Progress bar */}
