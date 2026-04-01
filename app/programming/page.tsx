@@ -46,65 +46,56 @@ export default function ProgrammingPage() {
       sampler.height = sH;
       sCtx.drawImage(video, 0, 0, SAMPLE_W, sH);
 
-      const wrap = video.closest(".prog-bleed-wrap");
-      if (!wrap) { bleedFrameRef.current = requestAnimationFrame(paintBleed); return; }
+      const container = video.closest(".fixed");
+      if (!container) { bleedFrameRef.current = requestAnimationFrame(paintBleed); return; }
 
-      const dW = video.getBoundingClientRect().width;
-      const dH = video.getBoundingClientRect().height;
+      const rect = video.getBoundingClientRect();
+      const dW = rect.width;
+      const dH = rect.height;
       const sx = dW / SAMPLE_W;
       const sy = dH / sH;
 
-      // Top
-      const topC = wrap.querySelector(".prog-bleed-top") as HTMLCanvasElement;
-      if (topC) {
-        topC.width = Math.round(dW);
-        topC.height = BLEED;
-        const ctx = topC.getContext("2d");
-        if (ctx) {
-          const row = sCtx.getImageData(0, 0, SAMPLE_W, 1).data;
+      const drawSide = (c: HTMLCanvasElement | null, side: string) => {
+        if (!c) return;
+        const ctx = c.getContext("2d");
+        if (!ctx) return;
+
+        if (side === "top" || side === "bottom") {
+          c.width = Math.round(dW);
+          c.height = BLEED;
+          c.style.position = "absolute";
+          c.style.left = `${rect.left}px`;
+          c.style.width = `${dW}px`;
+          if (side === "top") c.style.top = `${rect.top - BLEED}px`;
+          else c.style.top = `${rect.bottom}px`;
+
+          const row = sCtx.getImageData(0, side === "top" ? 0 : sH - 1, SAMPLE_W, 1).data;
           for (let x = 0; x < SAMPLE_W; x++) {
             const i = x * 4;
-            const g = ctx.createLinearGradient(0, BLEED, 0, 0);
+            const g = side === "top"
+              ? ctx.createLinearGradient(0, BLEED, 0, 0)
+              : ctx.createLinearGradient(0, 0, 0, BLEED);
             g.addColorStop(0, `rgb(${row[i]},${row[i+1]},${row[i+2]})`);
             g.addColorStop(0.5, `rgba(${row[i]},${row[i+1]},${row[i+2]},0.4)`);
             g.addColorStop(1, `rgba(${row[i]},${row[i+1]},${row[i+2]},0)`);
             ctx.fillStyle = g;
             ctx.fillRect(Math.round(x * sx), 0, Math.ceil(sx), BLEED);
           }
-        }
-      }
+        } else {
+          c.width = BLEED;
+          c.height = Math.round(dH);
+          c.style.position = "absolute";
+          c.style.top = `${rect.top}px`;
+          c.style.height = `${dH}px`;
+          if (side === "left") c.style.left = `${rect.left - BLEED}px`;
+          else c.style.left = `${rect.right}px`;
 
-      // Bottom
-      const botC = wrap.querySelector(".prog-bleed-bottom") as HTMLCanvasElement;
-      if (botC) {
-        botC.width = Math.round(dW);
-        botC.height = BLEED;
-        const ctx = botC.getContext("2d");
-        if (ctx) {
-          const row = sCtx.getImageData(0, sH - 1, SAMPLE_W, 1).data;
-          for (let x = 0; x < SAMPLE_W; x++) {
-            const i = x * 4;
-            const g = ctx.createLinearGradient(0, 0, 0, BLEED);
-            g.addColorStop(0, `rgb(${row[i]},${row[i+1]},${row[i+2]})`);
-            g.addColorStop(0.5, `rgba(${row[i]},${row[i+1]},${row[i+2]},0.4)`);
-            g.addColorStop(1, `rgba(${row[i]},${row[i+1]},${row[i+2]},0)`);
-            ctx.fillStyle = g;
-            ctx.fillRect(Math.round(x * sx), 0, Math.ceil(sx), BLEED);
-          }
-        }
-      }
-
-      // Left
-      const leftC = wrap.querySelector(".prog-bleed-left") as HTMLCanvasElement;
-      if (leftC) {
-        leftC.width = BLEED;
-        leftC.height = Math.round(dH);
-        const ctx = leftC.getContext("2d");
-        if (ctx) {
-          const col = sCtx.getImageData(0, 0, 1, sH).data;
+          const col = sCtx.getImageData(side === "left" ? 0 : SAMPLE_W - 1, 0, 1, sH).data;
           for (let y = 0; y < sH; y++) {
             const i = y * 4;
-            const g = ctx.createLinearGradient(BLEED, 0, 0, 0);
+            const g = side === "left"
+              ? ctx.createLinearGradient(BLEED, 0, 0, 0)
+              : ctx.createLinearGradient(0, 0, BLEED, 0);
             g.addColorStop(0, `rgb(${col[i]},${col[i+1]},${col[i+2]})`);
             g.addColorStop(0.5, `rgba(${col[i]},${col[i+1]},${col[i+2]},0.4)`);
             g.addColorStop(1, `rgba(${col[i]},${col[i+1]},${col[i+2]},0)`);
@@ -112,27 +103,12 @@ export default function ProgrammingPage() {
             ctx.fillRect(0, Math.round(y * sy), BLEED, Math.ceil(sy));
           }
         }
-      }
+      };
 
-      // Right
-      const rightC = wrap.querySelector(".prog-bleed-right") as HTMLCanvasElement;
-      if (rightC) {
-        rightC.width = BLEED;
-        rightC.height = Math.round(dH);
-        const ctx = rightC.getContext("2d");
-        if (ctx) {
-          const col = sCtx.getImageData(SAMPLE_W - 1, 0, 1, sH).data;
-          for (let y = 0; y < sH; y++) {
-            const i = y * 4;
-            const g = ctx.createLinearGradient(0, 0, BLEED, 0);
-            g.addColorStop(0, `rgb(${col[i]},${col[i+1]},${col[i+2]})`);
-            g.addColorStop(0.5, `rgba(${col[i]},${col[i+1]},${col[i+2]},0.4)`);
-            g.addColorStop(1, `rgba(${col[i]},${col[i+1]},${col[i+2]},0)`);
-            ctx.fillStyle = g;
-            ctx.fillRect(0, Math.round(y * sy), BLEED, Math.ceil(sy));
-          }
-        }
-      }
+      drawSide(container.querySelector(".prog-bleed-top"), "top");
+      drawSide(container.querySelector(".prog-bleed-bottom"), "bottom");
+      drawSide(container.querySelector(".prog-bleed-left"), "left");
+      drawSide(container.querySelector(".prog-bleed-right"), "right");
 
       bleedFrameRef.current = requestAnimationFrame(paintBleed);
     };
@@ -306,12 +282,14 @@ export default function ProgrammingPage() {
       ref={containerRef}
       className="fixed inset-0 bg-black overflow-hidden text-cream"
     >
+      {/* Bleed canvases - positioned absolutely in the full viewport */}
+      <canvas className="prog-bleed prog-bleed-top" />
+      <canvas className="prog-bleed prog-bleed-bottom" />
+      <canvas className="prog-bleed prog-bleed-left" />
+      <canvas className="prog-bleed prog-bleed-right" />
+
       <div className="absolute inset-0 flex items-center justify-center" style={{ top: "80px", bottom: "110px" }}>
         <div className="prog-bleed-wrap">
-          <canvas className="prog-bleed prog-bleed-top" />
-          <canvas className="prog-bleed prog-bleed-bottom" />
-          <canvas className="prog-bleed prog-bleed-left" />
-          <canvas className="prog-bleed prog-bleed-right" />
           <video
             ref={videoRef}
             className="w-full cursor-pointer"
@@ -466,25 +444,8 @@ export default function ProgrammingPage() {
           width: 100%;
         }
         .prog-bleed {
-          position: absolute;
           pointer-events: none;
           z-index: 0;
-        }
-        .prog-bleed-top {
-          bottom: 100%;
-          left: 0;
-        }
-        .prog-bleed-bottom {
-          top: 100%;
-          left: 0;
-        }
-        .prog-bleed-left {
-          right: 100%;
-          top: 0;
-        }
-        .prog-bleed-right {
-          left: 100%;
-          top: 0;
         }
       `}</style>
     </div>
