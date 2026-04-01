@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import EdgeBleed from "@/components/EdgeBleed";
 
 type HeroImg = {
   src: string;
@@ -105,13 +106,15 @@ export default function HomePage() {
                 zIndex: index === currentIndex ? 1 : 0,
               }}
             >
-              {/* Mobile: native img with fade mask */}
+              {/* Mobile: edge bleed effect */}
               <div className="md:hidden w-full h-full flex items-center justify-center">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="mobile-faded-image"
-                />
+                <EdgeBleed bleedHeight={80}>
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    style={{ width: "100%", height: "auto", maxHeight: "100vh", objectFit: "contain", display: "block" }}
+                  />
+                </EdgeBleed>
               </div>
 
               {/* Desktop: full cover with Next Image */}

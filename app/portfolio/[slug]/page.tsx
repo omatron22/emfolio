@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { shows } from "@/data/shows";
+import EdgeBleed from "@/components/EdgeBleed";
 
 export default function ProjectPage({
   params,
@@ -146,11 +147,13 @@ export default function ProjectPage({
 
                 {/* Mobile */}
                 <div className="md:hidden w-full h-full flex items-center justify-center">
-                  <img
-                    src={image}
-                    alt={`${show.title} - Image ${index + 1}`}
-                    className="mobile-faded-image"
-                  />
+                  <EdgeBleed bleedHeight={80}>
+                    <img
+                      src={image}
+                      alt={`${show.title} - Image ${index + 1}`}
+                      style={{ width: "100%", height: "auto", maxHeight: "100vh", objectFit: "contain", display: "block" }}
+                    />
+                  </EdgeBleed>
                 </div>
               </div>
             );

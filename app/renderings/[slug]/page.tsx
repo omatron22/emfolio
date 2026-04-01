@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { projects } from "@/data/renderings";
+import EdgeBleed from "@/components/EdgeBleed";
 
 export default function RenderingProjectPage({
   params,
@@ -128,11 +129,13 @@ export default function RenderingProjectPage({
                   sizes="100vw"
                 />
                 <div className="md:hidden w-full h-full flex items-center justify-center">
-                  <img
-                    src={image}
-                    alt={`${project.title} - Image ${index + 1}`}
-                    className="mobile-faded-image"
-                  />
+                  <EdgeBleed bleedHeight={80}>
+                    <img
+                      src={image}
+                      alt={`${project.title} - Image ${index + 1}`}
+                      style={{ width: "100%", height: "auto", maxHeight: "100vh", objectFit: "contain", display: "block" }}
+                    />
+                  </EdgeBleed>
                 </div>
               </div>
             );
@@ -228,10 +231,12 @@ export default function RenderingProjectPage({
               <div className="space-y-8">
                 {project.videos.map((video, index) => (
                   <div key={index} className="w-full max-w-3xl mx-auto">
-                    <video className="w-full h-auto" controls preload="metadata">
-                      <source src={video} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+                    <EdgeBleed bleedHeight={60}>
+                      <video className="w-full h-auto block" controls preload="metadata">
+                        <source src={video} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </EdgeBleed>
                   </div>
                 ))}
               </div>
