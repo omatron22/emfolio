@@ -180,11 +180,11 @@ export default function ProgrammingPage() {
       ref={containerRef}
       className="fixed inset-0 bg-black overflow-hidden text-cream"
     >
-      <div className="absolute top-28 bottom-32 left-0 right-0 flex items-center justify-center">
-        <EdgeBleed bleedHeight={60} className="w-full h-full">
+      <div className="absolute top-20 bottom-28 left-0 right-0 flex items-center justify-center px-4 md:px-12">
+        <EdgeBleed bleedHeight={80} className="w-full h-full">
           <video
             ref={videoRef}
-            className="w-full h-full object-cover cursor-pointer"
+            className="w-full h-full object-contain cursor-pointer"
             autoPlay
             loop
             muted={isMuted}
