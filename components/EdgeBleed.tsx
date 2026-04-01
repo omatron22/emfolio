@@ -58,48 +58,21 @@ export default function EdgeBleed({ children, bleedHeight = 80, className = "" }
     bottomCanvas.width = canvasW;
     bottomCanvas.height = canvasH;
 
-    // Find actual content edges (skip letterbox black bars)
-    const isRowBlack = (y: number) => {
-      const row = sCtx.getImageData(0, y, sampleW, 1).data;
-      let total = 0;
-      for (let i = 0; i < row.length; i += 4) {
-        total += row[i] + row[i + 1] + row[i + 2];
-      }
-      return (total / (sampleW * 3)) < 10; // avg brightness < 10 = black bar
-    };
-
-    // Scan from top to find first non-black row
-    let topEdge = 0;
-    for (let y = 0; y < sampleH / 2; y++) {
-      if (!isRowBlack(y)) { topEdge = y; break; }
-    }
-
-    // Scan from bottom to find last non-black row
-    let bottomEdge = sampleH - 1;
-    for (let y = sampleH - 1; y > sampleH / 2; y--) {
-      if (!isRowBlack(y)) { bottomEdge = y; break; }
-    }
-
-    const topData = sCtx.getImageData(0, topEdge, sampleW, 3).data;
-    const bottomData = sCtx.getImageData(0, Math.max(0, bottomEdge - 2), sampleW, 3).data;
+    // Sample the very first and very last pixel rows of the source
+    const topData = sCtx.getImageData(0, 0, sampleW, 1).data;
+    const bottomData = sCtx.getImageData(0, sampleH - 1, sampleW, 1).data;
 
     const topCtx = topCanvas.getContext("2d");
     const bottomCtx = bottomCanvas.getContext("2d");
     if (!topCtx || !bottomCtx) return;
 
-    // Draw top bleed: for each column, get the avg color of top 3 rows,
+    // Draw top bleed: for each column, read the exact border pixel
     // then draw a vertical gradient from that color to black
     for (let x = 0; x < sampleW; x++) {
-      let r = 0, g = 0, b = 0;
-      for (let row = 0; row < 3; row++) {
-        const i = (row * sampleW + x) * 4;
-        r += topData[i];
-        g += topData[i + 1];
-        b += topData[i + 2];
-      }
-      r = Math.round(r / 3);
-      g = Math.round(g / 3);
-      b = Math.round(b / 3);
+      const i = x * 4;
+      const r = topData[i];
+      const g = topData[i + 1];
+      const b = topData[i + 2];
 
       const dx = Math.round(x * displayScale);
       const dw = Math.max(Math.ceil(displayScale), 1);
@@ -115,16 +88,10 @@ export default function EdgeBleed({ children, bleedHeight = 80, className = "" }
 
     // Draw bottom bleed
     for (let x = 0; x < sampleW; x++) {
-      let r = 0, g = 0, b = 0;
-      for (let row = 0; row < 3; row++) {
-        const i = (row * sampleW + x) * 4;
-        r += bottomData[i];
-        g += bottomData[i + 1];
-        b += bottomData[i + 2];
-      }
-      r = Math.round(r / 3);
-      g = Math.round(g / 3);
-      b = Math.round(b / 3);
+      const i = x * 4;
+      const r = bottomData[i];
+      const g = bottomData[i + 1];
+      const b = bottomData[i + 2];
 
       const dx = Math.round(x * displayScale);
       const dw = Math.max(Math.ceil(displayScale), 1);
