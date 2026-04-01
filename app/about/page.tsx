@@ -27,12 +27,6 @@ export default function AboutPage() {
   return (
     <div className="about-page-container text-cream" style={{ position: "relative" }}>
       <div className="about-frame" ref={frameRef} style={{ visibility: "hidden" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/about/drawing.png"
-          alt=""
-          className="about-drawing-overlay"
-        />
         <div className="about-content">
         {/* Mobile-only full image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,22 +152,12 @@ export default function AboutPage() {
           flex-shrink: 0;
         }
 
-        .about-drawing-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 2;
-        }
-
         .about-content {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: 950px;
+          width: 1150px;
           padding: 40px;
         }
 
@@ -185,9 +169,6 @@ export default function AboutPage() {
             position: relative;
           }
 
-          .about-drawing-overlay {
-            display: none;
-          }
 
           .about-content {
             position: relative;
@@ -215,7 +196,7 @@ export default function AboutPage() {
         }
 
         .about-col p {
-          font-size: 0.88rem;
+          font-size: 1rem;
           line-height: 1.7;
           color: #c4b89a;
           margin: 0 0 10px 0;
