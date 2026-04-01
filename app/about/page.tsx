@@ -1,33 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
-
 export default function AboutPage() {
-  const frameRef = useRef<HTMLDivElement>(null);
-
-  const updateScale = useCallback(() => {
-    const frame = frameRef.current;
-    if (!frame || window.innerWidth < 768) {
-      if (frame) frame.style.transform = "none";
-      return;
-    }
-    const scaleX = window.innerWidth / 2560;
-    const scaleY = (window.innerHeight - 60) / 1271;
-    const scale = Math.min(scaleX, scaleY, 1);
-    frame.style.transform = `scale(${scale})`;
-    frame.style.visibility = "visible";
-  }, []);
-
-  useEffect(() => {
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
-  }, [updateScale]);
-
   return (
     <div className="about-page-container text-cream" style={{ position: "relative" }}>
-      <div className="about-frame" ref={frameRef} style={{ visibility: "hidden" }}>
-        <div className="about-content">
+      <div className="about-content">
         {/* Mobile-only full image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -123,7 +99,6 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-        </div>
       </div>
 
       <style jsx global>{`
@@ -141,42 +116,24 @@ export default function AboutPage() {
             align-items: center;
             justify-content: center;
           }
-
-        }
-
-        .about-frame {
-          width: 2560px;
-          height: 1271px;
-          position: relative;
-          transform-origin: center center;
-          flex-shrink: 0;
         }
 
         .about-content {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 1150px;
-          padding: 40px;
+          max-width: 1150px;
+          width: 100%;
+          margin: 0 auto;
+          padding: 120px 24px 40px 24px;
         }
 
-        @media (max-width: 767px) {
-          .about-frame {
-            width: 100%;
-            height: auto;
-            transform: none;
-            position: relative;
-          }
-
-
+        @media (min-width: 768px) {
           .about-content {
-            position: relative;
-            top: auto;
-            left: auto;
-            transform: none;
-            width: 100%;
-            padding: 120px 24px 40px 24px;
+            padding: 40px 40px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .about-content {
+            padding: 40px 60px;
           }
         }
 
