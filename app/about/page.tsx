@@ -141,7 +141,16 @@ export default function AboutPage() {
         .about-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 0 12px;
+          gap: 0;
+        }
+
+        .about-grid .about-col:first-child {
+          padding-right: 6px;
+        }
+
+        .about-grid .about-col:nth-child(2) {
+          padding-left: 6px;
+          margin-left: -1px;
         }
 
         .about-col {
@@ -149,8 +158,8 @@ export default function AboutPage() {
         }
 
         .about-col p {
-          font-size: 0.95rem;
-          line-height: 1.75;
+          font-size: 0.88rem;
+          line-height: 1.8;
           color: #c4b89a;
           margin: 0 0 12px 0;
         }
