@@ -58,10 +58,30 @@ export default function EdgeBleed({ children, bleedHeight = 80, className = "" }
     bottomCanvas.width = canvasW;
     bottomCanvas.height = canvasH;
 
-    // Sample top rows (average of first 3 rows for stability)
-    const topData = sCtx.getImageData(0, 0, sampleW, 3).data;
-    // Sample bottom rows
-    const bottomData = sCtx.getImageData(0, sampleH - 3, sampleW, 3).data;
+    // Find actual content edges (skip letterbox black bars)
+    const isRowBlack = (y: number) => {
+      const row = sCtx.getImageData(0, y, sampleW, 1).data;
+      let total = 0;
+      for (let i = 0; i < row.length; i += 4) {
+        total += row[i] + row[i + 1] + row[i + 2];
+      }
+      return (total / (sampleW * 3)) < 10; // avg brightness < 10 = black bar
+    };
+
+    // Scan from top to find first non-black row
+    let topEdge = 0;
+    for (let y = 0; y < sampleH / 2; y++) {
+      if (!isRowBlack(y)) { topEdge = y; break; }
+    }
+
+    // Scan from bottom to find last non-black row
+    let bottomEdge = sampleH - 1;
+    for (let y = sampleH - 1; y > sampleH / 2; y--) {
+      if (!isRowBlack(y)) { bottomEdge = y; break; }
+    }
+
+    const topData = sCtx.getImageData(0, topEdge, sampleW, 3).data;
+    const bottomData = sCtx.getImageData(0, Math.max(0, bottomEdge - 2), sampleW, 3).data;
 
     const topCtx = topCanvas.getContext("2d");
     const bottomCtx = bottomCanvas.getContext("2d");
