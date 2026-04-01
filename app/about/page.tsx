@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import DrawOverlay from "@/components/DrawOverlay";
 
 export default function AboutPage() {
   const frameRef = useRef<HTMLDivElement>(null);
@@ -26,7 +25,6 @@ export default function AboutPage() {
 
   return (
     <div className="about-page-container text-cream" style={{ position: "relative" }}>
-      <DrawOverlay />
       <div className="about-frame" ref={frameRef}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
