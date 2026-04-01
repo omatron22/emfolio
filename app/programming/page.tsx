@@ -314,8 +314,8 @@ export default function ProgrammingPage() {
           <canvas className="prog-bleed prog-bleed-right" />
           <video
             ref={videoRef}
-            className="max-w-full max-h-full cursor-pointer"
-            style={{ display: "block" }}
+            className="w-full cursor-pointer"
+            style={{ display: "block", height: "auto" }}
             autoPlay
             loop
             muted={isMuted}
@@ -463,7 +463,7 @@ export default function ProgrammingPage() {
       <style jsx global>{`
         .prog-bleed-wrap {
           position: relative;
-          display: inline-flex;
+          width: 100%;
         }
         .prog-bleed {
           position: absolute;
