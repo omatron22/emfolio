@@ -62,6 +62,10 @@ export function MobileMenu() {
     setIsOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    window.dispatchEvent(new Event(isOpen ? "nav-hover" : "nav-leave"));
+  }, [isOpen]);
+
   return (
     <>
       <button
