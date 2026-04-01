@@ -184,7 +184,7 @@ export default function ProgrammingPage() {
         <EdgeBleed bleedHeight={80} className="w-full h-full">
           <video
             ref={videoRef}
-            className="w-full h-full object-contain cursor-pointer"
+            className="w-full h-full object-cover cursor-pointer"
             autoPlay
             loop
             muted={isMuted}
