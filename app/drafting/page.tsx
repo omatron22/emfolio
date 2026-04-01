@@ -9,10 +9,10 @@ export default function DraftingPage() {
   const [hoveredDraft, setHoveredDraft] = useState<Draft | null>(null);
 
   return (
-    <div className="bg-black min-h-screen pt-24 md:pt-28 px-4 md:px-10 pb-6 text-cream">
-      {/* Hover info strip */}
-      <div className="pointer-events-none fixed left-0 right-0 top-[72px] lg:top-[88px] z-10 justify-center px-8 hidden md:flex">
-        <div className="text-center max-w-2xl min-h-[50px] flex flex-col justify-center">
+    <div className="bg-black min-h-screen pt-24 md:pt-28 px-4 md:px-10 pb-6 text-cream flex flex-col items-center">
+      {/* Title strip - right above images */}
+      <div className="pointer-events-none hidden md:flex justify-center w-full mb-6 h-[50px] mt-8">
+        <div className="text-center max-w-2xl flex flex-col justify-center">
           {hoveredDraft && (
             <h2 className="text-lg md:text-xl font-bold">
               {hoveredDraft.name}
@@ -21,7 +21,7 @@ export default function DraftingPage() {
         </div>
       </div>
 
-      <div className="mx-auto mt-14 md:mt-16 columns-2 md:columns-3 gap-2" style={{ maxWidth: "min(1100px, calc((100vh - 240px) * 1.6))" }}>
+      <div className="columns-2 md:columns-3 gap-2" style={{ maxWidth: "min(1100px, calc((100vh - 240px) * 1.6))" }}>
         {drafts.map((draft, index) => (
           <Link
             key={draft.slug}

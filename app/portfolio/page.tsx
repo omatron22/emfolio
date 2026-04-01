@@ -37,11 +37,11 @@ export default function PortfolioPage() {
 
   return (
     <div className="portfolio-page-container text-cream">
-      {/* Info strip - desktop only */}
-      {!isZooming && (
-        <div className="pointer-events-none fixed left-0 right-0 top-20 lg:top-28 z-10 justify-center px-8 hidden md:flex">
-          <div className="text-center max-w-2xl min-h-[60px] flex flex-col justify-center">
-            {hoveredShow && (
+      <div className={`portfolio-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
+        {/* Title strip - right above images */}
+        <div className="pointer-events-none hidden md:flex justify-center w-full mb-6 h-[50px]">
+          <div className="text-center max-w-2xl flex flex-col justify-center">
+            {!isZooming && hoveredShow && (
               <>
                 <h2 className="text-xl md:text-2xl font-bold mb-1">
                   {hoveredShow.title}
@@ -53,9 +53,6 @@ export default function PortfolioPage() {
             )}
           </div>
         </div>
-      )}
-
-      <div className={`portfolio-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
         <div className="portfolio-masonry">
           {shows.map((show, index) => (
             <div
@@ -136,15 +133,16 @@ export default function PortfolioPage() {
 
         .portfolio-wrapper {
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 120px 40px 60px 40px;
+          padding: 100px 40px 60px 40px;
         }
 
         @media (min-width: 1024px) {
           .portfolio-wrapper {
-            padding: 140px 60px 60px 60px;
+            padding: 110px 60px 60px 60px;
           }
         }
 

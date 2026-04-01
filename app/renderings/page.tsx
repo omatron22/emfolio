@@ -37,11 +37,11 @@ export default function RenderingsPage() {
 
   return (
     <div className="renderings-page-container text-cream">
-      {/* Hover info strip - like portfolio */}
-      {!isZooming && (
-        <div className="pointer-events-none fixed left-0 right-0 top-[100px] lg:top-[140px] z-10 justify-center px-8 hidden md:flex">
-          <div className="text-center max-w-2xl min-h-[50px] flex flex-col justify-center">
-            {hoveredProject && (
+      <div className={`renderings-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
+        {/* Title strip - right above images */}
+        <div className="pointer-events-none hidden md:flex justify-center w-full mb-6 h-[50px]">
+          <div className="text-center max-w-2xl flex flex-col justify-center">
+            {!isZooming && hoveredProject && (
               <>
                 <h2 className="text-xl md:text-2xl font-bold mb-1">
                   {hoveredProject.title}
@@ -53,9 +53,6 @@ export default function RenderingsPage() {
             )}
           </div>
         </div>
-      )}
-
-      <div className={`renderings-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
         <div className="renderings-grid">
           {projects.map((project, index) => (
             <div
@@ -138,16 +135,17 @@ export default function RenderingsPage() {
 
         .renderings-wrapper {
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
           min-height: 100vh;
-          padding: 120px 30px 60px 30px;
+          padding: 100px 30px 60px 30px;
           box-sizing: border-box;
         }
 
         @media (min-width: 1024px) {
           .renderings-wrapper {
-            padding: 140px 40px 60px 40px;
+            padding: 110px 40px 60px 40px;
           }
         }
 
