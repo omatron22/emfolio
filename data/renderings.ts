@@ -53,7 +53,7 @@ export const projects: RenderProject[] = [
       "/renderings/Twin/Twin10.jpg",
     ],
     videos: [
-      "https://zqp0elledhhfswkn.public.blob.vercel-storage.com/Twin11.MP4",
+      "/renderings/twin.mp4",
     ],
   },
 ];
