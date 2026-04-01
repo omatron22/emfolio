@@ -1,9 +1,34 @@
 "use client";
 
+import { useEffect, useRef, useCallback } from "react";
+
 export default function AboutPage() {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const updateScale = useCallback(() => {
+    const el = contentRef.current;
+    if (!el || window.innerWidth < 768) {
+      if (el) {
+        el.style.transform = "none";
+        el.style.visibility = "visible";
+      }
+      return;
+    }
+    // Content is 1150px wide, scale down if viewport is smaller
+    const scale = Math.min(1, window.innerWidth / 1250);
+    el.style.transform = `scale(${scale})`;
+    el.style.visibility = "visible";
+  }, []);
+
+  useEffect(() => {
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, [updateScale]);
+
   return (
     <div className="about-page-container text-cream" style={{ position: "relative" }}>
-      <div className="about-content">
+      <div className="about-content" ref={contentRef} style={{ visibility: "hidden" }}>
         {/* Mobile-only full image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -119,10 +144,11 @@ export default function AboutPage() {
         }
 
         .about-content {
-          max-width: 1150px;
-          width: 100%;
+          width: 1150px;
           margin: 0 auto;
           padding: 120px 24px 40px 24px;
+          transform-origin: center center;
+          flex-shrink: 0;
         }
 
         @media (min-width: 768px) {
@@ -134,6 +160,12 @@ export default function AboutPage() {
         @media (min-width: 1024px) {
           .about-content {
             padding: 40px 60px;
+          }
+        }
+
+        @media (max-width: 767px) {
+          .about-content {
+            width: 100%;
           }
         }
 
