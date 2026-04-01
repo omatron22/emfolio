@@ -141,11 +141,7 @@ export default function AboutPage() {
         .about-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 0;
-        }
-
-        .about-grid .about-col:nth-child(2) {
-          margin-left: -1px;
+          gap: 0 12px;
         }
 
         .about-col {
@@ -153,10 +149,10 @@ export default function AboutPage() {
         }
 
         .about-col p {
-          font-size: 1rem;
-          line-height: 1.7;
+          font-size: 0.95rem;
+          line-height: 1.75;
           color: #c4b89a;
-          margin: 0 0 10px 0;
+          margin: 0 0 12px 0;
         }
 
         /* Left half floats RIGHT so text wraps on the left */
@@ -166,7 +162,7 @@ export default function AboutPage() {
           height: auto;
           margin-top: 60px;
           shape-outside: url('/about/em-left.png');
-          shape-margin: 16px;
+          shape-margin: 20px;
           shape-image-threshold: 0.01;
         }
 
@@ -177,7 +173,7 @@ export default function AboutPage() {
           height: auto;
           margin-top: 60px;
           shape-outside: url('/about/em-right.png');
-          shape-margin: 16px;
+          shape-margin: 20px;
           shape-image-threshold: 0.01;
         }
 
