@@ -213,6 +213,7 @@ export default function EdgeBleed({ children, bleedHeight = 80, className = "" }
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.5s ease;
+          z-index: 1;
         }
 
         .edge-bleed-top {
