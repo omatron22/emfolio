@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Star, Volume2, VolumeX } from "lucide-react";
-import EdgeBleed from "@/components/EdgeBleed";
 
 export default function ProgrammingPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -180,28 +179,41 @@ export default function ProgrammingPage() {
       ref={containerRef}
       className="fixed inset-0 bg-black overflow-hidden text-cream"
     >
-      <div className="absolute top-20 bottom-28 left-0 right-0 flex items-center justify-center">
-        <EdgeBleed bleedHeight={100} className="inline-flex" sides={["top", "bottom", "left", "right"]}>
-          <video
-            ref={videoRef}
-            className="max-w-full max-h-full cursor-pointer"
-            style={{ display: "block" }}
-            autoPlay
-            loop
-            muted={isMuted}
-            playsInline
-            preload="auto"
-            onClick={handleVideoClick}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-          >
-            <source
-              src="/program.mp4"
-              type="video/mp4"
-            />
-            Your browser does not support the video tag.
-          </video>
-        </EdgeBleed>
+      <div className="absolute inset-0 flex items-center justify-center" style={{ top: "80px", bottom: "110px" }}>
+        {/* Blurred background copy for real-time bleed */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          style={{ filter: "blur(40px) brightness(0.7)", transform: "scale(1.15)" }}
+          aria-hidden="true"
+        >
+          <source src="/program.mp4" type="video/mp4" />
+        </video>
+
+        {/* Main video */}
+        <video
+          ref={videoRef}
+          className="relative max-w-full max-h-full cursor-pointer z-[1]"
+          style={{ display: "block" }}
+          autoPlay
+          loop
+          muted={isMuted}
+          playsInline
+          preload="auto"
+          onClick={handleVideoClick}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+        >
+          <source
+            src="/program.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
       </div>
 
       <div
