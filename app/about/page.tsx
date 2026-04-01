@@ -136,7 +136,7 @@ export default function AboutPage() {
           .about-page-container {
             position: fixed;
             inset: 0;
-            overflow: hidden;
+            overflow: auto;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -174,7 +174,6 @@ export default function AboutPage() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 0;
-          margin: 0 -1px;
         }
 
         .about-col {
@@ -191,10 +190,10 @@ export default function AboutPage() {
         /* Left half floats RIGHT so text wraps on the left */
         .shape-left {
           float: right;
-          width: 24%;
+          width: calc(24% + 1px);
           height: auto;
           margin-top: 60px;
-          margin-right: -2px;
+          margin-right: 0;
           shape-outside: url('/about/em-left.png');
           shape-margin: 20px;
           shape-image-threshold: 0.01;
@@ -203,10 +202,10 @@ export default function AboutPage() {
         /* Right half floats LEFT so text wraps on the right */
         .shape-right {
           float: left;
-          width: 24%;
+          width: calc(24% + 1px);
           height: auto;
           margin-top: 60px;
-          margin-left: -2px;
+          margin-left: 0;
           shape-outside: url('/about/em-right.png');
           shape-margin: 20px;
           shape-image-threshold: 0.01;
