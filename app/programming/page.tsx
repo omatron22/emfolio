@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Star, Volume2, VolumeX } from "lucide-react";
-import EdgeBleed from "@/components/EdgeBleed";
 
 export default function ProgrammingPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -181,7 +180,7 @@ export default function ProgrammingPage() {
       className="fixed inset-0 bg-black overflow-hidden text-cream"
     >
       <div className="absolute top-28 bottom-32 left-0 right-0 flex items-center justify-center">
-        <EdgeBleed bleedHeight={60} className="w-full h-full">
+        <div className="relative w-full h-full">
           <video
             ref={videoRef}
             className="w-full h-full object-contain cursor-pointer"
@@ -200,7 +199,7 @@ export default function ProgrammingPage() {
             />
             Your browser does not support the video tag.
           </video>
-        </EdgeBleed>
+        </div>
       </div>
 
       <div
