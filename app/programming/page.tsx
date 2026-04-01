@@ -15,6 +15,133 @@ export default function ProgrammingPage() {
   const [volume, setVolume] = useState(0);
 
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bleedFrameRef = useRef<number>(0);
+  const bleedSamplerRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Real-time edge bleed
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const sampler = document.createElement("canvas");
+    bleedSamplerRef.current = sampler;
+    const sCtx = sampler.getContext("2d", { willReadFrequently: true });
+    if (!sCtx) return;
+
+    const BLEED = 100;
+    const SAMPLE_W = 200; // small for performance
+
+    const paintBleed = () => {
+      if (!video.videoWidth || video.paused) {
+        bleedFrameRef.current = requestAnimationFrame(paintBleed);
+        return;
+      }
+
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      const scale = SAMPLE_W / vw;
+      const sH = Math.round(vh * scale);
+
+      sampler.width = SAMPLE_W;
+      sampler.height = sH;
+      sCtx.drawImage(video, 0, 0, SAMPLE_W, sH);
+
+      const wrap = video.closest(".prog-bleed-wrap");
+      if (!wrap) { bleedFrameRef.current = requestAnimationFrame(paintBleed); return; }
+
+      const dW = video.getBoundingClientRect().width;
+      const dH = video.getBoundingClientRect().height;
+      const sx = dW / SAMPLE_W;
+      const sy = dH / sH;
+
+      // Top
+      const topC = wrap.querySelector(".prog-bleed-top") as HTMLCanvasElement;
+      if (topC) {
+        topC.width = Math.round(dW);
+        topC.height = BLEED;
+        const ctx = topC.getContext("2d");
+        if (ctx) {
+          const row = sCtx.getImageData(0, 0, SAMPLE_W, 1).data;
+          for (let x = 0; x < SAMPLE_W; x++) {
+            const i = x * 4;
+            const g = ctx.createLinearGradient(0, BLEED, 0, 0);
+            g.addColorStop(0, `rgb(${row[i]},${row[i+1]},${row[i+2]})`);
+            g.addColorStop(0.5, `rgba(${row[i]},${row[i+1]},${row[i+2]},0.4)`);
+            g.addColorStop(1, `rgba(${row[i]},${row[i+1]},${row[i+2]},0)`);
+            ctx.fillStyle = g;
+            ctx.fillRect(Math.round(x * sx), 0, Math.ceil(sx), BLEED);
+          }
+        }
+      }
+
+      // Bottom
+      const botC = wrap.querySelector(".prog-bleed-bottom") as HTMLCanvasElement;
+      if (botC) {
+        botC.width = Math.round(dW);
+        botC.height = BLEED;
+        const ctx = botC.getContext("2d");
+        if (ctx) {
+          const row = sCtx.getImageData(0, sH - 1, SAMPLE_W, 1).data;
+          for (let x = 0; x < SAMPLE_W; x++) {
+            const i = x * 4;
+            const g = ctx.createLinearGradient(0, 0, 0, BLEED);
+            g.addColorStop(0, `rgb(${row[i]},${row[i+1]},${row[i+2]})`);
+            g.addColorStop(0.5, `rgba(${row[i]},${row[i+1]},${row[i+2]},0.4)`);
+            g.addColorStop(1, `rgba(${row[i]},${row[i+1]},${row[i+2]},0)`);
+            ctx.fillStyle = g;
+            ctx.fillRect(Math.round(x * sx), 0, Math.ceil(sx), BLEED);
+          }
+        }
+      }
+
+      // Left
+      const leftC = wrap.querySelector(".prog-bleed-left") as HTMLCanvasElement;
+      if (leftC) {
+        leftC.width = BLEED;
+        leftC.height = Math.round(dH);
+        const ctx = leftC.getContext("2d");
+        if (ctx) {
+          const col = sCtx.getImageData(0, 0, 1, sH).data;
+          for (let y = 0; y < sH; y++) {
+            const i = y * 4;
+            const g = ctx.createLinearGradient(BLEED, 0, 0, 0);
+            g.addColorStop(0, `rgb(${col[i]},${col[i+1]},${col[i+2]})`);
+            g.addColorStop(0.5, `rgba(${col[i]},${col[i+1]},${col[i+2]},0.4)`);
+            g.addColorStop(1, `rgba(${col[i]},${col[i+1]},${col[i+2]},0)`);
+            ctx.fillStyle = g;
+            ctx.fillRect(0, Math.round(y * sy), BLEED, Math.ceil(sy));
+          }
+        }
+      }
+
+      // Right
+      const rightC = wrap.querySelector(".prog-bleed-right") as HTMLCanvasElement;
+      if (rightC) {
+        rightC.width = BLEED;
+        rightC.height = Math.round(dH);
+        const ctx = rightC.getContext("2d");
+        if (ctx) {
+          const col = sCtx.getImageData(SAMPLE_W - 1, 0, 1, sH).data;
+          for (let y = 0; y < sH; y++) {
+            const i = y * 4;
+            const g = ctx.createLinearGradient(0, 0, BLEED, 0);
+            g.addColorStop(0, `rgb(${col[i]},${col[i+1]},${col[i+2]})`);
+            g.addColorStop(0.5, `rgba(${col[i]},${col[i+1]},${col[i+2]},0.4)`);
+            g.addColorStop(1, `rgba(${col[i]},${col[i+1]},${col[i+2]},0)`);
+            ctx.fillStyle = g;
+            ctx.fillRect(0, Math.round(y * sy), BLEED, Math.ceil(sy));
+          }
+        }
+      }
+
+      bleedFrameRef.current = requestAnimationFrame(paintBleed);
+    };
+
+    video.addEventListener("play", () => { paintBleed(); });
+    if (!video.paused) paintBleed();
+
+    return () => cancelAnimationFrame(bleedFrameRef.current);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(true), 150);
@@ -180,46 +307,31 @@ export default function ProgrammingPage() {
       className="fixed inset-0 bg-black overflow-hidden text-cream"
     >
       <div className="absolute inset-0 flex items-center justify-center" style={{ top: "80px", bottom: "110px" }}>
-        {/* Blurred background copy for real-time bleed */}
-        <video
-          className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          style={{ filter: "blur(50px) brightness(0.5)", transform: "scale(1.3)" }}
-          aria-hidden="true"
-        >
-          <source src="/program.mp4" type="video/mp4" />
-        </video>
-
-        {/* Main video */}
-        <video
-          ref={videoRef}
-          className="relative max-w-full max-h-full cursor-pointer z-[1]"
-          style={{
-            display: "block",
-            maskImage: "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%)",
-            maskComposite: "intersect",
-            WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 3%, black 97%, transparent 100%)",
-            WebkitMaskComposite: "source-in",
-          }}
-          autoPlay
-          loop
-          muted={isMuted}
-          playsInline
-          preload="auto"
-          onClick={handleVideoClick}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-        >
-          <source
-            src="/program.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
+        <div className="prog-bleed-wrap">
+          <canvas className="prog-bleed prog-bleed-top" />
+          <canvas className="prog-bleed prog-bleed-bottom" />
+          <canvas className="prog-bleed prog-bleed-left" />
+          <canvas className="prog-bleed prog-bleed-right" />
+          <video
+            ref={videoRef}
+            className="max-w-full max-h-full cursor-pointer"
+            style={{ display: "block" }}
+            autoPlay
+            loop
+            muted={isMuted}
+            playsInline
+            preload="auto"
+            onClick={handleVideoClick}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+          >
+            <source
+              src="/program.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
       </div>
 
       <div
@@ -348,6 +460,33 @@ export default function ProgrammingPage() {
           </div>
         </div>
       </div>
+      <style jsx global>{`
+        .prog-bleed-wrap {
+          position: relative;
+          display: inline-flex;
+        }
+        .prog-bleed {
+          position: absolute;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .prog-bleed-top {
+          bottom: 100%;
+          left: 0;
+        }
+        .prog-bleed-bottom {
+          top: 100%;
+          left: 0;
+        }
+        .prog-bleed-left {
+          right: 100%;
+          top: 0;
+        }
+        .prog-bleed-right {
+          left: 100%;
+          top: 0;
+        }
+      `}</style>
     </div>
   );
 }
