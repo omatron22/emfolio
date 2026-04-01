@@ -232,7 +232,7 @@ export default function RenderingProjectPage({
                 {project.videos.map((video, index) => (
                   <div key={index} className="w-full max-w-3xl mx-auto">
                     <EdgeBleed bleedHeight={60}>
-                      <video className="w-full h-auto block" controls preload="metadata">
+                      <video className="w-full h-auto block" controls preload="auto">
                         <source src={video} type="video/mp4" />
                         Your browser does not support the video tag.
                       </video>
