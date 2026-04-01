@@ -142,15 +142,7 @@ export default function AboutPage() {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 0;
-        }
-
-        .about-grid .about-col:first-child {
-          padding-right: 6px;
-        }
-
-        .about-grid .about-col:nth-child(2) {
-          padding-left: 6px;
-          margin-left: -1px;
+          margin: 0 -1px;
         }
 
         .about-col {
@@ -170,6 +162,7 @@ export default function AboutPage() {
           width: 24%;
           height: auto;
           margin-top: 60px;
+          margin-right: -2px;
           shape-outside: url('/about/em-left.png');
           shape-margin: 20px;
           shape-image-threshold: 0.01;
@@ -181,6 +174,7 @@ export default function AboutPage() {
           width: 24%;
           height: auto;
           margin-top: 60px;
+          margin-left: -2px;
           shape-outside: url('/about/em-right.png');
           shape-margin: 20px;
           shape-image-threshold: 0.01;
