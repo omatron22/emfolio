@@ -113,6 +113,7 @@ export default function SoundPage() {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "rgba(232,220,196,0.12)";
                     e.currentTarget.style.borderColor = "rgba(232,220,196,0.3)";
+                    playSound("click-marble.wav");
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "rgba(232,220,196,0.05)";
