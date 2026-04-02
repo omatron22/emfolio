@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type MouthShape = "smile" | "open" | "kiss";
+type MouthShape = "smile" | "open" | "kiss" | "squirm";
 
 // SVG mouth shapes - all drawn at a consistent scale
 function MouthSVG({ shape }: { shape: MouthShape }) {
@@ -35,6 +35,18 @@ function MouthSVG({ shape }: { shape: MouthShape }) {
           />
         </svg>
       );
+    case "squirm":
+      return (
+        <svg width="0.4em" height="0.25em" viewBox="0 0 24 12" fill="none">
+          <path
+            d="M2 6 C5 2, 8 10, 12 6 C16 2, 19 10, 22 6"
+            stroke="#E8DCC4"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            fill="none"
+          />
+        </svg>
+      );
   }
 }
 
@@ -55,22 +67,46 @@ export function LogoEyes() {
     }, 150);
   };
 
+  const [eyeStyle, setEyeStyle] = useState<React.CSSProperties>({});
+  const squirmTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const doSquirm = () => {
+    changeMouth("squirm");
+    // Squish eyes wide and flat
+    setEyeStyle({
+      transform: "scaleX(1.3) scaleY(0.4)",
+      transition: "transform 0.12s cubic-bezier(0.4, 0, 0.2, 1)",
+    });
+    // Bounce back after a moment
+    if (squirmTimeout.current) clearTimeout(squirmTimeout.current);
+    squirmTimeout.current = setTimeout(() => {
+      setEyeStyle({
+        transform: "scaleX(1) scaleY(1)",
+        transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      });
+      changeMouth("smile");
+    }, 600);
+  };
+
   useEffect(() => {
     const handleNavHover = () => changeMouth("open");
     const handleNavLeave = () => changeMouth("smile");
     const handleLogoHover = () => changeMouth("kiss");
     const handleLogoLeave = () => changeMouth("smile");
+    const handleLogoClick = () => doSquirm();
 
     window.addEventListener("nav-hover", handleNavHover);
     window.addEventListener("nav-leave", handleNavLeave);
     window.addEventListener("logo-hover", handleLogoHover);
     window.addEventListener("logo-leave", handleLogoLeave);
+    window.addEventListener("logo-click", handleLogoClick);
 
     return () => {
       window.removeEventListener("nav-hover", handleNavHover);
       window.removeEventListener("nav-leave", handleNavLeave);
       window.removeEventListener("logo-hover", handleLogoHover);
       window.removeEventListener("logo-leave", handleLogoLeave);
+      window.removeEventListener("logo-click", handleLogoClick);
     };
   }, []);
 
@@ -104,7 +140,7 @@ export function LogoEyes() {
       <span
         ref={ooRef}
         className="inline-block"
-        style={{ transformOrigin: "center 55%" }}
+        style={{ transformOrigin: "center 55%", ...eyeStyle }}
       >
         oo
       </span>

@@ -17,7 +17,7 @@ export function LogoLink() {
       aria-label="Em Moore - Home"
       onMouseEnter={() => { window.dispatchEvent(new Event("logo-hover")); play("logo-hover"); }}
       onMouseLeave={() => window.dispatchEvent(new Event("logo-leave"))}
-      onClick={() => play("logo-click")}
+      onClick={() => { play("logo-click"); window.dispatchEvent(new Event("logo-click")); }}
     >
       Em M
       <LogoEyes />
