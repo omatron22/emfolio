@@ -152,21 +152,21 @@ export default function DraftDetailPage({
         style={{ opacity: 0, animation: "fadeIn 0.5s ease-out forwards" }}
       >
         <div className="max-w-6xl mx-auto">
-          {/* Mobile: title centered, back top-left, pdf top-right */}
-          <div className="md:hidden flex items-center justify-between">
+          {/* Mobile: title absolutely centered, back/pdf on sides */}
+          <div className="md:hidden relative flex items-center justify-between">
             <Link
               href="/drafting"
-              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors z-10"
             >
               &larr; Back
             </Link>
-            <h1 className="text-sm font-bold tracking-wide text-center flex-1 mx-3">
+            <h1 className="absolute inset-0 flex items-center justify-center text-sm font-bold tracking-wide">
               {draft.name}
             </h1>
             <a
               href={draft.pdf}
               download
-              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors z-10"
             >
               PDF
             </a>
