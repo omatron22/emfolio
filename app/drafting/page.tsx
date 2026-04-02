@@ -4,9 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { drafts, type Draft } from "@/data/drafts";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function DraftingPage() {
   const [hoveredDraft, setHoveredDraft] = useState<Draft | null>(null);
+  const { play } = useSounds();
 
   return (
     <div className="bg-black min-h-screen pt-24 md:pt-28 px-4 md:px-10 pb-6 text-cream flex flex-col items-center">
@@ -31,8 +33,9 @@ export default function DraftingPage() {
               opacity: 0,
               animation: `fadeIn 0.6s ease-out ${index * 80}ms forwards`,
             }}
-            onMouseEnter={() => setHoveredDraft(draft)}
+            onMouseEnter={() => { setHoveredDraft(draft); play("hover"); }}
             onMouseLeave={() => setHoveredDraft(null)}
+            onClick={() => play("click")}
           >
             <Image
               src={draft.preview}
@@ -42,7 +45,8 @@ export default function DraftingPage() {
               className="w-full h-auto block transition-transform duration-250 ease-out group-hover:scale-[1.03]"
               sizes="(max-width: 768px) 50vw, 33vw"
             />
-            <div className="absolute inset-0 bg-black/35 transition-all duration-500 group-hover:bg-black/10" />
+            <div className="absolute inset-0 bg-black/35 transition-all duration-500 group-hover:bg-black/10" style={{ mixBlendMode: "normal" }} />
+            <div className="absolute inset-0 transition-all duration-500" style={{ background: "rgba(200, 180, 140, 0.15)", mixBlendMode: "color" }} />
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               style={{ boxShadow: "inset 0 0 0 1px rgba(232,220,196,0.3)" }}
@@ -64,7 +68,7 @@ export default function DraftingPage() {
           download
           className="text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
         >
-          Download All Drawings (PDF)
+          Download All
         </a>
       </div>
     </div>
