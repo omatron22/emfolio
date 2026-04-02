@@ -56,6 +56,17 @@ export default function DraftingPage() {
           </Link>
         ))}
       </div>
+
+      {/* Download all button */}
+      <div className="flex justify-center mt-8 mb-8">
+        <a
+          href="/drafting/Emma_All_Drawings.pdf"
+          download
+          className="text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
+        >
+          Download All Drawings (PDF)
+        </a>
+      </div>
     </div>
   );
 }
