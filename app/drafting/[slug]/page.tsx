@@ -164,19 +164,6 @@ export default function DraftDetailPage({
         className="flex-1 flex flex-col items-center justify-center px-4 md:px-12 pt-24 md:pt-20 pb-4 min-h-0"
         style={{ opacity: 0, animation: "fadeIn 0.6s ease-out forwards" }}
       >
-        {/* Title with PDF underneath */}
-        <div className="text-center mb-3">
-          <h1 className="text-lg md:text-xl font-bold tracking-wide">{draft.name}</h1>
-          <a
-            href={draft.pdf}
-            download
-            className="inline-block mt-1 text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
-            onMouseEnter={() => play("hover")}
-            onClick={() => play("click")}
-          >
-            Download PDF
-          </a>
-        </div>
         <div
           ref={imageContainerRef}
           className="relative w-full max-w-6xl overflow-hidden rounded-sm select-none"
@@ -224,6 +211,20 @@ export default function DraftDetailPage({
               Drag to pan &middot; Click to exit
             </div>
           )}
+        </div>
+
+        {/* Title and PDF below image */}
+        <div className="text-center mt-4">
+          <h1 className="text-3xl md:text-5xl font-bold mb-3">{draft.name}</h1>
+          <a
+            href={draft.pdf}
+            download
+            className="text-xs md:text-sm font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+            onMouseEnter={() => play("hover")}
+            onClick={() => play("click")}
+          >
+            Download PDF
+          </a>
         </div>
       </div>
 
