@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, useRef } from "react";
 
-type SoundName = "hover" | "click" | "navigate" | "open" | "close" | "zoom";
+type SoundName = "hover" | "click" | "navigate" | "open" | "close" | "zoom" | "logo-hover" | "logo-click";
 
 interface SoundContextType {
   play: (name: SoundName) => void;
@@ -27,10 +27,12 @@ const SOUND_FILES: Record<SoundName, string> = {
   open: "/sounds/open.wav",
   close: "/sounds/close.wav",
   zoom: "/sounds/zoom.wav",
+  "logo-hover": "/sounds/logo-hover.wav",
+  "logo-click": "/sounds/logo-click.wav",
 };
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled, setEnabled] = useState(true);
   const audioCache = useRef<Record<string, AudioBuffer>>({});
   const audioCtxRef = useRef<AudioContext | null>(null);
 
