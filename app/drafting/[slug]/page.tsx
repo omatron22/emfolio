@@ -151,55 +151,50 @@ export default function DraftDetailPage({
         className="pt-24 md:pt-28 px-4 md:px-8 pb-2"
         style={{ opacity: 0, animation: "fadeIn 0.5s ease-out forwards" }}
       >
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          {/* Back link */}
-          <Link
-            href="/drafting"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M10 12L6 8l4-4" />
-            </svg>
-            All Drawings
-          </Link>
-
-          {/* Center title */}
-          <div className="text-center flex-1 mx-4">
-            <h1 className="text-base md:text-xl font-bold tracking-wide">
+        <div className="max-w-6xl mx-auto">
+          {/* Mobile: stacked centered layout */}
+          <div className="md:hidden flex flex-col items-center gap-2">
+            <h1 className="text-base font-bold tracking-wide text-center">
               {draft.name}
             </h1>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/drafting"
+                className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+              >
+                &larr; All Drawings
+              </Link>
+              <a
+                href={draft.pdf}
+                download
+                className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+              >
+                &darr; PDF
+              </a>
+            </div>
           </div>
 
-          {/* Download button */}
-          <a
-            href={draft.pdf}
-            download
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
-          >
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {/* Desktop: original row layout */}
+          <div className="hidden md:flex items-center justify-between">
+            <Link
+              href="/drafting"
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
             >
-              <path d="M8 2v9M4 8l4 4 4-4M2 14h12" />
-            </svg>
-            <span className="hidden md:inline">Download PDF</span>
-            <span className="md:hidden">PDF</span>
-          </a>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 12L6 8l4-4" /></svg>
+              All Drawings
+            </Link>
+            <div className="text-center flex-1 mx-4">
+              <h1 className="text-xl font-bold tracking-wide">{draft.name}</h1>
+            </div>
+            <a
+              href={draft.pdf}
+              download
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+            >
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v9M4 8l4 4 4-4M2 14h12" /></svg>
+              Download PDF
+            </a>
+          </div>
         </div>
       </div>
 
@@ -281,45 +276,54 @@ export default function DraftDetailPage({
         className="px-4 md:px-8 pt-2 pb-4"
         style={{ opacity: 0, animation: "fadeIn 0.5s ease-out 200ms forwards" }}
       >
-        <div className="max-w-6xl mx-auto flex items-center gap-3">
-          {/* Prev name */}
-          <Link
-            href={`/drafting/${prevDraft.slug}`}
-            className="flex-shrink-0 text-[10px] md:text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M10 12L6 8l4-4" /></svg> {prevDraft.name}
-          </Link>
-
-          {/* Thumbnail strip */}
-          <div className="flex-1 flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
+        <div className="max-w-6xl mx-auto">
+          {/* Mobile: just centered thumbnails */}
+          <div className="md:hidden flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
             {drafts.map((d, i) => (
               <Link
                 key={d.slug}
                 href={`/drafting/${d.slug}`}
-                className={`flex-shrink-0 relative w-12 h-8 md:w-16 md:h-11 overflow-hidden rounded-sm transition-all duration-300 ${
+                className={`flex-shrink-0 relative w-10 h-7 overflow-hidden rounded-sm transition-all duration-300 ${
                   i === currentIndex
                     ? "opacity-100 ring-1 ring-cream/40"
                     : "opacity-30 hover:opacity-60"
                 }`}
               >
-                <Image
-                  src={d.preview}
-                  alt={d.name}
-                  fill
-                  className="object-cover"
-                  sizes="64px"
-                />
+                <Image src={d.preview} alt={d.name} fill className="object-cover" sizes="40px" />
               </Link>
             ))}
           </div>
 
-          {/* Next name */}
-          <Link
-            href={`/drafting/${nextDraft.slug}`}
-            className="flex-shrink-0 text-[10px] md:text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
-          >
-            {nextDraft.name} <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M6 4l4 4-4 4" /></svg>
-          </Link>
+          {/* Desktop: full row with prev/next names */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              href={`/drafting/${prevDraft.slug}`}
+              className="flex-shrink-0 text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
+            >
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M10 12L6 8l4-4" /></svg> {prevDraft.name}
+            </Link>
+            <div className="flex-1 flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
+              {drafts.map((d, i) => (
+                <Link
+                  key={d.slug}
+                  href={`/drafting/${d.slug}`}
+                  className={`flex-shrink-0 relative w-16 h-11 overflow-hidden rounded-sm transition-all duration-300 ${
+                    i === currentIndex
+                      ? "opacity-100 ring-1 ring-cream/40"
+                      : "opacity-30 hover:opacity-60"
+                  }`}
+                >
+                  <Image src={d.preview} alt={d.name} fill className="object-cover" sizes="64px" />
+                </Link>
+              ))}
+            </div>
+            <Link
+              href={`/drafting/${nextDraft.slug}`}
+              className="flex-shrink-0 text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
+            >
+              {nextDraft.name} <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M6 4l4 4-4 4" /></svg>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
