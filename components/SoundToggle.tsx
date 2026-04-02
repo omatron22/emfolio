@@ -10,7 +10,7 @@ export function SoundToggle() {
       onClick={toggle}
       className="fixed bottom-5 left-5 z-50 hidden md:block transition-opacity duration-200 hover:opacity-70"
       style={{
-        color: enabled ? "#E8DCC4" : "rgba(232,220,196,0.25)",
+        color: "#E8DCC4",
         background: "none",
         border: "none",
         padding: 0,
