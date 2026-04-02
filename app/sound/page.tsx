@@ -39,6 +39,18 @@ const samples = [
     { name: "Shuffle", file: "trans-shuffle.wav" },
     { name: "Brush Stroke", file: "trans-brush.wav" },
   ]},
+  { category: "Squirmy (logo click)", sounds: [
+    { name: "Rubber Duck", file: "squirm-rubber-duck.wav" },
+    { name: "Wobble Board", file: "squirm-wobble.wav" },
+    { name: "Cartoon Spring", file: "squirm-spring.wav" },
+    { name: "Jelly Wiggle", file: "squirm-jelly.wav" },
+    { name: "Squeaky Toy", file: "squirm-squeaky.wav" },
+    { name: "Raspberry", file: "squirm-raspberry.wav" },
+    { name: "Slide Whistle", file: "squirm-slide-whistle.wav" },
+    { name: "Plop", file: "squirm-plop.wav" },
+    { name: "Noodle Slap", file: "squirm-noodle.wav" },
+    { name: "Bubbly Gurgle", file: "squirm-gurgle.wav" },
+  ]},
   { category: "Special", sounds: [
     { name: "Wooden Knock", file: "special-knock.wav" },
     { name: "Double Tap", file: "special-double-tap.wav" },
