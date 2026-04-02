@@ -179,7 +179,7 @@ export default function DraftDetailPage({
               className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
             >
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 12L6 8l4-4" /></svg>
-              All Drawings
+              Back
             </Link>
             <div className="text-center flex-1 mx-4">
               <h1 className="text-xl font-bold tracking-wide">{draft.name}</h1>
