@@ -156,7 +156,7 @@ export default function DraftDetailPage({
         onMouseEnter={() => play("hover")}
         onClick={() => play("navigate")}
       >
-        &larr; Back
+        Back
       </Link>
 
       {/* Main image viewer */}

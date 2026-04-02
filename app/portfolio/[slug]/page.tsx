@@ -108,7 +108,7 @@ export default function ProjectPage({
         onMouseEnter={() => play("hover")}
         onClick={() => play("navigate")}
       >
-        &larr; Back
+        Back
       </Link>
 
       {/* Full screen image carousel */}
@@ -201,17 +201,15 @@ export default function ProjectPage({
         )}
 
 
-        {/* Scroll indicator - hides after scrolling */}
-        {!hasScrolled && (
-          <div
-            className={`hidden md:block absolute bottom-8 right-8 text-sm animate-bounce transition-opacity duration-300 z-20 ${
-              showControls ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
-          >
-            Scroll for details &darr;
-          </div>
-        )}
+        {/* Scroll indicator */}
+        <div
+          className={`hidden md:block absolute bottom-8 right-8 text-sm transition-opacity duration-300 z-20 text-cream/40 ${
+            showControls ? "opacity-100" : "opacity-0"
+          }`}
+          style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+        >
+          Scroll for details
+        </div>
       </div>
 
       {/* Project details */}
