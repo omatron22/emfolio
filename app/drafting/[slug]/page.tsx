@@ -240,25 +240,6 @@ export default function DraftDetailPage({
             />
           </div>
 
-          {/* Zoom hint */}
-          {!zoomed && (
-            <div className="absolute bottom-3 right-3 flex items-center gap-1.5 text-[10px] text-cream/30 pointer-events-none">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="7" cy="7" r="5" />
-                <path d="M11 11l3 3M7 5v4M5 7h4" />
-              </svg>
-              Click to zoom
-            </div>
-          )}
 
           {/* Zoomed state hint */}
           {zoomed && (
