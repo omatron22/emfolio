@@ -74,7 +74,7 @@ export function LogoEyes() {
     changeMouth("squirm");
     // Squish eyes wide and flat
     setEyeStyle({
-      transform: "scaleX(1.5) scaleY(0.35)",
+      transform: "scaleX(0.35) scaleY(1.5)",
       transition: "transform 0.12s cubic-bezier(0.4, 0, 0.2, 1)",
     });
     // Bounce back after a moment
