@@ -67,23 +67,12 @@ export function LogoEyes() {
     }, 150);
   };
 
-  const [eyeStyle, setEyeStyle] = useState<React.CSSProperties>({});
   const squirmTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const doSquirm = () => {
     changeMouth("squirm");
-    // Squish eyes wide and flat
-    setEyeStyle({
-      transform: "scaleX(0.35) scaleY(1.5)",
-      transition: "transform 0.12s cubic-bezier(0.4, 0, 0.2, 1)",
-    });
-    // Bounce back after a moment
     if (squirmTimeout.current) clearTimeout(squirmTimeout.current);
     squirmTimeout.current = setTimeout(() => {
-      setEyeStyle({
-        transform: "scaleX(1) scaleY(1)",
-        transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-      });
       changeMouth("smile");
     }, 600);
   };
@@ -140,7 +129,7 @@ export function LogoEyes() {
       <span
         ref={ooRef}
         className="inline-block"
-        style={{ transformOrigin: "center 55%", ...eyeStyle }}
+        style={{ transformOrigin: "center 55%" }}
       >
         oo
       </span>
