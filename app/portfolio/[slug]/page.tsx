@@ -243,9 +243,9 @@ export default function ProjectPage({
 
           {/* Credits */}
           <div className="mb-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-32 gap-y-3 text-left max-w-7xl mx-auto text-base text-cream-muted">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-32 gap-y-3 text-center md:text-left max-w-7xl mx-auto text-base text-cream-muted">
               {show.credits.map((credit, index) => (
-                <div key={index} className="whitespace-nowrap">
+                <div key={index} className="md:whitespace-nowrap">
                   <span className="font-semibold">{credit.role}:</span> <span>{credit.name}</span>
                 </div>
               ))}
