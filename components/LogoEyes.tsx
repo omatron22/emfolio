@@ -71,10 +71,19 @@ export function LogoEyes() {
 
   const doSquirm = () => {
     changeMouth("squirm");
+    // Shake the eyes
+    const el = ooRef.current;
+    if (el) {
+      el.style.transition = "none";
+      el.style.animation = "logoShake 0.4s ease-in-out 2";
+      el.addEventListener("animationend", () => {
+        el.style.animation = "";
+      }, { once: true });
+    }
     if (squirmTimeout.current) clearTimeout(squirmTimeout.current);
     squirmTimeout.current = setTimeout(() => {
       changeMouth("smile");
-    }, 600);
+    }, 1200);
   };
 
   useEffect(() => {
