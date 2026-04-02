@@ -148,7 +148,7 @@ export default function DraftDetailPage({
     <div className="bg-black min-h-screen flex flex-col text-cream">
       {/* Top bar */}
       <div
-        className="pt-24 md:pt-28 px-4 md:px-8 pb-2"
+        className="pt-20 md:pt-24 px-4 md:px-8 pb-1"
         style={{ opacity: 0, animation: "fadeIn 0.5s ease-out forwards" }}
       >
         <div className="max-w-6xl mx-auto">
@@ -198,14 +198,14 @@ export default function DraftDetailPage({
 
       {/* Main image viewer - lightbox style */}
       <div
-        className="flex-1 flex items-center justify-center px-4 md:px-12 py-2 md:py-3 min-h-0"
+        className="flex-1 flex items-center justify-center px-4 md:px-12 py-1 md:py-2 min-h-0"
         style={{ opacity: 0, animation: "fadeIn 0.6s ease-out 100ms forwards" }}
       >
         <div
           ref={imageContainerRef}
           className="relative w-full max-w-6xl overflow-hidden rounded-sm select-none"
           style={{
-            height: "clamp(40vh, 55vh, 60vh)",
+            height: "clamp(50vh, 70vh, 80vh)",
             cursor: zoomed ? (isPanning ? "grabbing" : "grab") : "zoom-in",
           }}
           onClick={(e) => {
@@ -250,61 +250,6 @@ export default function DraftDetailPage({
         </div>
       </div>
 
-      {/* Bottom navigation - prev name, thumbnails, next name all in one row */}
-      <div
-        className="px-4 md:px-8 pt-2 pb-4"
-        style={{ opacity: 0, animation: "fadeIn 0.5s ease-out 200ms forwards" }}
-      >
-        <div className="max-w-6xl mx-auto">
-          {/* Mobile: just centered thumbnails */}
-          <div className="md:hidden flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
-            {drafts.map((d, i) => (
-              <Link
-                key={d.slug}
-                href={`/drafting/${d.slug}`}
-                className={`flex-shrink-0 relative w-10 h-7 overflow-hidden rounded-sm transition-all duration-300 ${
-                  i === currentIndex
-                    ? "opacity-100 ring-1 ring-cream/40"
-                    : "opacity-30 hover:opacity-60"
-                }`}
-              >
-                <Image src={d.preview} alt={d.name} fill className="object-cover" sizes="40px" />
-              </Link>
-            ))}
-          </div>
-
-          {/* Desktop: full row with prev/next names */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              href={`/drafting/${prevDraft.slug}`}
-              className="flex-shrink-0 text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M10 12L6 8l4-4" /></svg> {prevDraft.name}
-            </Link>
-            <div className="flex-1 flex gap-1.5 justify-center overflow-x-auto scrollbar-hide">
-              {drafts.map((d, i) => (
-                <Link
-                  key={d.slug}
-                  href={`/drafting/${d.slug}`}
-                  className={`flex-shrink-0 relative w-16 h-11 overflow-hidden rounded-sm transition-all duration-300 ${
-                    i === currentIndex
-                      ? "opacity-100 ring-1 ring-cream/40"
-                      : "opacity-30 hover:opacity-60"
-                  }`}
-                >
-                  <Image src={d.preview} alt={d.name} fill className="object-cover" sizes="64px" />
-                </Link>
-              ))}
-            </div>
-            <Link
-              href={`/drafting/${nextDraft.slug}`}
-              className="flex-shrink-0 text-xs text-cream-muted hover:text-cream transition-colors tracking-wide"
-            >
-              {nextDraft.name} <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline -mt-px"><path d="M6 4l4 4-4 4" /></svg>
-            </Link>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
