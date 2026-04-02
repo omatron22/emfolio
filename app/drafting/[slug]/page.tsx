@@ -146,61 +146,34 @@ export default function DraftDetailPage({
 
   return (
     <div className="bg-black min-h-screen flex flex-col text-cream">
-      {/* Top bar */}
-      <div
-        className="pt-20 md:pt-24 px-4 md:px-8 pb-1"
-        style={{ opacity: 0, animation: "fadeIn 0.5s ease-out forwards" }}
+      {/* Back link */}
+      <Link
+        href="/drafting"
+        className="fixed top-8 left-4 md:left-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
+        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
       >
-        <div className="max-w-6xl mx-auto">
-          {/* Mobile: title absolutely centered, back/pdf on sides */}
-          <div className="md:hidden relative flex items-center justify-between">
-            <Link
-              href="/drafting"
-              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors z-10"
-            >
-              &larr; Back
-            </Link>
-            <h1 className="absolute inset-0 flex items-center justify-center text-sm font-bold tracking-wide">
-              {draft.name}
-            </h1>
-            <a
-              href={draft.pdf}
-              download
-              className="text-[10px] font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors z-10"
-            >
-              PDF
-            </a>
-          </div>
+        &larr; Back
+      </Link>
 
-          {/* Desktop: original row layout */}
-          <div className="hidden md:flex items-center justify-between">
-            <Link
-              href="/drafting"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 12L6 8l4-4" /></svg>
-              Back
-            </Link>
-            <div className="text-center flex-1 mx-4">
-              <h1 className="text-xl font-bold tracking-wide">{draft.name}</h1>
-            </div>
-            <a
-              href={draft.pdf}
-              download
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
-            >
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 2v9M4 8l4 4 4-4M2 14h12" /></svg>
-              Download PDF
-            </a>
-          </div>
+      {/* PDF link */}
+      <a
+        href={draft.pdf}
+        download
+        className="fixed top-8 right-4 md:right-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
+        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
+      >
+        PDF
+      </a>
+
+      {/* Main image viewer */}
+      <div
+        className="flex-1 flex flex-col items-center justify-center px-4 md:px-12 pt-24 md:pt-20 pb-4 min-h-0"
+        style={{ opacity: 0, animation: "fadeIn 0.6s ease-out forwards" }}
+      >
+        {/* Title right above image */}
+        <div className="text-center mb-3">
+          <h1 className="text-lg md:text-xl font-bold tracking-wide">{draft.name}</h1>
         </div>
-      </div>
-
-      {/* Main image viewer - lightbox style */}
-      <div
-        className="flex-1 flex items-center justify-center px-4 md:px-12 py-1 md:py-2 min-h-0"
-        style={{ opacity: 0, animation: "fadeIn 0.6s ease-out 100ms forwards" }}
-      >
         <div
           ref={imageContainerRef}
           className="relative w-full max-w-6xl overflow-hidden rounded-sm select-none"
