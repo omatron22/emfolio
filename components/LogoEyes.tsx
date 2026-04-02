@@ -71,11 +71,12 @@ export function LogoEyes() {
 
   const doSquirm = () => {
     changeMouth("squirm");
-    // Shake the eyes
-    const el = ooRef.current;
+    // Shake the whole logo face area
+    const el = ooRef.current?.parentElement;
     if (el) {
-      el.style.transition = "none";
-      el.style.animation = "logoShake 0.4s ease-in-out 2";
+      el.style.animation = "none";
+      void el.offsetHeight; // force reflow
+      el.style.animation = "logoShake 0.5s ease-in-out 4";
       el.addEventListener("animationend", () => {
         el.style.animation = "";
       }, { once: true });
@@ -83,7 +84,7 @@ export function LogoEyes() {
     if (squirmTimeout.current) clearTimeout(squirmTimeout.current);
     squirmTimeout.current = setTimeout(() => {
       changeMouth("smile");
-    }, 1200);
+    }, 2200);
   };
 
   useEffect(() => {
