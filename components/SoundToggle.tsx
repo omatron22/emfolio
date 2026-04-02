@@ -8,18 +8,17 @@ export function SoundToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed bottom-4 left-4 z-50 hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-200"
+      className="fixed bottom-5 left-5 z-50 hidden md:block transition-opacity duration-200 hover:opacity-70"
       style={{
-        background: enabled ? "rgba(232,220,196,0.1)" : "rgba(255,255,255,0.05)",
-        border: "1px solid rgba(232,220,196,0.15)",
-        color: enabled ? "#E8DCC4" : "rgba(232,220,196,0.3)",
-        fontSize: "0.7rem",
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
+        color: enabled ? "#E8DCC4" : "rgba(232,220,196,0.25)",
+        background: "none",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
       }}
       title={enabled ? "Mute sounds" : "Enable sounds"}
     >
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         {enabled ? (
           <>
             <path d="M11 5L6 9H2v6h4l5 4V5z" />
@@ -34,7 +33,6 @@ export function SoundToggle() {
           </>
         )}
       </svg>
-      {enabled ? "Sound on" : "Sound off"}
     </button>
   );
 }
