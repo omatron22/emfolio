@@ -37,11 +37,11 @@ function MouthSVG({ shape }: { shape: MouthShape }) {
       );
     case "squirm":
       return (
-        <svg width="0.4em" height="0.25em" viewBox="0 0 24 12" fill="none">
+        <svg width="0.5em" height="0.35em" viewBox="0 0 30 16" fill="none">
           <path
-            d="M2 6 C5 2, 8 10, 12 6 C16 2, 19 10, 22 6"
+            d="M2 8 C6 2, 10 14, 15 8 C20 2, 24 14, 28 8"
             stroke="#E8DCC4"
-            strokeWidth="2.5"
+            strokeWidth="3.2"
             strokeLinecap="round"
             fill="none"
           />
@@ -74,7 +74,7 @@ export function LogoEyes() {
     changeMouth("squirm");
     // Squish eyes wide and flat
     setEyeStyle({
-      transform: "scaleX(1.3) scaleY(0.4)",
+      transform: "scaleX(0.5) scaleY(1.3)",
       transition: "transform 0.12s cubic-bezier(0.4, 0, 0.2, 1)",
     });
     // Bounce back after a moment
