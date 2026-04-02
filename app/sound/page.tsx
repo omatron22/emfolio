@@ -3,35 +3,61 @@
 import { useRef, useCallback } from "react";
 
 const samples = [
-  { category: "Clicks (hover / button)", sounds: [
+  { category: "Clicks", sounds: [
     { name: "Tiny Tap", file: "click-tiny-tap.wav" },
     { name: "Soft Pop", file: "click-soft-pop.wav" },
     { name: "Crisp Snap", file: "click-crisp-snap.wav" },
     { name: "Wooden Tick", file: "click-wooden-tick.wav" },
-    { name: "Typewriter Key", file: "click-typewriter.wav" },
+    { name: "Typewriter", file: "click-typewriter.wav" },
     { name: "Tongue Click", file: "click-tongue.wav" },
     { name: "Bubble Pop", file: "click-bubble-pop.wav" },
     { name: "Light Switch", file: "click-light-switch.wav" },
     { name: "Pen Click", file: "click-pen.wav" },
-    { name: "Marble Drop", file: "click-marble.wav" },
+    { name: "Marble", file: "click-marble.wav" },
+    { name: "Raindrop", file: "click-raindrop.wav" },
+    { name: "Tick Tock", file: "click-tick-tock.wav" },
+    { name: "Dice", file: "click-dice.wav" },
+    { name: "Drip", file: "click-drip.wav" },
+    { name: "Knuckle", file: "click-knuckle.wav" },
+    { name: "Soft Thud", file: "click-soft-thud.wav" },
+    { name: "Pebble", file: "click-pebble.wav" },
+    { name: "Sticker Peel", file: "click-sticker.wav" },
+    { name: "Fingernail", file: "click-fingernail.wav" },
+    { name: "Squish", file: "click-squish.wav" },
   ]},
-  { category: "Transitions (navigate / zoom)", sounds: [
+  { category: "Transitions", sounds: [
     { name: "Page Turn", file: "trans-page-turn.wav" },
     { name: "Soft Whoosh", file: "trans-soft-whoosh.wav" },
     { name: "Quick Swipe", file: "trans-quick-swipe.wav" },
     { name: "Card Flick", file: "trans-card-flick.wav" },
     { name: "Paper Slide", file: "trans-paper-slide.wav" },
     { name: "Drawer", file: "trans-drawer.wav" },
+    { name: "Ribbon Pull", file: "trans-ribbon.wav" },
+    { name: "Curtain", file: "trans-curtain.wav" },
+    { name: "Wind Gust", file: "trans-wind.wav" },
+    { name: "Zip", file: "trans-zip.wav" },
+    { name: "Shuffle", file: "trans-shuffle.wav" },
+    { name: "Brush Stroke", file: "trans-brush.wav" },
   ]},
-  { category: "Special (logo / open / close)", sounds: [
+  { category: "Special", sounds: [
     { name: "Wooden Knock", file: "special-knock.wav" },
     { name: "Double Tap", file: "special-double-tap.wav" },
-    { name: "Thock (mech kb)", file: "special-thock.wav" },
+    { name: "Thock", file: "special-thock.wav" },
     { name: "Chirp", file: "special-chirp.wav" },
     { name: "Pluck", file: "special-pluck.wav" },
     { name: "Cork Pop", file: "special-cork-pop.wav" },
     { name: "Snap", file: "special-snap.wav" },
     { name: "Boing", file: "special-boing.wav" },
+    { name: "Xylophone", file: "special-xylophone.wav" },
+    { name: "Kalimba", file: "special-kalimba.wav" },
+    { name: "Ping Pong", file: "special-ping-pong.wav" },
+    { name: "Coin", file: "special-coin.wav" },
+    { name: "Marimba", file: "special-marimba.wav" },
+    { name: "Claves", file: "special-claves.wav" },
+    { name: "Temple Block", file: "special-temple-block.wav" },
+    { name: "Finger Snap", file: "special-finger-snap.wav" },
+    { name: "Doot", file: "special-doot.wav" },
+    { name: "Shaker", file: "special-shaker.wav" },
   ]},
 ];
 
@@ -58,18 +84,18 @@ export default function SoundPage() {
 
   return (
     <div style={{ background: "black", minHeight: "100vh", padding: "100px 24px 40px", color: "#E8DCC4" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        <h1 style={{ fontSize: "1.5rem", marginBottom: 8 }}>Sound Board</h1>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        <h1 style={{ fontSize: "1.5rem", marginBottom: 8 }}>Sound Board — 50 Samples</h1>
         <p style={{ color: "#c4b89a", fontSize: "0.85rem", marginBottom: 32 }}>
-          Click any sound to preview. Pick your favorites for hover, click, navigate, zoom, logo, and open/close.
+          Click to preview. Tell me which ones you want for: hover, click, navigate, zoom, logo hover, logo click, open, close.
         </p>
 
         {samples.map((cat) => (
           <div key={cat.category} style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: "0.9rem", fontWeight: "bold", marginBottom: 12, color: "#D4A853", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              {cat.category}
+              {cat.category} ({cat.sounds.length})
             </h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))", gap: 8 }}>
               {cat.sounds.map((s) => (
                 <button
                   key={s.file}
@@ -81,7 +107,7 @@ export default function SoundPage() {
                     padding: "12px 8px",
                     color: "#E8DCC4",
                     cursor: "pointer",
-                    fontSize: "0.8rem",
+                    fontSize: "0.75rem",
                     transition: "all 0.15s",
                   }}
                   onMouseEnter={(e) => {
