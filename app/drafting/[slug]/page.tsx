@@ -151,8 +151,8 @@ export default function DraftDetailPage({
       {/* Back link */}
       <Link
         href="/drafting"
-        className="fixed top-8 left-4 md:left-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
-        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
+        className="fixed left-4 md:left-8 z-40 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100 py-2 px-3"
+        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", top: "80px" }}
         onMouseEnter={() => play("hover")}
         onClick={() => play("navigate")}
       >

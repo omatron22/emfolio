@@ -103,8 +103,8 @@ export default function ProjectPage({
       {/* Back button */}
       <Link
         href="/portfolio"
-        className="fixed top-8 left-4 md:left-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
-        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
+        className="fixed left-4 md:left-8 z-40 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100 py-2 px-3"
+        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", top: "80px" }}
         onMouseEnter={() => play("hover")}
         onClick={() => play("navigate")}
       >
@@ -164,30 +164,34 @@ export default function ProjectPage({
           })}
         </div>
 
-        {/* Side arrows - desktop only */}
+        {/* Side arrows */}
         {show.images.length > 1 && (
           <div
-            className={`hidden md:block transition-opacity duration-300 ${
+            className={`transition-opacity duration-300 ${
               showControls ? "opacity-100" : "opacity-0"
             }`}
           >
             <button
-              onClick={() =>
+              onClick={() => {
                 setCurrentImageIndex(
                   (prev) => (prev - 1 + show.images.length) % show.images.length
-                )
-              }
-              className="absolute left-8 top-1/2 -translate-y-1/2 z-20 text-4xl transition-opacity opacity-60 hover:opacity-100"
+                );
+                play("click");
+              }}
+              onMouseEnter={() => play("hover")}
+              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 text-5xl md:text-6xl transition-opacity opacity-50 hover:opacity-100 p-2"
               style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
               aria-label="Previous image"
             >
               &lsaquo;
             </button>
             <button
-              onClick={() =>
-                setCurrentImageIndex((prev) => (prev + 1) % show.images.length)
-              }
-              className="absolute right-8 top-1/2 -translate-y-1/2 z-20 text-4xl transition-opacity opacity-60 hover:opacity-100"
+              onClick={() => {
+                setCurrentImageIndex((prev) => (prev + 1) % show.images.length);
+                play("click");
+              }}
+              onMouseEnter={() => play("hover")}
+              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 text-5xl md:text-6xl transition-opacity opacity-50 hover:opacity-100 p-2"
               style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
               aria-label="Next image"
             >
@@ -196,30 +200,6 @@ export default function ProjectPage({
           </div>
         )}
 
-        {/* Dot indicators */}
-        {show.images.length > 1 && (
-          <div
-            className={`absolute left-1/2 -translate-x-1/2 z-20 flex gap-2 transition-opacity duration-300 bottom-40 md:bottom-8 ${
-              showControls ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {show.images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => { setCurrentImageIndex(index); play("click"); }}
-                className="transition-all"
-                aria-label={`Go to image ${index + 1}`}
-                style={{
-                  width: index === currentImageIndex ? "32px" : "8px",
-                  height: "8px",
-                  borderRadius: "999px",
-                  backgroundColor:
-                    index === currentImageIndex ? "#E8DCC4" : "rgba(232, 220, 196, 0.4)",
-                }}
-              />
-            ))}
-          </div>
-        )}
 
         {/* Scroll indicator - hides after scrolling */}
         {!hasScrolled && (
