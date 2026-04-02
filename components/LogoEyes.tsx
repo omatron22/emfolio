@@ -70,6 +70,7 @@ export function LogoEyes() {
 
   const squirmTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSquirming = useRef(false);
+  const isLogoHovered = useRef(false);
 
   const doSquirm = () => {
     isSquirming.current = true;
@@ -78,7 +79,7 @@ export function LogoEyes() {
     if (el) {
       el.style.animation = "none";
       void el.offsetHeight;
-      el.style.animation = "logoShake 0.55s ease-in-out 4";
+      el.style.animation = "logoShake 0.45s ease-in-out 4";
       el.addEventListener("animationend", () => {
         el.style.animation = "";
       }, { once: true });
@@ -86,15 +87,15 @@ export function LogoEyes() {
     if (squirmTimeout.current) clearTimeout(squirmTimeout.current);
     squirmTimeout.current = setTimeout(() => {
       isSquirming.current = false;
-      changeMouth("smile");
-    }, 2200);
+      changeMouth(isLogoHovered.current ? "kiss" : "smile");
+    }, 1800);
   };
 
   useEffect(() => {
     const handleNavHover = () => { if (!isSquirming.current) changeMouth("open"); };
     const handleNavLeave = () => { if (!isSquirming.current) changeMouth("smile"); };
-    const handleLogoHover = () => { if (!isSquirming.current) changeMouth("kiss"); };
-    const handleLogoLeave = () => { if (!isSquirming.current) changeMouth("smile"); };
+    const handleLogoHover = () => { isLogoHovered.current = true; if (!isSquirming.current) changeMouth("kiss"); };
+    const handleLogoLeave = () => { isLogoHovered.current = false; if (!isSquirming.current) changeMouth("smile"); };
     const handleLogoClick = () => doSquirm();
 
     window.addEventListener("nav-hover", handleNavHover);
