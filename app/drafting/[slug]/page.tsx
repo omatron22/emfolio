@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { drafts } from "@/data/drafts";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function DraftDetailPage({
   params,
@@ -13,6 +14,7 @@ export default function DraftDetailPage({
 }) {
   const { slug } = use(params);
   const router = useRouter();
+  const { play } = useSounds();
 
   const currentIndex = drafts.findIndex((d) => d.slug === slug);
   const draft = drafts[currentIndex];
@@ -151,6 +153,8 @@ export default function DraftDetailPage({
         href="/drafting"
         className="fixed top-8 left-4 md:left-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
         style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
+        onMouseEnter={() => play("hover")}
+        onClick={() => play("navigate")}
       >
         &larr; Back
       </Link>
@@ -167,6 +171,8 @@ export default function DraftDetailPage({
             href={draft.pdf}
             download
             className="inline-block mt-1 text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+            onMouseEnter={() => play("hover")}
+            onClick={() => play("click")}
           >
             Download PDF
           </a>

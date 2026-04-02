@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Star, Volume2, VolumeX } from "lucide-react";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function ProgrammingPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { play: playSound } = useSounds();
   const [isPlaying, setIsPlaying] = useState(true);
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -338,7 +340,8 @@ export default function ProgrammingPage() {
             <div className="flex items-center gap-4">
               {/* Play/Pause */}
               <button
-                onClick={togglePlayPause}
+                onClick={() => { togglePlayPause(); playSound("click"); }}
+                onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity flex items-center gap-2"
                 aria-label={isPlaying ? "Pause" : "Play"}
               >
@@ -368,7 +371,8 @@ export default function ProgrammingPage() {
 
               {/* Mute */}
               <button
-                onClick={toggleMute}
+                onClick={() => { toggleMute(); playSound("click"); }}
+                onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity"
                 aria-label={isMuted ? "Unmute" : "Mute"}
               >
@@ -395,7 +399,8 @@ export default function ProgrammingPage() {
 
               {/* Fullscreen */}
               <button
-                onClick={toggleFullscreen}
+                onClick={() => { toggleFullscreen(); playSound("click"); }}
+                onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity"
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >

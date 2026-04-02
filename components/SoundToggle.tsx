@@ -3,11 +3,12 @@
 import { useSounds } from "@/components/SoundProvider";
 
 export function SoundToggle() {
-  const { enabled, toggle } = useSounds();
+  const { enabled, toggle, play } = useSounds();
 
   return (
     <button
-      onClick={toggle}
+      onClick={() => { toggle(); if (!enabled) play("click"); }}
+      onMouseEnter={() => play("hover")}
       className="fixed bottom-5 left-5 z-50 hidden md:block transition-opacity duration-200 hover:opacity-70"
       style={{
         color: "#E8DCC4",

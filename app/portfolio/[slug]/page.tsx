@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { shows } from "@/data/shows";
 import EdgeBleed from "@/components/EdgeBleed";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function ProjectPage({
   params,
@@ -13,6 +14,7 @@ export default function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const router = useRouter();
+  const { play } = useSounds();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -103,6 +105,8 @@ export default function ProjectPage({
         href="/portfolio"
         className="fixed top-8 left-4 md:left-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
         style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
+        onMouseEnter={() => play("hover")}
+        onClick={() => play("navigate")}
       >
         &larr; Back
       </Link>
@@ -202,7 +206,7 @@ export default function ProjectPage({
             {show.images.map((_, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentImageIndex(index)}
+                onClick={() => { setCurrentImageIndex(index); play("click"); }}
                 className="transition-all"
                 aria-label={`Go to image ${index + 1}`}
                 style={{

@@ -67,6 +67,8 @@ export default function DraftingPage() {
           href="/drafting/Emma_All_Drawings.pdf"
           download
           className="text-xs font-semibold uppercase tracking-[0.2em] text-cream-muted hover:text-cream transition-colors"
+          onMouseEnter={() => play("hover")}
+          onClick={() => play("click")}
         >
           Download All
         </a>
