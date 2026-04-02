@@ -203,9 +203,9 @@ export default function ProjectPage({
 
         {/* Scroll indicator */}
         <div
-          className={`hidden md:block absolute bottom-8 right-8 text-sm transition-opacity duration-300 z-20 text-cream/40 ${
+          className={`hidden md:block absolute bottom-8 right-8 text-sm transition-opacity duration-300 z-20 text-cream/60 ${
             showControls ? "opacity-100" : "opacity-0"
-          }`}
+          } ${!hasScrolled ? "animate-bounce" : ""}`}
           style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
         >
           Scroll for details
