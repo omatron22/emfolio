@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import EdgeBleed from "@/components/EdgeBleed";
+import { useSounds } from "@/components/SoundProvider";
 
 type HeroImg = {
   src: string;
@@ -26,6 +27,7 @@ export default function HomePage() {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const spotlightRef = useRef<HTMLDivElement>(null);
+  const { play } = useSounds();
 
   // Auto-advance slideshow
   useEffect(() => {
@@ -145,7 +147,7 @@ export default function HomePage() {
         {heroImages.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => { setCurrentIndex(index); play("click"); }}
             className="transition-all"
             aria-label={`Go to image ${index + 1}`}
             style={{

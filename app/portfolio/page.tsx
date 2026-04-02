@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { shows, type Show } from "@/data/shows";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function PortfolioPage() {
   const router = useRouter();
+  const { play } = useSounds();
   const [hoveredShow, setHoveredShow] = useState<Show | null>(null);
   const [isZooming, setIsZooming] = useState(false);
   const [zoomData, setZoomData] = useState<{
@@ -59,8 +61,8 @@ export default function PortfolioPage() {
               key={show.slug}
               className="masonry-tile"
               style={{ animationDelay: `${index * 60}ms` }}
-              onClick={(e) => handleClick(show, e)}
-              onMouseEnter={() => setHoveredShow(show)}
+              onClick={(e) => { handleClick(show, e); play("zoom"); }}
+              onMouseEnter={() => { setHoveredShow(show); play("hover"); }}
               onMouseLeave={() => setHoveredShow(null)}
             >
               <Image

@@ -5,6 +5,8 @@ import { DesktopNav, MobileMenu } from "@/components/NavLinks";
 import { LogoLink } from "@/components/LogoLink";
 import { PageTransition } from "@/components/PageTransition";
 import { CursorGlow } from "@/components/CursorGlow";
+import { SoundProvider } from "@/components/SoundProvider";
+import { SoundToggle } from "@/components/SoundToggle";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -69,20 +71,24 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${geistMono.variable} antialiased bg-black text-cream`}
       >
-        <CursorGlow />
+        <SoundProvider>
+          <CursorGlow />
 
-        <header className="fixed top-0 left-0 right-0 z-50 overflow-visible">
-          <div className="flex items-center justify-between px-4 md:px-8 py-6 overflow-visible">
-            <LogoLink />
+          <header className="fixed top-0 left-0 right-0 z-50 overflow-visible">
+            <div className="flex items-center justify-between px-4 md:px-8 py-6 overflow-visible">
+              <LogoLink />
 
-            <DesktopNav />
-            <MobileMenu />
-          </div>
-        </header>
+              <DesktopNav />
+              <MobileMenu />
+            </div>
+          </header>
 
-        <main className="bg-black">
-          <PageTransition>{children}</PageTransition>
-        </main>
+          <main className="bg-black">
+            <PageTransition>{children}</PageTransition>
+          </main>
+
+          <SoundToggle />
+        </SoundProvider>
       </body>
     </html>
   );

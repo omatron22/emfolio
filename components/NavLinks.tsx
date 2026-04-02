@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useSounds } from "@/components/SoundProvider";
 
 const navItems = [
   { href: "/portfolio", label: "Portfolio" },
@@ -14,6 +15,7 @@ const navItems = [
 
 export function DesktopNav() {
   const pathname = usePathname();
+  const { play } = useSounds();
 
   return (
     <nav className="hidden md:flex items-center gap-4 lg:gap-8 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] lg:tracking-[0.3em]">
@@ -30,8 +32,9 @@ export function DesktopNav() {
               textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)",
               opacity: isActive ? 1 : 0.45,
             }}
-            onMouseEnter={() => window.dispatchEvent(new Event("nav-hover"))}
+            onMouseEnter={() => { window.dispatchEvent(new Event("nav-hover")); play("hover"); }}
             onMouseLeave={() => window.dispatchEvent(new Event("nav-leave"))}
+            onClick={() => play("navigate")}
           >
             {item.label}
           </Link>
@@ -57,6 +60,7 @@ export function DesktopNav() {
 export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const { play } = useSounds();
 
   useEffect(() => {
     setIsOpen(false);
@@ -70,7 +74,7 @@ export function MobileMenu() {
     <>
       <button
         className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); play(isOpen ? "close" : "open"); }}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
       >

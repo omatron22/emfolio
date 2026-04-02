@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { projects, type RenderProject } from "@/data/renderings";
+import { useSounds } from "@/components/SoundProvider";
 
 export default function RenderingsPage() {
   const router = useRouter();
+  const { play } = useSounds();
   const [hoveredProject, setHoveredProject] = useState<RenderProject | null>(null);
   const [isZooming, setIsZooming] = useState(false);
   const [zoomData, setZoomData] = useState<{
@@ -61,8 +63,8 @@ export default function RenderingsPage() {
               style={{
                 animationDelay: `${index * 60}ms`,
               }}
-              onClick={(e) => handleClick(project, e)}
-              onMouseEnter={() => setHoveredProject(project)}
+              onClick={(e) => { handleClick(project, e); play("zoom"); }}
+              onMouseEnter={() => { setHoveredProject(project); play("hover"); }}
               onMouseLeave={() => setHoveredProject(null)}
             >
               <Image
