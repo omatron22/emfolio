@@ -52,6 +52,7 @@ function MouthSVG({ shape }: { shape: MouthShape }) {
 
 export function LogoEyes() {
   const ooRef = useRef<HTMLSpanElement>(null);
+  const faceRef = useRef<HTMLSpanElement>(null);
   const [mouth, setMouth] = useState<MouthShape>("smile");
   const [visible, setVisible] = useState(true);
   const pendingMouth = useRef<MouthShape>("smile");
@@ -71,8 +72,8 @@ export function LogoEyes() {
 
   const doSquirm = () => {
     changeMouth("squirm");
-    // Shake the whole logo face area
-    const el = ooRef.current?.parentElement;
+    // Shake the whole face (eyes + mouth together)
+    const el = faceRef.current;
     if (el) {
       el.style.animation = "none";
       void el.offsetHeight; // force reflow
@@ -135,7 +136,7 @@ export function LogoEyes() {
   }, []);
 
   return (
-    <span className="inline-block relative">
+    <span className="inline-block relative" ref={faceRef}>
       <span
         ref={ooRef}
         className="inline-block"
