@@ -77,7 +77,7 @@ export function LogoEyes() {
     if (el) {
       el.style.animation = "none";
       void el.offsetHeight; // force reflow
-      el.style.animation = "logoShake 0.5s ease-in-out 4";
+      el.style.animation = "logoShake 0.55s ease-in-out 4";
       el.addEventListener("animationend", () => {
         el.style.animation = "";
       }, { once: true });
