@@ -214,6 +214,7 @@ export default function DraftDetailPage({
               priority
               draggable={false}
             />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(200, 180, 140, 0.15)", mixBlendMode: "color" }} />
           </div>
 
 
