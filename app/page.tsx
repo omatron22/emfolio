@@ -51,6 +51,26 @@ export default function HomePage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Scroll/wheel to change slides
+  useEffect(() => {
+    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (scrollTimeout) return;
+      if (Math.abs(e.deltaY) > 20) {
+        if (e.deltaY > 0) {
+          setCurrentIndex((prev) => (prev + 1) % heroImages.length);
+        } else {
+          setCurrentIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+        }
+        play("click");
+        scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 500);
+      }
+    };
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [play]);
+
   // Mouse spotlight - direct DOM update to avoid rerenders
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     if (spotlightRef.current) {
