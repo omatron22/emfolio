@@ -155,24 +155,21 @@ export default function DraftDetailPage({
         &larr; Back
       </Link>
 
-      {/* PDF link */}
-      <a
-        href={draft.pdf}
-        download
-        className="fixed top-8 right-4 md:right-8 z-30 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100"
-        style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", marginTop: "52px" }}
-      >
-        PDF
-      </a>
-
       {/* Main image viewer */}
       <div
         className="flex-1 flex flex-col items-center justify-center px-4 md:px-12 pt-24 md:pt-20 pb-4 min-h-0"
         style={{ opacity: 0, animation: "fadeIn 0.6s ease-out forwards" }}
       >
-        {/* Title right above image */}
+        {/* Title with PDF underneath */}
         <div className="text-center mb-3">
           <h1 className="text-lg md:text-xl font-bold tracking-wide">{draft.name}</h1>
+          <a
+            href={draft.pdf}
+            download
+            className="inline-block mt-1 text-[10px] md:text-xs font-semibold uppercase tracking-[0.15em] text-cream-muted hover:text-cream transition-colors"
+          >
+            Download PDF
+          </a>
         </div>
         <div
           ref={imageContainerRef}
