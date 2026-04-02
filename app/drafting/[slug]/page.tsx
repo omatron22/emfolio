@@ -210,11 +210,11 @@ export default function DraftDetailPage({
               alt={draft.name}
               fill
               className="object-contain"
+              style={{ filter: "sepia(0.15) hue-rotate(-10deg)" }}
               sizes="100vw"
               priority
               draggable={false}
             />
-            <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(200, 180, 140, 0.15)", mixBlendMode: "color" }} />
           </div>
 
 
