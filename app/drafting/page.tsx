@@ -23,7 +23,8 @@ export default function DraftingPage() {
         </div>
       </div>
 
-      <div className="columns-2 md:columns-3 gap-2" style={{ maxWidth: "min(1100px, calc((100vh - 240px) * 1.6))" }}>
+      {/* Desktop: multi-column masonry */}
+      <div className="hidden md:block columns-3 gap-2" style={{ maxWidth: "min(1100px, calc((100vh - 240px) * 1.6))" }}>
         {drafts.map((draft, index) => (
           <Link
             key={draft.slug}
@@ -43,19 +44,43 @@ export default function DraftingPage() {
               width={1200}
               height={800}
               className="w-full h-auto block transition-transform duration-250 ease-out group-hover:scale-[1.03]"
-              sizes="(max-width: 768px) 50vw, 33vw"
+              sizes="33vw"
             />
-            <div className="absolute inset-0 bg-black/35 transition-all duration-500 group-hover:bg-black/10" style={{ mixBlendMode: "normal" }} />
+            <div className="absolute inset-0 bg-black/35 transition-all duration-500 group-hover:bg-black/10" />
             <div className="absolute inset-0 transition-all duration-500" style={{ background: "rgba(200, 180, 140, 0.15)", mixBlendMode: "color" }} />
             <div
               className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               style={{ boxShadow: "inset 0 0 0 1px rgba(232,220,196,0.3)" }}
             />
-            {/* Mobile-only title */}
-            <div className="md:hidden absolute inset-x-0 bottom-0 p-2 pt-6 bg-gradient-to-t from-black/80 to-transparent">
-              <h3 className="text-[10px] font-semibold tracking-wide text-cream">
-                {draft.name}
-              </h3>
+          </Link>
+        ))}
+      </div>
+
+      {/* Mobile: single column like portfolio */}
+      <div className="md:hidden flex flex-col gap-6 max-w-[500px] w-full px-2">
+        {drafts.map((draft, index) => (
+          <Link
+            key={draft.slug}
+            href={`/drafting/${draft.slug}`}
+            className="group block relative overflow-hidden"
+            style={{
+              opacity: 0,
+              animation: `fadeIn 0.6s ease-out ${index * 60}ms forwards`,
+            }}
+            onClick={() => play("click")}
+          >
+            <Image
+              src={draft.preview}
+              alt={draft.name}
+              width={1200}
+              height={800}
+              className="w-full h-auto block"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/30" />
+            <div className="absolute inset-0" style={{ background: "rgba(200, 180, 140, 0.15)", mixBlendMode: "color" }} />
+            <div className="absolute inset-x-0 bottom-0 p-4 pt-8 bg-gradient-to-t from-black/85 to-transparent">
+              <h3 className="text-lg font-bold text-cream">{draft.name}</h3>
             </div>
           </Link>
         ))}
