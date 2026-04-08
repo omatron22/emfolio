@@ -4,236 +4,333 @@ import { useEffect, useRef, useState } from "react";
 import { Star, Volume2, VolumeX } from "lucide-react";
 import { useSounds } from "@/components/SoundProvider";
 
+type ProgrammingVideo = {
+  src: string;
+  songTitle: string;
+  artist: string;
+  accolade?: {
+    icon: "star";
+    line1: string;
+    line2: string;
+  };
+  toolsLine?: string;
+};
+
+const videos: ProgrammingVideo[] = [
+  {
+    src: "/program.mp4",
+    songTitle: "Behind The Sun",
+    artist: "ODESZA",
+    accolade: {
+      icon: "star",
+      line1: "Runner Up, 2025 ACT Entertainment",
+      line2: "grandMA3 Programming Contest",
+    },
+  },
+  {
+    src: "/program-meels-out-west.mp4",
+    songTitle: "Out West",
+    artist: "MEELS",
+    toolsLine: "Programmed in grandMA3 · Rendered in DepenceR4",
+  },
+];
+
 export default function ProgrammingPage() {
+  return (
+    <div className="bg-black text-cream">
+      {videos.map((v, i) => (
+        <VideoBlock key={i} video={v} index={i} />
+      ))}
+    </div>
+  );
+}
+
+function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+
+  const bleedTopRef = useRef<HTMLCanvasElement>(null);
+  const bleedBottomRef = useRef<HTMLCanvasElement>(null);
+  const bleedLeftRef = useRef<HTMLCanvasElement>(null);
+  const bleedRightRef = useRef<HTMLCanvasElement>(null);
+
   const { play: playSound } = useSounds();
-  const [isPlaying, setIsPlaying] = useState(true);
+
+  const [isPlaying, setIsPlaying] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bleedFrameRef = useRef<number>(0);
   const bleedSamplerRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Real-time edge bleed
+  // Real-time edge bleed (per-instance)
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const v = videoRef.current;
+    const stage = stageRef.current;
+    if (!v || !stage) return;
 
     const sampler = document.createElement("canvas");
     bleedSamplerRef.current = sampler;
     const sCtx = sampler.getContext("2d", { willReadFrequently: true });
     if (!sCtx) return;
 
-    const BLEED = 100;
-    const SAMPLE_W = 200; // small for performance
+    const SAMPLE_W = 200;
 
     const paintBleed = () => {
-      if (!video.videoWidth || video.paused) {
+      if (!v.videoWidth || v.paused) {
         bleedFrameRef.current = requestAnimationFrame(paintBleed);
         return;
       }
 
-      const vw = video.videoWidth;
-      const vh = video.videoHeight;
+      const stageRect = stage.getBoundingClientRect();
+      const videoRect = v.getBoundingClientRect();
+
+      // Position relative to the stage container (which is position: relative)
+      const left = videoRect.left - stageRect.left;
+      const top = videoRect.top - stageRect.top;
+      const dW = videoRect.width;
+      const dH = videoRect.height;
+
+      // Bleed depth scales with the smaller of the two video dimensions for responsiveness
+      const BLEED = Math.max(40, Math.min(120, Math.round(Math.min(dW, dH) * 0.12)));
+
+      const vw = v.videoWidth;
+      const vh = v.videoHeight;
       const scale = SAMPLE_W / vw;
-      const sH = Math.round(vh * scale);
+      const sH = Math.max(1, Math.round(vh * scale));
 
       sampler.width = SAMPLE_W;
       sampler.height = sH;
-      sCtx.drawImage(video, 0, 0, SAMPLE_W, sH);
+      sCtx.drawImage(v, 0, 0, SAMPLE_W, sH);
 
-      const container = video.closest(".fixed");
-      if (!container) { bleedFrameRef.current = requestAnimationFrame(paintBleed); return; }
+      const sxRatio = dW / SAMPLE_W;
+      const syRatio = dH / sH;
 
-      const rect = video.getBoundingClientRect();
-      const dW = rect.width;
-      const dH = rect.height;
-      const sx = dW / SAMPLE_W;
-      const sy = dH / sH;
-
-      const drawSide = (c: HTMLCanvasElement | null, side: string) => {
-        if (!c) return;
-        const ctx = c.getContext("2d");
+      const drawHorizontal = (
+        canvas: HTMLCanvasElement | null,
+        side: "top" | "bottom"
+      ) => {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
         if (!ctx) return;
+        canvas.width = Math.round(dW);
+        canvas.height = BLEED;
+        canvas.style.width = `${dW}px`;
+        canvas.style.height = `${BLEED}px`;
+        canvas.style.left = `${left}px`;
+        canvas.style.top = side === "top" ? `${top - BLEED}px` : `${top + dH}px`;
 
-        if (side === "top" || side === "bottom") {
-          c.width = Math.round(dW);
-          c.height = BLEED;
-          c.style.position = "absolute";
-          c.style.left = `${rect.left}px`;
-          c.style.width = `${dW}px`;
-          if (side === "top") c.style.top = `${rect.top - BLEED}px`;
-          else c.style.top = `${rect.bottom}px`;
-
-          const row = sCtx.getImageData(0, side === "top" ? 0 : sH - 1, SAMPLE_W, 1).data;
-          for (let x = 0; x < SAMPLE_W; x++) {
-            const i = x * 4;
-            const g = side === "top"
+        const row = sCtx.getImageData(0, side === "top" ? 0 : sH - 1, SAMPLE_W, 1).data;
+        for (let x = 0; x < SAMPLE_W; x++) {
+          const i = x * 4;
+          const g =
+            side === "top"
               ? ctx.createLinearGradient(0, BLEED, 0, 0)
               : ctx.createLinearGradient(0, 0, 0, BLEED);
-            g.addColorStop(0, `rgb(${row[i]},${row[i+1]},${row[i+2]})`);
-            g.addColorStop(0.5, `rgba(${row[i]},${row[i+1]},${row[i+2]},0.4)`);
-            g.addColorStop(1, `rgba(${row[i]},${row[i+1]},${row[i+2]},0)`);
-            ctx.fillStyle = g;
-            ctx.fillRect(Math.round(x * sx), 0, Math.ceil(sx), BLEED);
-          }
-        } else {
-          c.width = BLEED;
-          c.height = Math.round(dH);
-          c.style.position = "absolute";
-          c.style.top = `${rect.top}px`;
-          c.style.height = `${dH}px`;
-          if (side === "left") c.style.left = `${rect.left - BLEED}px`;
-          else c.style.left = `${rect.right}px`;
-
-          const col = sCtx.getImageData(side === "left" ? 0 : SAMPLE_W - 1, 0, 1, sH).data;
-          for (let y = 0; y < sH; y++) {
-            const i = y * 4;
-            const g = side === "left"
-              ? ctx.createLinearGradient(BLEED, 0, 0, 0)
-              : ctx.createLinearGradient(0, 0, BLEED, 0);
-            g.addColorStop(0, `rgb(${col[i]},${col[i+1]},${col[i+2]})`);
-            g.addColorStop(0.5, `rgba(${col[i]},${col[i+1]},${col[i+2]},0.4)`);
-            g.addColorStop(1, `rgba(${col[i]},${col[i+1]},${col[i+2]},0)`);
-            ctx.fillStyle = g;
-            ctx.fillRect(0, Math.round(y * sy), BLEED, Math.ceil(sy));
-          }
+          g.addColorStop(0, `rgb(${row[i]},${row[i + 1]},${row[i + 2]})`);
+          g.addColorStop(0.5, `rgba(${row[i]},${row[i + 1]},${row[i + 2]},0.4)`);
+          g.addColorStop(1, `rgba(${row[i]},${row[i + 1]},${row[i + 2]},0)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(Math.round(x * sxRatio), 0, Math.ceil(sxRatio), BLEED);
         }
       };
 
-      drawSide(container.querySelector(".prog-bleed-top"), "top");
-      drawSide(container.querySelector(".prog-bleed-bottom"), "bottom");
-      drawSide(container.querySelector(".prog-bleed-left"), "left");
-      drawSide(container.querySelector(".prog-bleed-right"), "right");
+      const drawVertical = (
+        canvas: HTMLCanvasElement | null,
+        side: "left" | "right"
+      ) => {
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        canvas.width = BLEED;
+        canvas.height = Math.round(dH);
+        canvas.style.width = `${BLEED}px`;
+        canvas.style.height = `${dH}px`;
+        canvas.style.top = `${top}px`;
+        canvas.style.left = side === "left" ? `${left - BLEED}px` : `${left + dW}px`;
+
+        const col = sCtx.getImageData(side === "left" ? 0 : SAMPLE_W - 1, 0, 1, sH).data;
+        for (let y = 0; y < sH; y++) {
+          const i = y * 4;
+          const g =
+            side === "left"
+              ? ctx.createLinearGradient(BLEED, 0, 0, 0)
+              : ctx.createLinearGradient(0, 0, BLEED, 0);
+          g.addColorStop(0, `rgb(${col[i]},${col[i + 1]},${col[i + 2]})`);
+          g.addColorStop(0.5, `rgba(${col[i]},${col[i + 1]},${col[i + 2]},0.4)`);
+          g.addColorStop(1, `rgba(${col[i]},${col[i + 1]},${col[i + 2]},0)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(0, Math.round(y * syRatio), BLEED, Math.ceil(syRatio));
+        }
+      };
+
+      drawHorizontal(bleedTopRef.current, "top");
+      drawHorizontal(bleedBottomRef.current, "bottom");
+      drawVertical(bleedLeftRef.current, "left");
+      drawVertical(bleedRightRef.current, "right");
 
       bleedFrameRef.current = requestAnimationFrame(paintBleed);
     };
 
-    video.addEventListener("play", () => { paintBleed(); });
-    if (!video.paused) paintBleed();
+    const onPlay = () => {
+      cancelAnimationFrame(bleedFrameRef.current);
+      paintBleed();
+    };
 
-    return () => cancelAnimationFrame(bleedFrameRef.current);
+    v.addEventListener("play", onPlay);
+    if (!v.paused) paintBleed();
+
+    return () => {
+      v.removeEventListener("play", onPlay);
+      cancelAnimationFrame(bleedFrameRef.current);
+    };
   }, []);
 
+  // Show controls after mount, init volume to 0
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(true), 150);
-    // Set initial volume to 0
     if (videoRef.current) videoRef.current.volume = 0;
     return () => clearTimeout(timer);
   }, []);
 
+  // Progress tracking
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
+    const v = videoRef.current;
+    if (!v) return;
     const updateProgress = () => {
-      setProgress((video.currentTime / video.duration) * 100);
+      if (v.duration) setProgress((v.currentTime / v.duration) * 100);
     };
-    const updateDuration = () => setDuration(video.duration);
-
-    video.addEventListener("timeupdate", updateProgress);
-    video.addEventListener("loadedmetadata", updateDuration);
-
-    return () => {
-      video.removeEventListener("timeupdate", updateProgress);
-      video.removeEventListener("loadedmetadata", updateDuration);
-    };
+    v.addEventListener("timeupdate", updateProgress);
+    return () => v.removeEventListener("timeupdate", updateProgress);
   }, []);
 
+  // Fullscreen state
   useEffect(() => {
     const handleFullscreenChange = () => {
-      if (document.fullscreenElement) {
+      if (document.fullscreenElement === containerRef.current) {
         setIsFullscreen(true);
         return;
       }
-      const video = videoRef.current as HTMLVideoElement & { webkitDisplayingFullscreen?: boolean };
-      if (video && typeof video.webkitDisplayingFullscreen !== "undefined") {
-        setIsFullscreen(!!video.webkitDisplayingFullscreen);
-      } else {
+      const v = videoRef.current as HTMLVideoElement & { webkitDisplayingFullscreen?: boolean };
+      if (v && typeof v.webkitDisplayingFullscreen !== "undefined") {
+        setIsFullscreen(!!v.webkitDisplayingFullscreen);
+      } else if (!document.fullscreenElement) {
         setIsFullscreen(false);
       }
     };
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
 
-    const video = videoRef.current as HTMLVideoElement & {
+    const v = videoRef.current as HTMLVideoElement & {
       webkitDisplayingFullscreen?: boolean;
       addEventListener(type: string, listener: () => void): void;
       removeEventListener(type: string, listener: () => void): void;
     };
-    if (video) {
-      video.addEventListener("webkitbeginfullscreen", handleFullscreenChange);
-      video.addEventListener("webkitendfullscreen", handleFullscreenChange);
+    if (v) {
+      v.addEventListener("webkitbeginfullscreen", handleFullscreenChange);
+      v.addEventListener("webkitendfullscreen", handleFullscreenChange);
     }
 
     return () => {
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
-      if (video) {
-        video.removeEventListener("webkitbeginfullscreen", handleFullscreenChange);
-        video.removeEventListener("webkitendfullscreen", handleFullscreenChange);
+      if (v) {
+        v.removeEventListener("webkitbeginfullscreen", handleFullscreenChange);
+        v.removeEventListener("webkitendfullscreen", handleFullscreenChange);
       }
     };
   }, []);
 
+  // Hide the scroll indicator after the user scrolls (first video only)
+  useEffect(() => {
+    if (index !== 0) return;
+    const onScroll = () => {
+      if (window.scrollY > 60) setHasScrolled(true);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [index]);
+
+  // IntersectionObserver — only the in-view video plays
+  useEffect(() => {
+    const el = containerRef.current;
+    const v = videoRef.current;
+    if (!el || !v) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
+            setIsInView(true);
+            v.play().catch(() => {});
+          } else {
+            setIsInView(false);
+            v.pause();
+          }
+        }
+      },
+      { threshold: [0, 0.25, 0.55, 0.75, 1] }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   const togglePlayPause = () => {
-    if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-    } else {
-      videoRef.current.play();
-    }
-    setIsPlaying((prev) => !prev);
+    const v = videoRef.current;
+    if (!v) return;
+    if (isPlaying) v.pause();
+    else v.play();
   };
 
   const toggleMute = () => {
-    if (!videoRef.current) return;
-    const video = videoRef.current;
+    const v = videoRef.current;
+    if (!v) return;
     if (isMuted) {
-      // Unmute and smoothly ramp volume to 1
-      video.muted = false;
+      v.muted = false;
       setIsMuted(false);
-      let vol = video.volume;
+      let vol = v.volume;
       const ramp = () => {
         vol = Math.min(vol + 0.05, 1);
-        video.volume = vol;
+        v.volume = vol;
         setVolume(vol);
         if (vol < 1) requestAnimationFrame(ramp);
       };
       requestAnimationFrame(ramp);
     } else {
-      // Mute and set volume to 0
-      video.muted = true;
-      video.volume = 0;
+      v.muted = true;
+      v.volume = 0;
       setIsMuted(true);
       setVolume(0);
     }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!videoRef.current) return;
+    const v = videoRef.current;
+    if (!v) return;
     const newVolume = parseFloat(e.target.value);
-    videoRef.current.volume = newVolume;
+    v.volume = newVolume;
     setVolume(newVolume);
     if (newVolume > 0 && isMuted) {
-      videoRef.current.muted = false;
+      v.muted = false;
       setIsMuted(false);
     }
   };
 
   const toggleFullscreen = async () => {
     const container = containerRef.current;
-    const video = videoRef.current;
-    if (!container || !video) return;
+    const v = videoRef.current;
+    if (!container || !v) return;
 
     try {
       const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-      const videoAny = video as HTMLVideoElement & {
+      const videoAny = v as HTMLVideoElement & {
         webkitEnterFullscreen?: () => void;
         webkitExitFullscreen?: () => void;
         webkitDisplayingFullscreen?: boolean;
@@ -272,53 +369,70 @@ export default function ProgrammingPage() {
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!videoRef.current) return;
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
     const bounds = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - bounds.left;
     const percentage = x / bounds.width;
-    videoRef.current.currentTime = percentage * videoRef.current.duration;
+    v.currentTime = percentage * v.duration;
   };
 
-  return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 bg-black overflow-hidden text-cream"
-    >
-      {/* Bleed canvases - positioned absolutely in the full viewport */}
-      <canvas className="prog-bleed prog-bleed-top" />
-      <canvas className="prog-bleed prog-bleed-bottom" />
-      <canvas className="prog-bleed prog-bleed-left" />
-      <canvas className="prog-bleed prog-bleed-right" />
+  const isFirst = index === 0;
 
-      <div className="absolute inset-0 flex items-center justify-center" style={{ top: "80px", bottom: "110px" }}>
-        <div className="prog-bleed-wrap">
+  return (
+    <section
+      ref={containerRef}
+      className={`relative w-full bg-black overflow-hidden text-cream flex flex-col ${
+        isFirst ? "min-h-screen pt-20 md:pt-24" : "min-h-screen pt-12 md:pt-16"
+      } pb-32`}
+    >
+      {/* Video stage */}
+      <div
+        ref={stageRef}
+        className="relative flex-1 flex items-center justify-center px-4 md:px-12"
+      >
+        {/* Bleed canvases sit absolutely inside the stage (which is the positioned ancestor) */}
+        <canvas
+          ref={bleedTopRef}
+          className="prog-bleed pointer-events-none absolute z-0"
+        />
+        <canvas
+          ref={bleedBottomRef}
+          className="prog-bleed pointer-events-none absolute z-0"
+        />
+        <canvas
+          ref={bleedLeftRef}
+          className="prog-bleed pointer-events-none absolute z-0"
+        />
+        <canvas
+          ref={bleedRightRef}
+          className="prog-bleed pointer-events-none absolute z-0"
+        />
+
+        <div className="relative z-10 w-full max-w-6xl">
           <video
             ref={videoRef}
-            className="w-full cursor-pointer"
-            style={{ display: "block", height: "auto" }}
-            autoPlay
+            className="w-full cursor-pointer block"
+            style={{ height: "auto", maxHeight: "calc(100vh - 240px)" }}
             loop
             muted={isMuted}
             playsInline
-            preload="auto"
+            preload="metadata"
             onClick={handleVideoClick}
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
           >
-            <source
-              src="/program.mp4"
-              type="video/mp4"
-            />
+            <source src={video.src} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
       </div>
 
+      {/* Controls + caption */}
       <div
-        className={`fixed bottom-0 left-0 right-0 pb-12 px-8 transition-opacity duration-500 z-10 ${
-          showControls ? "opacity-100" : "opacity-0"
+        className={`px-4 md:px-8 pt-4 transition-opacity duration-500 ${
+          showControls && isInView ? "opacity-100" : "opacity-40"
         }`}
-        style={{ background: "linear-gradient(to top, black 0%, rgba(0,0,0,0.8) 40%, transparent 100%)" }}
       >
         <div className="max-w-6xl mx-auto">
           {/* Progress bar */}
@@ -340,7 +454,10 @@ export default function ProgrammingPage() {
             <div className="flex items-center gap-4">
               {/* Play/Pause */}
               <button
-                onClick={() => { togglePlayPause(); playSound("click"); }}
+                onClick={() => {
+                  togglePlayPause();
+                  playSound("click");
+                }}
                 onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity flex items-center gap-2"
                 aria-label={isPlaying ? "Pause" : "Play"}
@@ -371,7 +488,10 @@ export default function ProgrammingPage() {
 
               {/* Mute */}
               <button
-                onClick={() => { toggleMute(); playSound("click"); }}
+                onClick={() => {
+                  toggleMute();
+                  playSound("click");
+                }}
                 onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity"
                 aria-label={isMuted ? "Unmute" : "Mute"}
@@ -383,7 +503,7 @@ export default function ProgrammingPage() {
                 )}
               </button>
 
-              {/* Volume slider - desktop only */}
+              {/* Volume slider — desktop only */}
               <div className="hidden md:flex items-center gap-2">
                 <input
                   type="range"
@@ -399,7 +519,10 @@ export default function ProgrammingPage() {
 
               {/* Fullscreen */}
               <button
-                onClick={() => { toggleFullscreen(); playSound("click"); }}
+                onClick={() => {
+                  toggleFullscreen();
+                  playSound("click");
+                }}
                 onMouseEnter={() => playSound("hover")}
                 className="hover:opacity-70 transition-opacity"
                 aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
@@ -433,27 +556,60 @@ export default function ProgrammingPage() {
 
             <div className="w-full text-left md:text-right md:ml-auto">
               <p className="text-xs mb-1 text-cream-muted">
-                ODESZA &ldquo;Behind The Sun&rdquo;
+                {video.artist} &ldquo;{video.songTitle}&rdquo;
               </p>
-              <p className="text-[11px] md:text-xs mb-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 md:justify-end text-gold">
-                <Star size={14} strokeWidth={1.5} className="flex-shrink-0" color="#E0CD67" />
-                <span className="font-semibold">Runner Up, 2025 ACT Entertainment</span>
-                <span className="font-semibold">grandMA3 Programming Contest</span>
-              </p>
+              {video.accolade && (
+                <p className="text-[11px] md:text-xs mb-1 flex flex-wrap items-center gap-x-1 gap-y-0.5 md:justify-end text-gold">
+                  <Star
+                    size={14}
+                    strokeWidth={1.5}
+                    className="flex-shrink-0"
+                    color="#E0CD67"
+                  />
+                  <span className="font-semibold">{video.accolade.line1}</span>
+                  <span className="font-semibold">{video.accolade.line2}</span>
+                </p>
+              )}
+              {video.toolsLine && (
+                <p className="text-[11px] md:text-xs text-cream-muted">
+                  {video.toolsLine}
+                </p>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Scroll-down hint — first video only, fades out after first scroll */}
+      {isFirst && (
+        <div
+          className={`pointer-events-none absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-700 ${
+            hasScrolled || !isInView ? "opacity-0" : "opacity-50"
+          }`}
+          aria-hidden="true"
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-cream animate-bounce"
+            style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.6))" }}
+          >
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      )}
+
       <style jsx global>{`
-        .prog-bleed-wrap {
-          position: relative;
-          width: 100%;
-        }
         .prog-bleed {
-          pointer-events: none;
           z-index: 0;
         }
       `}</style>
-    </div>
+    </section>
   );
 }

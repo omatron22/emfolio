@@ -215,7 +215,14 @@ export default function DraftDetailPage({
 
         {/* Title and PDF below image */}
         <div className="text-center mt-4">
-          <h1 className="text-3xl md:text-5xl font-bold mb-3">{draft.name}</h1>
+          <h1 className="text-3xl md:text-5xl font-bold mb-2">{draft.name}</h1>
+          {(draft.show || draft.venue) && (
+            <p className="text-sm md:text-base text-cream-muted mb-3">
+              {draft.show && <span className="italic">{draft.show}</span>}
+              {draft.show && draft.venue && <span className="mx-2">·</span>}
+              {draft.venue && <span>{draft.venue}</span>}
+            </p>
+          )}
           <a
             href={draft.pdf}
             download
