@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Star, Volume2, VolumeX } from "lucide-react";
+import { Star, Volume2, VolumeX, X } from "lucide-react";
 import { useSounds } from "@/components/SoundProvider";
 
 type ProgrammingVideo = {
@@ -36,24 +36,163 @@ const videos: ProgrammingVideo[] = [
 ];
 
 export default function ProgrammingPage() {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (activeIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveIndex(null);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [activeIndex]);
+
   return (
-    <div className="bg-black text-cream">
-      {videos.map((v, i) => (
-        <VideoBlock key={i} video={v} index={i} />
-      ))}
-    </div>
+    <>
+      <div className="min-h-screen bg-black text-cream flex items-center justify-center pt-20 md:pt-24 pb-12 px-4 md:px-10">
+        <div className="w-full max-w-[1600px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+            {videos.map((v, i) => (
+              <VideoTile
+                key={i}
+                video={v}
+                index={i}
+                total={videos.length}
+                paused={activeIndex !== null}
+                onOpen={() => setActiveIndex(i)}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {activeIndex !== null && (
+        <VideoModal
+          video={videos[activeIndex]}
+          onClose={() => setActiveIndex(null)}
+        />
+      )}
+    </>
   );
 }
 
-function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }) {
+function VideoTile({
+  video,
+  index,
+  total,
+  paused,
+  onOpen,
+}: {
+  video: ProgrammingVideo;
+  index: number;
+  total: number;
+  paused: boolean;
+  onOpen: () => void;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { play: playSound } = useSounds();
+
+  // Pause tile video when the modal is open
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (paused) {
+      v.pause();
+    } else {
+      v.play().catch(() => {});
+    }
+  }, [paused]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        playSound("click");
+        onOpen();
+      }}
+      onMouseEnter={() => playSound("hover")}
+      aria-label={`Open ${video.songTitle} by ${video.artist} in full view`}
+      className="group relative w-full aspect-video overflow-hidden bg-black text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cream/50"
+    >
+      {/* Video */}
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+        loop
+        muted
+        autoPlay
+        playsInline
+        preload="metadata"
+      >
+        <source src={video.src} type="video/mp4" />
+      </video>
+
+      {/* Bottom caption with gradient */}
+      <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent pt-20 pb-4 md:pb-5 px-4 md:px-5">
+        <p className="text-[10px] md:text-[11px] uppercase tracking-wider text-cream-muted mb-1">
+          {video.artist}
+        </p>
+        <p className="text-base md:text-lg lg:text-xl font-semibold text-cream mb-1.5 leading-tight">
+          &ldquo;{video.songTitle}&rdquo;
+        </p>
+        {video.accolade && (
+          <p className="text-[10px] md:text-[11px] flex flex-wrap items-center gap-x-1 gap-y-0.5 text-gold">
+            <Star
+              size={11}
+              strokeWidth={1.5}
+              color="#E0CD67"
+              className="flex-shrink-0"
+            />
+            <span className="font-semibold">{video.accolade.line1}</span>
+            <span className="font-semibold">{video.accolade.line2}</span>
+          </p>
+        )}
+        {video.toolsLine && (
+          <p className="text-[10px] md:text-[11px] text-cream-muted">
+            {video.toolsLine}
+          </p>
+        )}
+      </div>
+
+      {/* Hover: subtle darkening + bare expand icon */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/25">
+        <svg
+          width="34"
+          height="34"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+          aria-hidden="true"
+        >
+          <path d="M15 3h6v6" />
+          <path d="M9 21H3v-6" />
+          <path d="M21 3l-7 7" />
+          <path d="M3 21l7-7" />
+        </svg>
+      </div>
+    </button>
+  );
+}
+
+function VideoModal({
+  video,
+  onClose,
+}: {
+  video: ProgrammingVideo;
+  onClose: () => void;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-
-  const bleedTopRef = useRef<HTMLCanvasElement>(null);
-  const bleedBottomRef = useRef<HTMLCanvasElement>(null);
-  const bleedLeftRef = useRef<HTMLCanvasElement>(null);
-  const bleedRightRef = useRef<HTMLCanvasElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { play: playSound } = useSounds();
 
@@ -63,140 +202,20 @@ function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(0);
-  const [isInView, setIsInView] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
 
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const bleedFrameRef = useRef<number>(0);
-  const bleedSamplerRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Real-time edge bleed (per-instance)
+  // Autoplay muted on mount
   useEffect(() => {
     const v = videoRef.current;
-    const stage = stageRef.current;
-    if (!v || !stage) return;
-
-    const sampler = document.createElement("canvas");
-    bleedSamplerRef.current = sampler;
-    const sCtx = sampler.getContext("2d", { willReadFrequently: true });
-    if (!sCtx) return;
-
-    const SAMPLE_W = 200;
-
-    const paintBleed = () => {
-      if (!v.videoWidth || v.paused) {
-        bleedFrameRef.current = requestAnimationFrame(paintBleed);
-        return;
-      }
-
-      const stageRect = stage.getBoundingClientRect();
-      const videoRect = v.getBoundingClientRect();
-
-      // Position relative to the stage container (which is position: relative)
-      const left = videoRect.left - stageRect.left;
-      const top = videoRect.top - stageRect.top;
-      const dW = videoRect.width;
-      const dH = videoRect.height;
-
-      // Bleed depth scales with the smaller of the two video dimensions for responsiveness
-      const BLEED = Math.max(40, Math.min(120, Math.round(Math.min(dW, dH) * 0.12)));
-
-      const vw = v.videoWidth;
-      const vh = v.videoHeight;
-      const scale = SAMPLE_W / vw;
-      const sH = Math.max(1, Math.round(vh * scale));
-
-      sampler.width = SAMPLE_W;
-      sampler.height = sH;
-      sCtx.drawImage(v, 0, 0, SAMPLE_W, sH);
-
-      const sxRatio = dW / SAMPLE_W;
-      const syRatio = dH / sH;
-
-      const drawHorizontal = (
-        canvas: HTMLCanvasElement | null,
-        side: "top" | "bottom"
-      ) => {
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        canvas.width = Math.round(dW);
-        canvas.height = BLEED;
-        canvas.style.width = `${dW}px`;
-        canvas.style.height = `${BLEED}px`;
-        canvas.style.left = `${left}px`;
-        canvas.style.top = side === "top" ? `${top - BLEED}px` : `${top + dH}px`;
-
-        const row = sCtx.getImageData(0, side === "top" ? 0 : sH - 1, SAMPLE_W, 1).data;
-        for (let x = 0; x < SAMPLE_W; x++) {
-          const i = x * 4;
-          const g =
-            side === "top"
-              ? ctx.createLinearGradient(0, BLEED, 0, 0)
-              : ctx.createLinearGradient(0, 0, 0, BLEED);
-          g.addColorStop(0, `rgb(${row[i]},${row[i + 1]},${row[i + 2]})`);
-          g.addColorStop(0.5, `rgba(${row[i]},${row[i + 1]},${row[i + 2]},0.4)`);
-          g.addColorStop(1, `rgba(${row[i]},${row[i + 1]},${row[i + 2]},0)`);
-          ctx.fillStyle = g;
-          ctx.fillRect(Math.round(x * sxRatio), 0, Math.ceil(sxRatio), BLEED);
-        }
-      };
-
-      const drawVertical = (
-        canvas: HTMLCanvasElement | null,
-        side: "left" | "right"
-      ) => {
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        canvas.width = BLEED;
-        canvas.height = Math.round(dH);
-        canvas.style.width = `${BLEED}px`;
-        canvas.style.height = `${dH}px`;
-        canvas.style.top = `${top}px`;
-        canvas.style.left = side === "left" ? `${left - BLEED}px` : `${left + dW}px`;
-
-        const col = sCtx.getImageData(side === "left" ? 0 : SAMPLE_W - 1, 0, 1, sH).data;
-        for (let y = 0; y < sH; y++) {
-          const i = y * 4;
-          const g =
-            side === "left"
-              ? ctx.createLinearGradient(BLEED, 0, 0, 0)
-              : ctx.createLinearGradient(0, 0, BLEED, 0);
-          g.addColorStop(0, `rgb(${col[i]},${col[i + 1]},${col[i + 2]})`);
-          g.addColorStop(0.5, `rgba(${col[i]},${col[i + 1]},${col[i + 2]},0.4)`);
-          g.addColorStop(1, `rgba(${col[i]},${col[i + 1]},${col[i + 2]},0)`);
-          ctx.fillStyle = g;
-          ctx.fillRect(0, Math.round(y * syRatio), BLEED, Math.ceil(syRatio));
-        }
-      };
-
-      drawHorizontal(bleedTopRef.current, "top");
-      drawHorizontal(bleedBottomRef.current, "bottom");
-      drawVertical(bleedLeftRef.current, "left");
-      drawVertical(bleedRightRef.current, "right");
-
-      bleedFrameRef.current = requestAnimationFrame(paintBleed);
-    };
-
-    const onPlay = () => {
-      cancelAnimationFrame(bleedFrameRef.current);
-      paintBleed();
-    };
-
-    v.addEventListener("play", onPlay);
-    if (!v.paused) paintBleed();
-
-    return () => {
-      v.removeEventListener("play", onPlay);
-      cancelAnimationFrame(bleedFrameRef.current);
-    };
+    if (!v) return;
+    v.volume = 0;
+    v.play().catch(() => {});
   }, []);
 
-  // Show controls after mount, init volume to 0
+  // Show controls after mount
   useEffect(() => {
     const timer = setTimeout(() => setShowControls(true), 150);
-    if (videoRef.current) videoRef.current.volume = 0;
     return () => clearTimeout(timer);
   }, []);
 
@@ -245,41 +264,6 @@ function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }
         v.removeEventListener("webkitendfullscreen", handleFullscreenChange);
       }
     };
-  }, []);
-
-  // Hide the scroll indicator after the user scrolls (first video only)
-  useEffect(() => {
-    if (index !== 0) return;
-    const onScroll = () => {
-      if (window.scrollY > 60) setHasScrolled(true);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [index]);
-
-  // IntersectionObserver — only the in-view video plays
-  useEffect(() => {
-    const el = containerRef.current;
-    const v = videoRef.current;
-    if (!el || !v) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.55) {
-            setIsInView(true);
-            v.play().catch(() => {});
-          } else {
-            setIsInView(false);
-            v.pause();
-          }
-        }
-      },
-      { threshold: [0, 0.25, 0.55, 0.75, 1] }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
   }, []);
 
   const togglePlayPause = () => {
@@ -377,43 +361,52 @@ function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }
     v.currentTime = percentage * v.duration;
   };
 
-  const isFirst = index === 0;
+  const closeOnBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      playSound("click");
+      onClose();
+    }
+  };
 
   return (
-    <section
+    <div
       ref={containerRef}
-      className={`relative w-full bg-black overflow-hidden text-cream flex flex-col ${
-        isFirst ? "min-h-screen pt-20 md:pt-24" : "min-h-screen pt-12 md:pt-16"
-      } pb-32`}
+      className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col animate-[fadeIn_200ms_ease-out]"
+      onClick={closeOnBackdrop}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${video.songTitle} by ${video.artist}`}
     >
-      {/* Video stage */}
+      {/* Close button */}
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          playSound("click");
+          onClose();
+        }}
+        onMouseEnter={() => playSound("hover")}
+        aria-label="Close"
+        className="absolute top-4 right-4 md:top-6 md:right-6 z-30 flex items-center justify-center p-2 text-cream/80 hover:text-cream transition-colors"
+      >
+        <X size={26} strokeWidth={1.5} />
+      </button>
+
+      {/* Video stage — clicks on empty padding close modal */}
       <div
         ref={stageRef}
-        className="relative flex-1 flex items-center justify-center px-4 md:px-12"
+        className="relative flex-1 flex items-center justify-center px-4 md:px-12 pt-16 md:pt-20"
+        onClick={closeOnBackdrop}
       >
-        {/* Bleed canvases sit absolutely inside the stage (which is the positioned ancestor) */}
-        <canvas
-          ref={bleedTopRef}
-          className="prog-bleed pointer-events-none absolute z-0"
-        />
-        <canvas
-          ref={bleedBottomRef}
-          className="prog-bleed pointer-events-none absolute z-0"
-        />
-        <canvas
-          ref={bleedLeftRef}
-          className="prog-bleed pointer-events-none absolute z-0"
-        />
-        <canvas
-          ref={bleedRightRef}
-          className="prog-bleed pointer-events-none absolute z-0"
-        />
-
-        <div className="relative z-10 w-full max-w-6xl">
+        {/* Video wrapper — stop clicks from bubbling to the stage backdrop handler */}
+        <div
+          className="relative z-10 w-full max-w-6xl"
+          onClick={(e) => e.stopPropagation()}
+        >
           <video
             ref={videoRef}
             className="w-full cursor-pointer block"
-            style={{ height: "auto", maxHeight: "calc(100vh - 240px)" }}
+            style={{ height: "auto", maxHeight: "calc(100vh - 220px)" }}
             loop
             muted={isMuted}
             playsInline
@@ -430,9 +423,10 @@ function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }
 
       {/* Controls + caption */}
       <div
-        className={`px-4 md:px-8 pt-4 transition-opacity duration-500 ${
-          showControls && isInView ? "opacity-100" : "opacity-40"
+        className={`relative z-20 px-4 md:px-8 pt-4 pb-6 md:pb-8 transition-opacity duration-500 ${
+          showControls ? "opacity-100" : "opacity-40"
         }`}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="max-w-6xl mx-auto">
           {/* Progress bar */}
@@ -580,36 +574,16 @@ function VideoBlock({ video, index }: { video: ProgrammingVideo; index: number }
         </div>
       </div>
 
-      {/* Scroll-down hint — first video only, fades out after first scroll */}
-      {isFirst && (
-        <div
-          className={`pointer-events-none absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 z-20 transition-opacity duration-700 ${
-            hasScrolled || !isInView ? "opacity-0" : "opacity-50"
-          }`}
-          aria-hidden="true"
-        >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-cream animate-bounce"
-            style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.6))" }}
-          >
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </div>
-      )}
-
       <style jsx global>{`
-        .prog-bleed {
-          z-index: 0;
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
       `}</style>
-    </section>
+    </div>
   );
 }
