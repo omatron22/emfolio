@@ -83,6 +83,85 @@ export default function RenderingProjectPage({
     );
   }
 
+  if (project.layout === "presentation") {
+    return (
+      <div className="min-h-screen bg-black text-cream">
+        {/* Back button */}
+        <Link
+          href="/renderings"
+          className="fixed left-4 md:left-8 z-40 text-sm font-semibold uppercase tracking-[0.2em] transition-opacity opacity-60 hover:opacity-100 py-2 px-3"
+          style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)", top: "80px" }}
+          onMouseEnter={() => play("hover")}
+          onClick={() => play("navigate")}
+        >
+          Back
+        </Link>
+
+        {/* Cover hero */}
+        <div className="relative w-full h-screen">
+          <Image
+            src={project.heroImage}
+            alt={`${project.title} - ${project.instructor}`}
+            fill
+            className="object-cover hidden md:block"
+            priority
+            quality={90}
+            sizes="100vw"
+          />
+          <div className="md:hidden w-full h-full flex items-center justify-center">
+            <EdgeBleed bleedHeight={80}>
+              <img
+                src={project.heroImage}
+                alt={`${project.title} - ${project.instructor}`}
+                style={{ width: "100%", height: "auto", maxHeight: "100vh", objectFit: "contain", display: "block" }}
+              />
+            </EdgeBleed>
+          </div>
+
+          <div
+            className={`hidden md:block absolute bottom-8 right-8 text-sm transition-opacity duration-300 z-20 text-cream/60 ${
+              showControls ? "opacity-100" : "opacity-0"
+            } ${!hasScrolled ? "animate-bounce" : ""}`}
+            style={{ textShadow: "0 2px 10px rgba(0, 0, 0, 0.8)" }}
+          >
+            Scroll to view
+          </div>
+        </div>
+
+        {/* Project details */}
+        <div className="relative bg-black px-8 py-8 -mt-35 md:mt-0 md:py-24">
+          <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">{project.title}</h1>
+            <div className="text-xl md:text-2xl text-cream-muted">
+              <p>
+                {project.year} &bull; {project.instructor}
+              </p>
+            </div>
+          </div>
+
+          {/* Vertical scroll of pages, in order */}
+          <div className="max-w-5xl mx-auto flex flex-col gap-6 md:gap-10">
+            {project.images.map((image, index) => (
+              <Image
+                key={image}
+                src={image}
+                alt={`${project.title} - Page ${index + 1}`}
+                width={2550}
+                height={1650}
+                className="w-full h-auto block"
+                style={{ width: "100%", height: "auto" }}
+                loading={index === 0 ? "eager" : "lazy"}
+                priority={index === 0}
+                quality={85}
+                sizes="(max-width: 768px) 100vw, 1024px"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const shouldRenderCarouselImage = (index: number) => {
     const total = project.images.length;
     const prev = (currentImageIndex - 1 + total) % total;
@@ -229,7 +308,7 @@ export default function RenderingProjectPage({
             <div className="masonry-container">
               {project.images.map((image, index) => (
                 <button
-                  key={index}
+                  key={image}
                   onClick={() => handleThumbnailClick(index)}
                   className="masonry-item transition-opacity hover:opacity-70 cursor-pointer"
                   style={{ opacity: index === currentImageIndex ? 0.5 : 1 }}

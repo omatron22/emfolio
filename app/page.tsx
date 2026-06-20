@@ -12,8 +12,10 @@ type HeroImg = {
 };
 
 const heroImages: HeroImg[] = [
+  { src: "/portfolio/madforest/madforest1.jpg", alt: "Mad Forest production", play: "Mad Forest" },
   { src: "/portfolio/emma/emma1.jpg", alt: "Emma: No One But Herself", play: "Emma" },
   { src: "/portfolio/comet/comet1.jpg", alt: "Great Comet production", play: "Great Comet" },
+  { src: "/portfolio/madforest/madforest6.jpg", alt: "Mad Forest production", play: "Mad Forest" },
   { src: "/portfolio/emma/emma6.jpg", alt: "Emma: No One But Herself", play: "Emma" },
   { src: "/portfolio/comet/comet10.jpg", alt: "Great Comet production", play: "Great Comet" },
   { src: "/portfolio/courage/courage1.jpg", alt: "The Courage to Right a Woman's Wrongs", play: "Courage" },

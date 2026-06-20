@@ -159,26 +159,8 @@ function VideoTile({
         )}
       </div>
 
-      {/* Hover: subtle darkening + bare expand icon */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/25">
-        <svg
-          width="34"
-          height="34"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-cream drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
-          aria-hidden="true"
-        >
-          <path d="M15 3h6v6" />
-          <path d="M9 21H3v-6" />
-          <path d="M21 3l-7 7" />
-          <path d="M3 21l7-7" />
-        </svg>
-      </div>
+      {/* Hover: outline frame around the tile */}
+      <div className="pointer-events-none absolute inset-0 z-10 border-2 border-cream/0 group-hover:border-cream/90 transition-colors duration-300" />
     </button>
   );
 }

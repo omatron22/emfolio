@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { shows, type Show } from "@/data/shows";
 import { useSounds } from "@/components/SoundProvider";
+
+const GAP = 16;
+const PER_ROW = 4;
+
+// Run layout measurement before paint on the client (avoids a first-paint flash),
+// while falling back to useEffect during SSR to avoid the hook warning.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 export default function PortfolioPage() {
   const router = useRouter();
@@ -19,11 +26,79 @@ export default function PortfolioPage() {
     height: number;
   } | null>(null);
 
-  const handleClick = (show: Show, e: React.MouseEvent<HTMLDivElement>) => {
+  const masonryRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+  const [isDesktop, setIsDesktop] = useState(false);
+  // Default landscape aspect so first paint is already close; corrected on image load.
+  const [aspects, setAspects] = useState<number[]>(() => shows.map(() => 1.5));
+
+  const showTitle = !!hoveredShow && !isZooming;
+
+  useIsomorphicLayoutEffect(() => {
+    const el = masonryRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      setBox((prev) => (prev.w === w && prev.h === h ? prev : { w, h }));
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, []);
+
+  const updateAspect = useCallback((index: number, ratio: number) => {
+    if (!ratio || !isFinite(ratio)) return;
+    setAspects((prev) => {
+      if (Math.abs(prev[index] - ratio) < 0.001) return prev;
+      const next = [...prev];
+      next[index] = ratio;
+      return next;
+    });
+  }, []);
+
+  // Fixed rows of 4. Each row keeps true aspect ratios and fills the width;
+  // the whole stack is scaled down only if needed to fit the height. No cropping.
+  const sizeByIndex = useMemo(() => {
+    const W = box.w - 1; // epsilon so a full row never wraps early
+    const H = box.h;
+    if (!W || !H || W <= 0) return null;
+
+    const rows: number[][] = [];
+    for (let i = 0; i < aspects.length; i += PER_ROW) {
+      const row: number[] = [];
+      for (let j = i; j < Math.min(i + PER_ROW, aspects.length); j++) row.push(j);
+      rows.push(row);
+    }
+
+    const rowHeights = rows.map((row) => {
+      const sum = row.reduce((a, i) => a + aspects[i], 0);
+      return (W - GAP * (row.length - 1)) / sum;
+    });
+
+    const total = rowHeights.reduce((a, h) => a + h, 0) + GAP * (rows.length - 1);
+    const scale = total > H ? H / total : 1;
+
+    const sizes: { w: number; h: number }[] = [];
+    rows.forEach((row, ri) => {
+      const h = rowHeights[ri] * scale;
+      for (const i of row) sizes[i] = { w: h * aspects[i], h };
+    });
+    return sizes;
+  }, [box, aspects]);
+
+  const openShow = (show: Show, el: HTMLElement) => {
     if (isZooming) return;
     setIsZooming(true);
+    play("zoom");
 
-    const rect = e.currentTarget.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
     setZoomData({
       image: show.heroImage,
       x: rect.left,
@@ -37,53 +112,84 @@ export default function PortfolioPage() {
     }, 600);
   };
 
+  const showTiles = !isDesktop || !!sizeByIndex;
+
   return (
     <div className="portfolio-page-container text-cream">
       <div className={`portfolio-wrapper ${zoomData ? "opacity-0 transition-opacity duration-300" : ""}`}>
-        {/* Title strip - right above images */}
-        <div className="pointer-events-none hidden md:flex justify-center w-full mb-6 h-[50px]">
+        {/* Title strip - always rendered (fixed height) so hover never shifts layout */}
+        <div className="pointer-events-none hidden md:flex justify-center w-full mb-5 h-[56px]">
           <div className="text-center max-w-2xl flex flex-col justify-center">
-            {!isZooming && hoveredShow && (
-              <>
-                <h2 className="text-xl md:text-2xl font-bold mb-1">
-                  {hoveredShow.title}
-                </h2>
-                <p className="text-sm text-cream-muted">
-                  {hoveredShow.year} &bull; Director: {hoveredShow.director}
-                </p>
-              </>
-            )}
+            <h2
+              className={`text-xl md:text-2xl font-bold mb-1 transition-opacity duration-200 ${
+                showTitle ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {hoveredShow?.title ?? " "}
+            </h2>
+            <p
+              className={`text-sm text-cream-muted transition-opacity duration-200 ${
+                showTitle ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {hoveredShow
+                ? `${hoveredShow.year} • Director: ${hoveredShow.director}`
+                : " "}
+            </p>
           </div>
         </div>
-        <div className="portfolio-masonry">
-          {shows.map((show, index) => (
-            <div
-              key={show.slug}
-              className="masonry-tile"
-              style={{ animationDelay: `${index * 60}ms` }}
-              onClick={(e) => { handleClick(show, e); play("zoom"); }}
-              onMouseEnter={() => { setHoveredShow(show); play("hover"); }}
-              onMouseLeave={() => setHoveredShow(null)}
-            >
-              <Image
-                src={show.heroImage}
-                alt={show.title}
-                width={800}
-                height={1200}
-                className="masonry-image"
-                priority={index < 3}
-                quality={90}
-                sizes="(max-width: 900px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-              {/* Mobile title overlay */}
-              <div className="mobile-title-overlay">
-                <h3 className="text-lg font-bold mb-1">{show.title}</h3>
-                <p className="text-xs opacity-90">
-                  {show.year} &bull; {show.director}
-                </p>
-              </div>
-            </div>
-          ))}
+        <div className="portfolio-masonry" ref={masonryRef}>
+          {showTiles &&
+            shows.map((show, index) => {
+              const size = isDesktop && sizeByIndex ? sizeByIndex[index] : null;
+              return (
+                <div
+                  key={show.slug}
+                  className="masonry-tile"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open ${show.title} (${show.year})`}
+                  style={
+                    size
+                      ? { width: `${size.w}px`, height: `${size.h}px`, animationDelay: `${index * 60}ms` }
+                      : { animationDelay: `${index * 60}ms` }
+                  }
+                  onClick={(e) => openShow(show, e.currentTarget)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openShow(show, e.currentTarget);
+                    }
+                  }}
+                  onMouseEnter={() => { setHoveredShow(show); play("hover"); }}
+                  onFocus={() => setHoveredShow(show)}
+                  onMouseLeave={() => setHoveredShow(null)}
+                  onBlur={() => setHoveredShow(null)}
+                >
+                  <Image
+                    src={show.heroImage}
+                    alt={show.title}
+                    width={800}
+                    height={1200}
+                    className="masonry-image"
+                    priority={index < 4}
+                    quality={90}
+                    sizes="(max-width: 767px) 100vw, 25vw"
+                    onLoad={(e) => {
+                      const img = e.currentTarget;
+                      updateAspect(index, img.naturalWidth / img.naturalHeight);
+                    }}
+                  />
+                  {/* Mobile title overlay */}
+                  <div className="mobile-title-overlay">
+                    <h3 className="text-lg font-bold mb-1">{show.title}</h3>
+                    <p className="text-xs opacity-90">
+                      {show.year} &bull; {show.director}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
         </div>
       </div>
 
@@ -129,7 +235,7 @@ export default function PortfolioPage() {
           .portfolio-page-container {
             position: fixed;
             inset: 0;
-            overflow: auto;
+            overflow: hidden;
           }
         }
 
@@ -144,7 +250,7 @@ export default function PortfolioPage() {
 
         @media (min-width: 1024px) {
           .portfolio-wrapper {
-            padding: 110px 60px 60px 60px;
+            padding: 104px 60px 48px 60px;
           }
         }
 
@@ -155,14 +261,6 @@ export default function PortfolioPage() {
           flex-wrap: wrap;
           justify-content: center;
           gap: 20px;
-        }
-
-        .portfolio-masonry .masonry-tile:nth-child(-n+3) {
-          width: calc(33.333% - 14px);
-        }
-
-        .portfolio-masonry .masonry-tile:nth-child(n+4) {
-          width: calc(25% - 15px);
         }
 
         .masonry-tile {
@@ -185,7 +283,7 @@ export default function PortfolioPage() {
         }
 
         .masonry-tile:hover .masonry-image {
-          opacity: 0.8;
+          opacity: 0.85;
         }
 
         .mobile-title-overlay {
@@ -210,14 +308,35 @@ export default function PortfolioPage() {
           object-fit: contain;
         }
 
-        @media (max-width: 1023px) {
-          .portfolio-masonry {
-            gap: 16px;
+        /* Desktop/tablet: 4-up rows that keep true aspect ratios and fit one screen */
+        @media (min-width: 768px) {
+          .portfolio-wrapper {
+            height: 100vh;
+            min-height: 0;
+            justify-content: flex-start;
           }
 
-          .portfolio-masonry .masonry-tile:nth-child(-n+3),
-          .portfolio-masonry .masonry-tile:nth-child(n+4) {
-            width: calc(50% - 8px);
+          .portfolio-masonry {
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+            max-width: 1500px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: ${GAP}px;
+          }
+
+          .portfolio-masonry .masonry-tile {
+            min-width: 0;
+            min-height: 0;
+          }
+
+          .portfolio-masonry .masonry-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
           }
         }
 
@@ -242,8 +361,7 @@ export default function PortfolioPage() {
             align-items: center;
           }
 
-          .portfolio-masonry .masonry-tile:nth-child(-n+3),
-          .portfolio-masonry .masonry-tile:nth-child(n+4) {
+          .portfolio-masonry .masonry-tile {
             width: 100%;
           }
 
