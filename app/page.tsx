@@ -133,6 +133,7 @@ export default function HomePage() {
               {/* Mobile: edge bleed effect */}
               <div className="md:hidden w-full h-full flex items-center justify-center">
                 <EdgeBleed bleedHeight={80}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={image.src}
                     alt={image.alt}

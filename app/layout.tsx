@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import { DesktopNav, MobileMenu } from "@/components/NavLinks";
 import { LogoLink } from "@/components/LogoLink";
 import { PageTransition } from "@/components/PageTransition";

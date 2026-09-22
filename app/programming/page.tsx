@@ -61,8 +61,6 @@ export default function ProgrammingPage() {
               <VideoTile
                 key={i}
                 video={v}
-                index={i}
-                total={videos.length}
                 paused={activeIndex !== null}
                 onOpen={() => setActiveIndex(i)}
               />
@@ -83,14 +81,10 @@ export default function ProgrammingPage() {
 
 function VideoTile({
   video,
-  index,
-  total,
   paused,
   onOpen,
 }: {
   video: ProgrammingVideo;
-  index: number;
-  total: number;
   paused: boolean;
   onOpen: () => void;
 }) {
