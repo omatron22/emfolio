@@ -111,6 +111,7 @@ export function LogoEyes() {
       window.removeEventListener("logo-leave", handleLogoLeave);
       window.removeEventListener("logo-click", handleLogoClick);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Random blinking

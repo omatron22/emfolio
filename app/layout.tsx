@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Poppins, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import { DesktopNav, MobileMenu } from "@/components/NavLinks";
 import { LogoLink } from "@/components/LogoLink";
 import { PageTransition } from "@/components/PageTransition";
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | Em Moore",
   },
   description:
-    "Portfolio of lighting designer Em Moore, specializing in theater, dance, and live music productions. MFA candidate at UCLA.",
+    "Portfolio of lighting designer Em Moore, working across live music, theater, sports, and special events. MFA in Lighting Design, UCLA.",
   keywords: [
     "lighting design",
     "theater",
@@ -41,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Em Moore – Lighting Designer",
     description:
-      "Portfolio of lighting designer Em Moore, specializing in theater, dance, and live music productions.",
+      "Portfolio of lighting designer Em Moore, working across live music, theater, sports, and special events.",
     type: "website",
     locale: "en_US",
   },
@@ -49,7 +48,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Em Moore – Lighting Designer",
     description:
-      "Portfolio of lighting designer Em Moore, specializing in theater, dance, and live music productions.",
+      "Portfolio of lighting designer Em Moore, working across live music, theater, sports, and special events.",
   },
 };
 

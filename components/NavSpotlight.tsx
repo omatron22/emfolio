@@ -36,7 +36,6 @@ export function NavSpotlight() {
   // Light source is at center-top of the viewport
   const sourceX = typeof window !== "undefined" ? window.innerWidth / 2 : 720;
   const sourceY = -40; // slightly above viewport
-  const targetY = 48; // vertical center of nav text area
   const poolHalf = 60; // half-width of beam where it hits the text
 
   // Triangle points for clip-path (in px, we'll convert to % of the container)
@@ -48,7 +47,6 @@ export function NavSpotlight() {
   const sy = ((Math.max(sourceY, 0) / h) * 100).toFixed(2);
   const lx = (((targetX - poolHalf) / w) * 100).toFixed(2);
   const rx = (((targetX + poolHalf) / w) * 100).toFixed(2);
-  const ty = ((targetY / h) * 100).toFixed(2);
   const by = "100";
 
   return (

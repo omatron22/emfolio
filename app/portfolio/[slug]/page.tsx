@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
@@ -13,7 +12,6 @@ export default function ProjectPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const router = useRouter();
   const { play } = useSounds();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
@@ -152,6 +150,7 @@ export default function ProjectPage({
                 {/* Mobile */}
                 <div className="md:hidden w-full h-full flex items-center justify-center">
                   <EdgeBleed bleedHeight={80}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={image}
                       alt={`${show.title} - Image ${index + 1}`}

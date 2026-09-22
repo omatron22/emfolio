@@ -110,6 +110,7 @@ export default function RenderingProjectPage({
           />
           <div className="md:hidden w-full h-full flex items-center justify-center">
             <EdgeBleed bleedHeight={80}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={project.heroImage}
                 alt={`${project.title} - ${project.instructor}`}
@@ -213,6 +214,7 @@ export default function RenderingProjectPage({
                 />
                 <div className="md:hidden w-full h-full flex items-center justify-center">
                   <EdgeBleed bleedHeight={80}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={image}
                       alt={`${project.title} - Image ${index + 1}`}

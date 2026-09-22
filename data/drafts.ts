@@ -9,7 +9,7 @@ export type Draft = {
 };
 
 const EMMA_SHOW = "Emma: No One But Herself";
-const EMMA_VENUE = "Ralph Freud Playhouse";
+const EMMA_VENUE = "UCLA Freud Playhouse";
 
 export const drafts: Draft[] = [
   {
@@ -109,6 +109,6 @@ export const drafts: Draft[] = [
     preview: "/drafting/courage-light-plot.jpg",
     pdf: "/drafting/HEMSLEY_LX_COURAGE_v2026_PRINT.pdf",
     show: "The Courage to Right a Woman's Wrongs",
-    venue: "1340 Blackbox Theater, UCLA",
+    venue: "UCLA 1340 Blackbox",
   },
 ];
