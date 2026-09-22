@@ -38,64 +38,29 @@ export default function AboutPage() {
         />
 
         <section className="about-grid">
-          {/* Left column: text with right-floated left half of image */}
-          <div className="about-col">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/about/em-left.png"
-              alt=""
-              className="shape-img shape-left"
-            />
+          {/* Desktop: full photo centered in the column gutter */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/about/em-v3.png" alt="" className="about-center-img" />
+          <div className="about-text">
             <p>
-              <strong className="text-cream">Em Moore</strong> (they/them) is a queer, nonbinary lighting designer based in Los Angeles
-              and originally from the San Francisco Bay Area. They are currently completing their
-              MFA in Lighting Design for Theatre and Live Events at UCLA. Em began designing
-              lighting in high school, shaped by early and sustained exposure to theatre, music,
-              dance, and visual art across the Bay Area and Los Angeles.
+              <strong className="text-cream">Em Moore</strong> (they/them) is a Los Angeles–based
+              lighting designer working across live music, theater, sports, and special events.
+              They earned their MFA in Lighting Design from UCLA, where they studied with Lap Chi
+              Chu. Em was a finalist for the 2026 Hemsley Internship Program and runner-up in the
+              2025 ACT Entertainment grandMA3 Programming Contest.
             </p>
             <p>
-              Em&apos;s work spans theatre, opera, dance, and live music, with a particular interest
-              in how light shapes movement, time, and perception. They approach lighting as a
-              system of ideas rather than a collection of tools, using structure, rhythm, and
-              visual logic to support performance, clarify intention, and guide the audience&apos;s
-              point of view.
+              Em&apos;s practice bridges creative design and technical execution. As a drafting
+              studio assistant for Wasted Potential, they supported concert and touring projects
+              through Vectorworks drafting and design development. Following graduation, they
+              joined Gray Matter Visual in New York, contributing to the US Open at Arthur Ashe
+              Stadium and other large-scale live events.
             </p>
             <p>
-              Alongside their design practice, Em has served as a Teaching Assistant in UCLA&apos;s
-              lighting program for three years, supporting undergraduate instruction and studio
-              work. Teaching has sharpened their interest in how lighting ideas are communicated,
-              translated, and sustained across different levels of experience and across
-              disciplines.
-            </p>
-          </div>
-
-          {/* Right column: text with left-floated right half of image */}
-          <div className="about-col">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/about/em-right.png"
-              alt=""
-              className="shape-img shape-right"
-            />
-            <p>
-              After participating in the ACT grandMA3 programming competition, Em
-              built a dedicated previsualization studio at UCLA using Depence software,
-              integrating it into both EOS-based theatrical workflows and emerging MA-based
-              concert workflows.
-            </p>
-            <p>
-              Em has worked across a wide range of venues throughout Los Angeles, including
-              academic and regional theatres, performance spaces, and live music environments.
-              This breadth of experience has reinforced their interest in collaborative,
-              process-driven work and in adapting lighting systems to the specific demands of
-              each space.
-            </p>
-            <p>
-              At the core of Em&apos;s practice is a belief that lighting functions best as a
-              conversation, responsive to music, movement, architecture, and the people
-              inhabiting the space. They are drawn to environments where observation, care, and
-              long-term thinking shape the work, and where lighting serves not as singular
-              authorship, but as an integral part of a larger artistic system.
+              Working across Vectorworks, Depence, grandMA3, and EOS, Em is particularly
+              interested in the role previsualization plays in carrying an idea from concept to
+              production. This interest led them to build UCLA&apos;s dedicated Depence previs
+              studio and develop workflows for both theatrical and concert lighting.
             </p>
           </div>
         </section>
@@ -103,7 +68,7 @@ export default function AboutPage() {
         {/* Footer */}
         <div className="about-footer">
           <div className="about-education">
-            <h2>M.F.A in Lighting Design for Theatre and Live Events</h2>
+            <h2>M.F.A. in Lighting Design</h2>
             <p>University of California, Los Angeles (UCLA)</p>
           </div>
           <div className="about-contact">
@@ -169,50 +134,35 @@ export default function AboutPage() {
           }
         }
 
-        /* Two-column grid - image halves meet in the middle */
+        /* Two text columns flowing around a photo centered in the gutter */
         .about-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0;
+          position: relative;
+          display: flex;
+          align-items: center;
+          min-height: 420px;
         }
 
-        .about-col {
-          text-align: left;
+        .about-text {
+          column-count: 2;
+          column-gap: 300px;
+          column-fill: balance;
         }
 
-        .about-col p {
-          font-size: 0.88rem;
-          line-height: 1.8;
+        .about-text p {
+          font-size: 1rem;
+          line-height: 1.9;
           color: #c4b89a;
           margin: 0 0 12px 0;
         }
 
-        /* Left half floats RIGHT so text wraps on the left */
-        .shape-left {
-          float: right;
-          width: calc(24% + 1px);
+        .about-center-img {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 250px;
           height: auto;
-          margin-top: 60px;
-          margin-right: 0;
-          shape-outside: url('/about/em-left.png');
-          shape-margin: 20px;
-          shape-image-threshold: 0.01;
-        }
-
-        /* Right half floats LEFT so text wraps on the right */
-        .shape-right {
-          float: left;
-          width: calc(24% + 1px);
-          height: auto;
-          margin-top: 60px;
-          margin-left: 0;
-          shape-outside: url('/about/em-right.png');
-          shape-margin: 20px;
-          shape-image-threshold: 0.01;
-        }
-
-        .shape-img {
-          display: block;
+          pointer-events: none;
         }
 
         /* Mobile full image - hidden on desktop */
@@ -229,17 +179,16 @@ export default function AboutPage() {
           }
 
           .about-grid {
-            grid-template-columns: 1fr;
-            gap: 0;
+            display: block;
+            min-height: 0;
           }
 
-          .shape-left,
-          .shape-right {
+          .about-text {
+            column-count: 1;
+          }
+
+          .about-center-img {
             display: none;
-          }
-
-          .about-col {
-            text-align: left;
           }
         }
 

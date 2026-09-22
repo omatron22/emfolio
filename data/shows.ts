@@ -255,7 +255,7 @@ export const shows: Show[] = [
     slug: "acquaprofonda",
     title: "ACQUAPROFONDA",
     production: "Long Beach Opera",
-    year: "2024",
+    year: "2025",
     director: "Yekaterina Lynch",
     conductor: "Oliver Chan",
     heroImage: "/portfolio/aqua/aqua1.jpg",

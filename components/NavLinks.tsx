@@ -83,7 +83,7 @@ export function MobileMenu() {
         <span className="block w-6 h-0.5 bg-cream transition-all duration-300" style={{ transform: isOpen ? "rotate(-45deg) translateY(-8px)" : "none" }} />
       </button>
 
-      <div className={`md:hidden absolute top-full right-4 transition-all duration-300 ${isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-2"}`}>
+      <div inert={!isOpen} className={`md:hidden absolute top-full right-4 transition-all duration-300 ${isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-2"}`}>
         <nav className="flex flex-col gap-3 py-2">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);

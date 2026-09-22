@@ -31,7 +31,7 @@ const videos: ProgrammingVideo[] = [
     src: "/program-meels-out-west.mp4",
     songTitle: "Out West",
     artist: "MEELS",
-    toolsLine: "Programmed in grandMA3 · Rendered in DepenceR4",
+    toolsLine: "Programmed in grandMA3 · Rendered in Depence R4",
   },
 ];
 
