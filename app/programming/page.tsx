@@ -186,6 +186,39 @@ function VideoModal({
   const [volume, setVolume] = useState(0);
 
   const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Move focus into the dialog, keep Tab inside it, and restore focus on close
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
+    const trapTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !containerRef.current) return;
+      const focusable = Array.from(
+        containerRef.current.querySelectorAll<HTMLElement>(
+          'button, input, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("disabled"));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !containerRef.current.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !containerRef.current.contains(active))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", trapTab);
+
+    return () => {
+      document.removeEventListener("keydown", trapTab);
+      opener?.focus?.();
+    };
+  }, []);
 
   // Autoplay muted on mount
   useEffect(() => {
@@ -343,6 +376,24 @@ function VideoModal({
     v.currentTime = percentage * v.duration;
   };
 
+  const handleProgressKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const v = videoRef.current;
+    if (!v || !v.duration) return;
+    const step = { ArrowLeft: -5, ArrowDown: -5, ArrowRight: 5, ArrowUp: 5 }[e.key];
+    if (step !== undefined) {
+      // Keep arrow keys from reaching any page-level handlers
+      e.preventDefault();
+      e.stopPropagation();
+      v.currentTime = Math.min(Math.max(v.currentTime + step, 0), v.duration);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      v.currentTime = 0;
+    } else if (e.key === "End") {
+      e.preventDefault();
+      v.currentTime = v.duration;
+    }
+  };
+
   const closeOnBackdrop = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       playSound("click");
@@ -361,6 +412,7 @@ function VideoModal({
     >
       {/* Close button */}
       <button
+        ref={closeButtonRef}
         type="button"
         onClick={(e) => {
           e.stopPropagation();
@@ -414,7 +466,15 @@ function VideoModal({
           {/* Progress bar */}
           <div
             onClick={handleProgressClick}
-            className="relative w-full h-1 bg-neutral-800 cursor-pointer mb-4 group"
+            onKeyDown={handleProgressKey}
+            role="slider"
+            tabIndex={0}
+            aria-label="Seek"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(progress)}
+            aria-valuetext={`${Math.round(progress)}%`}
+            className="relative w-full h-1 bg-neutral-800 cursor-pointer mb-4 group focus:outline-none focus-visible:ring-2 focus-visible:ring-cream/50"
           >
             <div
               className="absolute top-0 left-0 h-full bg-cream transition-all"
@@ -483,6 +543,7 @@ function VideoModal({
               <div className="hidden md:flex items-center gap-2">
                 <input
                   type="range"
+                  aria-label="Volume"
                   min="0"
                   max="1"
                   step="0.01"

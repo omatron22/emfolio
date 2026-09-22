@@ -126,9 +126,11 @@ export default function DraftDetailPage({
   }, [prevDraft, nextDraft, router, zoomed, resetZoom]);
 
   // Reset zoom on slug change
-  useEffect(() => {
+  const [zoomSlug, setZoomSlug] = useState(slug);
+  if (slug !== zoomSlug) {
+    setZoomSlug(slug);
     resetZoom();
-  }, [slug, resetZoom]);
+  }
 
   if (!draft) {
     return (
@@ -171,9 +173,19 @@ export default function DraftDetailPage({
             height: "clamp(50vh, 70vh, 80vh)",
             cursor: zoomed ? (isPanning ? "grabbing" : "grab") : "zoom-in",
           }}
-          onClick={(e) => {
+          role="button"
+          tabIndex={0}
+          aria-label={zoomed ? "Zoom out of drawing" : "Zoom in on drawing"}
+          aria-pressed={zoomed}
+          onClick={() => {
             // Only toggle zoom if not panning (mouse didn't move significantly)
             if (!isPanning) toggleZoom();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              toggleZoom();
+            }
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}

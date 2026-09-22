@@ -102,6 +102,11 @@ h6 {
   }
 }
 
+@keyframes pageFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 /* Shared zoom overlay animation */
 @keyframes smoothZoom {
   from {

@@ -1,38 +1,19 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
 
+// Keying on pathname remounts the wrapper on navigation, replaying the fade-in.
+// Opacity only: a transform here would break position: fixed descendants.
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isVisible, setIsVisible] = useState(true);
-  const [displayChildren, setDisplayChildren] = useState(children);
-  const previousPathname = useRef(pathname);
-
-  useEffect(() => {
-    if (pathname !== previousPathname.current) {
-      // New route - fade in
-      setIsVisible(false);
-      const timer = setTimeout(() => {
-        setDisplayChildren(children);
-        setIsVisible(true);
-        previousPathname.current = pathname;
-      }, 120);
-      return () => clearTimeout(timer);
-    } else {
-      setDisplayChildren(children);
-    }
-  }, [pathname, children]);
 
   return (
     <div
+      key={pathname}
       className="page-transition-wrapper"
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transition: "opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-      }}
+      style={{ animation: "pageFade 0.25s cubic-bezier(0.4, 0, 0.2, 1) both" }}
     >
-      {displayChildren}
+      {children}
     </div>
   );
 }

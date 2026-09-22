@@ -19,11 +19,11 @@ export default function RenderingsPage() {
     height: number;
   } | null>(null);
 
-  const handleClick = (project: RenderProject, e: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (project: RenderProject, tile: HTMLDivElement) => {
     if (isZooming) return;
     setIsZooming(true);
 
-    const rect = e.currentTarget.getBoundingClientRect();
+    const rect = tile.getBoundingClientRect();
     setZoomData({
       image: project.heroImage,
       x: rect.left,
@@ -60,12 +60,24 @@ export default function RenderingsPage() {
             <div
               key={project.slug}
               className="grid-tile"
+              role="button"
+              tabIndex={0}
+              aria-label={`Open ${project.title} (${project.year})`}
               style={{
                 animationDelay: `${index * 60}ms`,
               }}
-              onClick={(e) => { handleClick(project, e); play("zoom"); }}
+              onClick={(e) => { handleClick(project, e.currentTarget); play("zoom"); }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  handleClick(project, e.currentTarget);
+                  play("zoom");
+                }
+              }}
               onMouseEnter={() => { setHoveredProject(project); play("hover"); }}
+              onFocus={() => setHoveredProject(project)}
               onMouseLeave={() => setHoveredProject(null)}
+              onBlur={() => setHoveredProject(null)}
             >
               <Image
                 src={project.heroImage}

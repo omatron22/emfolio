@@ -18,7 +18,7 @@ export function DesktopNav() {
   const { play } = useSounds();
 
   return (
-    <nav className="hidden md:flex items-center gap-4 lg:gap-8 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] lg:tracking-[0.3em]">
+    <nav className="hidden lg:flex items-center gap-5 xl:gap-6 2xl:gap-8 text-xs xl:text-sm font-semibold uppercase tracking-[0.2em] xl:tracking-[0.3em]">
       {navItems.map((item) => {
         const isActive = pathname.startsWith(item.href);
         return (
@@ -62,9 +62,11 @@ export function MobileMenu() {
   const pathname = usePathname();
   const { play } = useSounds();
 
-  useEffect(() => {
+  const [menuPathname, setMenuPathname] = useState(pathname);
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname);
     setIsOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     window.dispatchEvent(new Event(isOpen ? "nav-hover" : "nav-leave"));
@@ -73,7 +75,7 @@ export function MobileMenu() {
   return (
     <>
       <button
-        className="md:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5"
+        className="lg:hidden relative w-8 h-8 flex flex-col justify-center items-center gap-1.5"
         onClick={() => { setIsOpen(!isOpen); play(isOpen ? "close" : "open"); }}
         aria-label="Toggle menu"
         aria-expanded={isOpen}
@@ -83,7 +85,7 @@ export function MobileMenu() {
         <span className="block w-6 h-0.5 bg-cream transition-all duration-300" style={{ transform: isOpen ? "rotate(-45deg) translateY(-8px)" : "none" }} />
       </button>
 
-      <div inert={!isOpen} className={`md:hidden absolute top-full right-4 transition-all duration-300 ${isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-2"}`}>
+      <div inert={!isOpen} className={`lg:hidden absolute top-full right-4 transition-all duration-300 ${isOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-2"}`}>
         <nav className="flex flex-col gap-3 py-2">
           {navItems.map((item) => {
             const isActive = pathname.startsWith(item.href);
@@ -101,7 +103,7 @@ export function MobileMenu() {
         </nav>
       </div>
 
-      {isOpen && <div className="fixed inset-0 z-[-1] md:hidden" onClick={() => setIsOpen(false)} />}
+      {isOpen && <div className="fixed inset-0 z-[-1] lg:hidden" onClick={() => setIsOpen(false)} />}
     </>
   );
 }

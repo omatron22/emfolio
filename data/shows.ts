@@ -165,7 +165,7 @@ export const shows: Show[] = [
     slug: "fairview",
     title: "Fairview",
     production: "UCLA School of Theater, Film and Television",
-    year: "2023",
+    year: "2024",
     director: "David H. Parker",
     heroImage: "/portfolio/fairview/fairview1.jpg",
     images: [
@@ -200,7 +200,7 @@ export const shows: Show[] = [
   },
   {
     slug: "keffiyeh-made-in-china",
-    title: "Keffiyeh / Made in China",
+    title: "Keffiyeh/Made in China",
     production: "UCLA School of Theater, Film and Television",
     year: "2023",
     director: "Yuval Zehavi",
@@ -230,8 +230,8 @@ export const shows: Show[] = [
   },
   {
     slug: "boxes",
-    title: "BOXES",
-    production: "The Academy - NYLA",
+    title: "Boxes",
+    production: "UCLA School of Theater, Film and Television",
     year: "2024",
     director: "Michelle Stroffolino",
     heroImage: "/portfolio/boxes/box1.jpg",
@@ -253,7 +253,7 @@ export const shows: Show[] = [
   },
   {
     slug: "acquaprofonda",
-    title: "ACQUAPROFONDA",
+    title: "Acquaprofonda",
     production: "Long Beach Opera",
     year: "2025",
     director: "Yekaterina Lynch",
